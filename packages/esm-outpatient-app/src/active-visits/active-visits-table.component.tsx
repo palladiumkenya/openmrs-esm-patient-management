@@ -40,6 +40,7 @@ import {
   isDesktop,
   useSession,
   useLocations,
+  UserHasAccess,
 } from '@openmrs/esm-framework';
 import {
   useVisitQueueEntries,
@@ -63,6 +64,7 @@ import {
   useSelectedServiceName,
   useSelectedServiceUuid,
 } from '../helpers/helpers';
+import MissingQueueEntries from '../visits-missing-inqueue/visits-missing-inqueue.component';
 
 type FilterProps = {
   rowIds: Array<string>;
@@ -174,6 +176,7 @@ function ActiveVisitsTable() {
   const [showOverlay, setShowOverlay] = useState(false);
   const [view, setView] = useState('');
   const layout = useLayoutType();
+  const [selectedTab, setSelectedTab] = useState(0);
 
   const currentPathName: string = window.location.pathname;
   const fromPage: string = getOriginFromPathName(currentPathName);
@@ -333,147 +336,167 @@ function ActiveVisitsTable() {
     return (
       <div className={styles.container}>
         <div className={styles.headerBtnContainer}>
-          <Button
-            size="sm"
-            kind="ghost"
-            renderIcon={(props) => <ArrowRight size={16} {...props} />}
-            onClick={() => {
-              setShowOverlay(true);
-              setView(SearchTypes.QUEUE_SERVICE_FORM);
-            }}
-            iconDescription={t('addNewQueue', 'Add new queue')}>
-            {t('addNewService', 'Add new service')}
-          </Button>
+          <UserHasAccess privilege="Manage Forms">
+            <Button
+              size="sm"
+              kind="ghost"
+              renderIcon={(props) => <ArrowRight size={16} {...props} />}
+              onClick={() => {
+                setShowOverlay(true);
+                setView(SearchTypes.QUEUE_SERVICE_FORM);
+              }}
+              iconDescription={t('addNewQueue', 'Add new queue')}>
+              {t('addNewService', 'Add new service')}
+            </Button>
+          </UserHasAccess>
         </div>
-        <div className={styles.headerContainer}>
-          <span className={styles.heading}>{t('patientsCurrentlyInQueue', 'Patients currently in queue')}</span>
-          <div className={styles.headerButtons}></div>
-        </div>
-        <DataTable
-          data-floating-menu-container
-          filterRows={handleFilter}
-          headers={tableHeaders}
-          overflowMenuOnHover={isDesktop(layout) ? true : false}
-          rows={tableRows}
-          size="xs"
-          useZebraStyles>
-          {({ rows, headers, getHeaderProps, getTableProps, getRowProps, onInputChange }) => (
-            <TableContainer className={styles.tableContainer}>
-              <TableToolbar
-                style={{ position: 'static', height: '3rem', overflow: 'visible', backgroundColor: 'color' }}>
-                <TableToolbarContent className={styles.toolbarContent}>
-                  <div className={styles.filterContainer}>
-                    <Dropdown
-                      id="serviceFilter"
-                      titleText={t('showPatientsWaitingFor', 'Show patients waiting for') + ':'}
-                      label={currentServiceName}
-                      type="inline"
-                      items={[{ display: `${t('all', 'All')}` }, ...services]}
-                      itemToString={(item) => (item ? item.display : '')}
-                      onChange={handleServiceChange}
-                      size="sm"
-                    />
-                  </div>
-                  <Layer>
-                    <TableToolbarSearch
-                      className={styles.search}
-                      onChange={onInputChange}
-                      placeholder={t('searchThisList', 'Search this list')}
-                      size="sm"
-                    />
-                  </Layer>
-                  <Button
-                    size="sm"
-                    kind="secondary"
-                    className={styles.addPatientToListBtn}
-                    renderIcon={(props) => <Add size={16} {...props} />}
-                    onClick={() => {
-                      setShowOverlay(true);
-                      setView('');
-                    }}
-                    iconDescription={t('addPatientToQueue', 'Add patient to queue')}>
-                    {t('addPatientToQueue', 'Add patient to queue')}
-                  </Button>
-                  <ClearQueueEntries visitQueueEntries={visitQueueEntries} />
-                </TableToolbarContent>
-              </TableToolbar>
-              <Table {...getTableProps()} className={styles.activeVisitsTable}>
-                <TableHead>
-                  <TableRow>
-                    <TableExpandHeader />
-                    {headers.map((header) => (
-                      <TableHeader {...getHeaderProps({ header })}>{header.header}</TableHeader>
-                    ))}
-                    <TableExpandHeader />
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows.map((row, index) => {
-                    return (
-                      <React.Fragment key={row.id}>
-                        <TableExpandRow {...getRowProps({ row })}>
-                          {row.cells.map((cell) => (
-                            <TableCell key={cell.id}>{cell.value?.content ?? cell.value}</TableCell>
+        <Tabs
+          selectedIndex={selectedTab}
+          onChange={({ selectedIndex }) => setSelectedTab(selectedIndex)}
+          className={styles.tabs}>
+          <TabList style={{ paddingLeft: '1rem' }} aria-label="Appointment tabs" contained>
+            <Tab>{t('InQueue', 'In Queue')}</Tab>
+            <Tab>{t('NotInQueue', 'Not In Queue')}</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel style={{ padding: 0 }}>
+              <div className={styles.headerContainer}>
+                <span className={styles.heading}>{t('patientsCurrentlyInQueue', 'Patients currently in queue')}</span>
+                <div className={styles.headerButtons}></div>
+              </div>
+              <DataTable
+                data-floating-menu-container
+                filterRows={handleFilter}
+                headers={tableHeaders}
+                overflowMenuOnHover={isDesktop(layout) ? true : false}
+                rows={tableRows}
+                size="xs"
+                useZebraStyles>
+                {({ rows, headers, getHeaderProps, getTableProps, getRowProps, onInputChange }) => (
+                  <TableContainer className={styles.tableContainer}>
+                    <TableToolbar
+                      style={{ position: 'static', height: '3rem', overflow: 'visible', backgroundColor: 'color' }}>
+                      <TableToolbarContent className={styles.toolbarContent}>
+                        <div className={styles.filterContainer}>
+                          <Dropdown
+                            id="serviceFilter"
+                            titleText={t('showPatientsWaitingFor', 'Show patients waiting for') + ':'}
+                            label={currentServiceName}
+                            type="inline"
+                            items={[{ display: `${t('all', 'All')}` }, ...services]}
+                            itemToString={(item) => (item ? item.display : '')}
+                            onChange={handleServiceChange}
+                            size="sm"
+                          />
+                        </div>
+                        <Layer>
+                          <TableToolbarSearch
+                            className={styles.search}
+                            onChange={onInputChange}
+                            placeholder={t('searchThisList', 'Search this list')}
+                            size="sm"
+                          />
+                        </Layer>
+                        <Button
+                          size="sm"
+                          kind="secondary"
+                          className={styles.addPatientToListBtn}
+                          renderIcon={(props) => <Add size={16} {...props} />}
+                          onClick={() => {
+                            setShowOverlay(true);
+                            setView('');
+                          }}
+                          iconDescription={t('addPatientToQueue', 'Add patient to queue')}>
+                          {t('addPatientToQueue', 'Add patient to queue')}
+                        </Button>
+                        <ClearQueueEntries visitQueueEntries={visitQueueEntries} />
+                      </TableToolbarContent>
+                    </TableToolbar>
+                    <Table {...getTableProps()} className={styles.activeVisitsTable}>
+                      <TableHead>
+                        <TableRow>
+                          <TableExpandHeader />
+                          {headers.map((header) => (
+                            <TableHeader {...getHeaderProps({ header })}>{header.header}</TableHeader>
                           ))}
-                          <TableCell className="cds--table-column-menu">
-                            <EditMenu queueEntry={visitQueueEntries?.[index]} />
-                          </TableCell>
-                          <TableCell className="cds--table-column-menu">
-                            <ActionsMenu queueEntry={visitQueueEntries?.[index]} />
-                          </TableCell>
-                        </TableExpandRow>
-                        {row.isExpanded ? (
-                          <TableExpandedRow className={styles.expandedActiveVisitRow} colSpan={headers.length + 2}>
-                            <>
-                              <Tabs>
-                                <TabList>
-                                  <Tab>{t('currentVisit', 'Current visit')}</Tab>
-                                  <Tab>{t('previousVisit', 'Previous visit')} </Tab>
-                                </TabList>
-                                <TabPanels>
-                                  <TabPanel>
-                                    <CurrentVisit
-                                      patientUuid={tableRows?.[index]?.patientUuid}
-                                      visitUuid={tableRows?.[index]?.visitUuid}
-                                    />
-                                  </TabPanel>
-                                  <TabPanel>
-                                    <PastVisit patientUuid={tableRows?.[index]?.patientUuid} />
-                                  </TabPanel>
-                                </TabPanels>
-                              </Tabs>
-                            </>
-                          </TableExpandedRow>
-                        ) : (
-                          <TableExpandedRow className={styles.hiddenRow} colSpan={headers.length + 2} />
-                        )}
-                      </React.Fragment>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-              {rows.length === 0 ? (
-                <div className={styles.tileContainer}>
-                  <Tile className={styles.tile}>
-                    <div className={styles.tileContent}>
-                      <p className={styles.content}>{t('noPatientsToDisplay', 'No patients to display')}</p>
-                      <p className={styles.helper}>{t('checkFilters', 'Check the filters above')}</p>
-                    </div>
-                    <p className={styles.separator}>{t('or', 'or')}</p>
-                    <Button
-                      kind="ghost"
-                      size="sm"
-                      renderIcon={(props) => <Add size={16} {...props} />}
-                      onClick={() => setShowOverlay(true)}>
-                      {t('addPatientToList', 'Add patient to list')}
-                    </Button>
-                  </Tile>
-                </div>
-              ) : null}
-            </TableContainer>
-          )}
-        </DataTable>
-        {showOverlay && <PatientSearch view={view} closePanel={() => setShowOverlay(false)} />}
+                          <TableExpandHeader />
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {rows.map((row, index) => {
+                          return (
+                            <React.Fragment key={row.id}>
+                              <TableExpandRow {...getRowProps({ row })}>
+                                {row.cells.map((cell) => (
+                                  <TableCell key={cell.id}>{cell.value?.content ?? cell.value}</TableCell>
+                                ))}
+                                <TableCell className="cds--table-column-menu">
+                                  <EditMenu queueEntry={visitQueueEntries?.[index]} />
+                                </TableCell>
+                                <TableCell className="cds--table-column-menu">
+                                  <ActionsMenu queueEntry={visitQueueEntries?.[index]} />
+                                </TableCell>
+                              </TableExpandRow>
+                              {row.isExpanded ? (
+                                <TableExpandedRow
+                                  className={styles.expandedActiveVisitRow}
+                                  colSpan={headers.length + 2}>
+                                  <>
+                                    <Tabs>
+                                      <TabList>
+                                        <Tab>{t('currentVisit', 'Current visit')}</Tab>
+                                        <Tab>{t('previousVisit', 'Previous visit')} </Tab>
+                                      </TabList>
+                                      <TabPanels>
+                                        <TabPanel>
+                                          <CurrentVisit
+                                            patientUuid={tableRows?.[index]?.patientUuid}
+                                            visitUuid={tableRows?.[index]?.visitUuid}
+                                          />
+                                        </TabPanel>
+                                        <TabPanel>
+                                          <PastVisit patientUuid={tableRows?.[index]?.patientUuid} />
+                                        </TabPanel>
+                                      </TabPanels>
+                                    </Tabs>
+                                  </>
+                                </TableExpandedRow>
+                              ) : (
+                                <TableExpandedRow className={styles.hiddenRow} colSpan={headers.length + 2} />
+                              )}
+                            </React.Fragment>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                    {rows.length === 0 ? (
+                      <div className={styles.tileContainer}>
+                        <Tile className={styles.tile}>
+                          <div className={styles.tileContent}>
+                            <p className={styles.content}>{t('noPatientsToDisplay', 'No patients to display')}</p>
+                            <p className={styles.helper}>{t('checkFilters', 'Check the filters above')}</p>
+                          </div>
+                          <p className={styles.separator}>{t('or', 'or')}</p>
+                          <Button
+                            kind="ghost"
+                            size="sm"
+                            renderIcon={(props) => <Add size={16} {...props} />}
+                            onClick={() => setShowOverlay(true)}>
+                            {t('addPatientToList', 'Add patient to list')}
+                          </Button>
+                        </Tile>
+                      </div>
+                    ) : null}
+                  </TableContainer>
+                )}
+              </DataTable>
+              {showOverlay && <PatientSearch view={view} closePanel={() => setShowOverlay(false)} />}
+            </TabPanel>
+            <TabPanel style={{ padding: 0 }}>
+              <MissingQueueEntries />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </div>
     );
   }
