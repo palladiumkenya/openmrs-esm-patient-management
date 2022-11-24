@@ -28,30 +28,13 @@ const MissedAppointmentList: React.FC = () => {
           </TabList>
           <TabPanels>
             <TabPanel>
-              <MissedAppointments
-                status={MissedAppointmentTypes.MISSED}
-                title={t('missedAppointmentsList', 'Missed Appointments List')}
-              />
+              <MissedAppointments status={MissedAppointmentTypes.MISSED} />
             </TabPanel>
             <TabPanel>
-              <MissedAppointments status={MissedAppointmentTypes.DEFAULTERS} title={t('defaulters', 'Defaulters')} />
+              <MissedAppointments status={MissedAppointmentTypes.DEFAULTERS} />
             </TabPanel>
-            <TabPanel>
-              {
-                <MissedAppointments
-                  status={MissedAppointmentTypes.LTFU}
-                  title={t('lostToFollowupAppointments', 'Lost To Followup Appointments')}
-                />
-              }
-            </TabPanel>
-            <TabPanel>
-              {
-                <MissedAppointments
-                  status={MissedAppointmentTypes.PROMISED}
-                  title={t('promisedPateints', 'Promised Patients')}
-                />
-              }
-            </TabPanel>
+            <TabPanel>{<MissedAppointments status={MissedAppointmentTypes.LTFU} />}</TabPanel>
+            <TabPanel>{<MissedAppointments status={MissedAppointmentTypes.PROMISED} />}</TabPanel>
           </TabPanels>
         </Tabs>
       </div>

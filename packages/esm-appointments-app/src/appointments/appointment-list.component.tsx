@@ -13,12 +13,14 @@ import dayjs from 'dayjs';
 import UnScheduledAppointments from '../appointments-tabs/unscheduled-appointments.component';
 import PendingAppointments from '../appointments-tabs/pending-appointments.component';
 import { useAppointments } from '../appointments-tabs/appointments-table.resource';
+import MissedAppointments from '../appointments-tabs/missed-appointments.component';
 
 enum AppointmentTypes {
   SCHEDULED = 'Scheduled',
   COMPLETED = 'Completed',
   CANCELLED = 'Cancelled',
   CHECKEDIN = 'CheckedIn',
+  MISSED = 'Missed',
 }
 
 const AppointmentList: React.FC = () => {
@@ -26,6 +28,7 @@ const AppointmentList: React.FC = () => {
   const startDate = useAppointmentDate();
   const { appointments } = useAppointments();
   const isToday = dayjs(new Date(startDate)).isSame(new Date(), 'date');
+  const isGeaterThanToday = dayjs(new Date(startDate)).isAfter(new Date(), 'date');
   const [selectedTab, setSelectedTab] = useState(0);
 
   const appointmentDownloadInfo = () => {
@@ -67,6 +70,8 @@ const AppointmentList: React.FC = () => {
           <Tab>{t('completed', 'Completed')}</Tab>
           <Tab disabled={!isToday}>{t('checkedIn', 'CheckedIn')}</Tab>
           <Tab>{t('pending', 'Pending')}</Tab>
+          <Tab disabled={isGeaterThanToday || isToday}>{t('missed', 'Missed')}</Tab>
+
           <Button
             className={styles.calendarButton}
             kind="primary"
@@ -90,6 +95,9 @@ const AppointmentList: React.FC = () => {
           )}
           <TabPanel style={{ padding: 0 }}>
             <PendingAppointments />
+          </TabPanel>
+          <TabPanel style={{ padding: 0 }}>
+            <MissedAppointments status={AppointmentTypes.MISSED} />
           </TabPanel>
         </TabPanels>
       </Tabs>
