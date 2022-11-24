@@ -1,10 +1,10 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Tag } from '@carbon/react';
+import { TFunction, useTranslation } from 'react-i18next';
 import { MappedAppointment } from '../types/index';
 import styles from './appointment-details.scss';
 import { usePatientAppointmentHistory } from '../hooks/usePatientAppointmentHistory';
 import { formatDate } from '@openmrs/esm-framework';
+import { getGender } from '../helpers';
 
 interface AppointmentDetailsProps {
   appointment: MappedAppointment;
@@ -30,9 +30,9 @@ const AppointmentDetails: React.FC<AppointmentDetailsProps> = ({ appointment }) 
           <p className={styles.gridTitle}>{t('patientDetails', 'Patient details')}</p>
           <p className={styles.label}>{appointment.name}</p>
           <p className={styles.label}>{appointment.age}</p>
-          <p className={styles.label}>{appointment.gender}</p>
-          <p className={styles.label}>{appointment.dob}</p>
-          <p className={styles.label}>{appointment.phoneNumber}</p>
+          <p className={styles.label}>{getGender(appointment?.gender, t)}</p>
+          <p className={styles.label}>{appointment?.dob}</p>
+          <p className={styles.label}>{appointment?.phoneNumber}</p>
         </div>
         <div>
           <p className={styles.gridTitle}>{t('appointmentNotes', 'Appointment Notes')}</p>
