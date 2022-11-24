@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import QueuePatientBaseTable from './queue-linelist-base-table.component';
 import { formatDatetime, parseDate, ConfigurableLink } from '@openmrs/esm-framework';
 import { useServiceQueueEntries } from '../active-visits/active-visits-table.resource';
+import { getGender } from '../helpers/helpers';
 
 const ServicesTable: React.FC = () => {
   const { t } = useTranslation();
@@ -60,7 +61,7 @@ const ServicesTable: React.FC = () => {
             ),
           },
           returnDate: formatDatetime(parseDate(entry.returnDate), { mode: 'wide' }),
-          gender: entry.gender,
+          gender: getGender(entry.gender, t),
           age: entry.age,
           visitType: entry.visitType,
           phoneNumber: entry.phoneNumber,

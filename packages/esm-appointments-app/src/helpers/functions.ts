@@ -46,10 +46,10 @@ export const getTodaysAppointment = (appointment: Appointment, t?: Function) => 
   let formattedAppointment = {
     id: appointment?.uuid,
     name: appointment.patient?.name,
-    age: appointment.patient?.birthDate,
+    age: appointment.patient?.dob,
     gender: appointment.patient?.gender,
-    phoneNumber: appointment.patient?.contact,
-    dob: formatDate(parseDate(appointment.patient?.birthDate), { mode: 'wide' }),
+    phoneNumber: appointment.patient?.phoneNumber,
+    dob: formatDate(parseDate(appointment.patient?.birthDate), { mode: 'standard' }),
     patientUuid: appointment.patient?.uuid,
     dateTime: formatAMPM(parseDate(appointment.startDateTime)),
     serviceType: appointment.service ? appointment.service.name : '--',
@@ -75,10 +75,10 @@ export const getAppointment = (appointment: Appointment) => {
   let formattedAppointment = {
     id: appointment.uuid,
     name: appointment.patient?.name,
-    age: appointment.patient?.birthDate,
+    age: appointment.patient?.age,
     gender: appointment.patient?.gender,
-    phoneNumber: appointment.patient?.contact,
-    dob: formatDate(parseDate(appointment.patient?.birthDate), { mode: 'wide' }),
+    phoneNumber: appointment.patient?.phoneNumber,
+    dob: formatDate(parseDate(appointment.patient?.dob), { mode: 'standard' }),
     patientUuid: appointment.patient?.uuid,
     dateTime: appointment.startDateTime,
     serviceType: appointment.service ? appointment.service.name : '--',
@@ -92,4 +92,19 @@ export const getAppointment = (appointment: Appointment) => {
     providers: appointment.providers,
   };
   return formattedAppointment;
+};
+
+export const getGender = (gender, t) => {
+  switch (gender) {
+    case 'M':
+      return t('male', 'Male');
+    case 'F':
+      return t('female', 'Female');
+    case 'O':
+      return t('other', 'Other');
+    case 'U':
+      return t('unknown', 'Unknown');
+    default:
+      return gender;
+  }
 };

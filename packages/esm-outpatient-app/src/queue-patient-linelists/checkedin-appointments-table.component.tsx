@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import QueuePatientBaseTable from './queue-linelist-base-table.component';
 import { usePagination, ConfigurableLink, formatDate } from '@openmrs/esm-framework';
 import { useCheckedInAppointments } from './queue-linelist.resource';
+import { getGender } from '../helpers/helpers';
 
 const pageSize = 20;
 
@@ -65,7 +66,7 @@ const CheckedInAppointmentsTable: React.FC = () => {
             ),
           },
           returnDate: formatDate(new Date(appointment.startDateTime), { mode: 'wide' }),
-          gender: appointment.patient?.gender,
+          gender: getGender(appointment.patient?.gender, t),
           age: appointment.patient.age,
           visitType: appointment.appointmentKind,
           status: appointment.status,
