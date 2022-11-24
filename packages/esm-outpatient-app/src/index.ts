@@ -142,6 +142,13 @@ function setupOpenMRS() {
           moduleName,
         }),
       },
+      {
+        id: 'add-visit-to-queue-modal',
+        load: getAsyncLifecycle(() => import('./add-patient-toqueue/add-patient-toqueue-dialog.component'), {
+          featureName: 'add visit to queue',
+          moduleName,
+        }),
+      },
     ],
   };
 }
