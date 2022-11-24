@@ -1,6 +1,7 @@
 import { AppointmentSummary, QueueServiceInfo } from '../types';
 import { getGlobalStore } from '@openmrs/esm-framework';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const getServiceCountByAppointmentType = (
   appointmentSummary: Array<AppointmentSummary>,
@@ -49,4 +50,19 @@ export const useSelectedServiceUuid = () => {
     getSelectedServiceUuid().subscribe(({ serviceUuid }) => setCurrentServiceUuid(serviceUuid));
   }, []);
   return currentServiceUuid;
+};
+
+export const getGender = (gender, t) => {
+  switch (gender) {
+    case 'M':
+      return t('male', 'Male');
+    case 'F':
+      return t('female', 'Female');
+    case 'O':
+      return t('other', 'Other');
+    case 'U':
+      return t('unknown', 'Unknown');
+    default:
+      return gender;
+  }
 };

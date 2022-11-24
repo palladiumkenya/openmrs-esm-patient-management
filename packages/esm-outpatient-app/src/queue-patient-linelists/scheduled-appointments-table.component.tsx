@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import QueuePatientBaseTable from './queue-linelist-base-table.component';
 import { usePagination, ConfigurableLink, formatDate } from '@openmrs/esm-framework';
 import { useAppointments } from './queue-linelist.resource';
+import { getGender } from '../helpers/helpers';
 
 const pageSize = 100;
 
@@ -65,14 +66,14 @@ const AppointmentsTable: React.FC = () => {
             ),
           },
           returnDate: formatDate(new Date(appointment.startDateTime), { mode: 'wide' }),
-          gender: appointment.patient?.gender,
+          gender: getGender(appointment.patient?.gender, t),
           age: appointment.patient.age,
           visitType: appointment.appointmentKind,
           status: appointment.status,
           phoneNumber: appointment.patient?.phoneNumber,
         };
       }),
-    [paginatedAppointments],
+    [paginatedAppointments, t],
   );
 
   return (
