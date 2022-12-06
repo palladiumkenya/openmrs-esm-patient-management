@@ -78,10 +78,8 @@ describe('QueuePatientBaseTable: ', () => {
     });
 
     const expectedTableRows = [
-      /john wilson 08 — Oct — 1632, 12:00\s+AM M 35 walkin 0700000000/,
-      /charles babbage 13 — Jul — 1635, 12:00\s+AM M 35 walkIn 0700000001/,
-      /neil amstrong 21 — May — 1633, 12:00\s+AM M 35 walkIn 0700000002/,
-      /elon musketeer 27 — Jan — 1636, 12:00\s+AM M 35 walkIn 0700000000/,
+      /John Wilson Today, 02:08 PM Male 45 HIV Clinic 0700123456/,
+      /Eric Test Ric Today, 02:08 PM Male 32 TB Clinic 0700987654/,
     ];
 
     expectedTableRows.forEach((row) => {
