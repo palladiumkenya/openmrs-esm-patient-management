@@ -37,6 +37,8 @@ import CancelAppointment from '../appointment-forms/cancel-appointment.component
 import dayjs from 'dayjs';
 import isToday from 'dayjs/plugin/isToday';
 import utc from 'dayjs/plugin/utc';
+import AppointmentButton from './appointments-button.component';
+import { useServiceQueues } from '../hooks/useServiceQueus';
 dayjs.extend(utc);
 dayjs.extend(isToday);
 
@@ -45,6 +47,7 @@ interface AppointmentsBaseTableProps {
   isLoading: boolean;
   tableHeading: string;
   mutate?: () => void;
+  visits: Array<any>;
 }
 
 const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
@@ -52,6 +55,7 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
   isLoading,
   tableHeading,
   mutate,
+  visits,
 }) => {
   const { t } = useTranslation();
   const { results, goTo, currentPage } = usePagination(appointments, 10);
@@ -64,6 +68,7 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
     );
   };
 
+  const { isLoading: isLoadingQueueEntries, queueEntries } = useServiceQueues();
   const headerData = [
     {
       header: t('patientName', 'Patient name'),
@@ -86,7 +91,11 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
       key: 'actions',
     },
   ];
-
+  const patientQueueEntry = (patientUuid: string) => {
+    const queryEntries = queueEntries.find((entry) => entry.queueEntry.patient.uuid === patientUuid);
+    return ` ${queryEntries?.queueEntry?.status?.display ?? ''} ${queryEntries?.queueEntry?.queue?.display ?? ''}`;
+  };
+  const hasVisit = (patientUuid) => visits?.find((visit) => visit?.patient?.uuid === patientUuid)?.startDatetime;
   const rowData = results?.map((appointment, index) => ({
     id: `${index}`,
     patientName: {
@@ -103,7 +112,13 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
     serviceType: appointment.serviceType,
     provider: appointment.provider,
     actions: (
-      <>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        {}
+        {hasVisit(appointment.patientUuid) ? (
+          patientQueueEntry(appointment.patientUuid)
+        ) : (
+          <AppointmentButton patientUuid={appointment.patientUuid} appointment={appointment} />
+        )}
         {(dayjs(appointment.dateTime).isAfter(dayjs()) || dayjs(appointment.dateTime).isToday()) && (
           <OverflowMenu size="sm" flipped>
             <OverflowMenuItem
@@ -126,7 +141,7 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
             />
           </OverflowMenu>
         )}
-      </>
+      </div>
     ),
   }));
 
@@ -190,9 +205,7 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
                   <React.Fragment key={row.id}>
                     <TableExpandRow {...getRowProps({ row })}>
                       {row.cells.map((cell) => (
-                        <TableCell className="cds--table-column-menu" key={cell.id}>
-                          {cell.value?.content ?? cell.value}
-                        </TableCell>
+                        <TableCell key={cell.id}>{cell.value?.content ?? cell.value}</TableCell>
                       ))}
                     </TableExpandRow>
                     {row.isExpanded && (
