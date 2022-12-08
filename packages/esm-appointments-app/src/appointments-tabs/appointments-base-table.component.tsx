@@ -46,7 +46,7 @@ interface AppointmentsBaseTableProps {
   isLoading: boolean;
   tableHeading: string;
   mutate?: () => void;
-  visits: Array<any>;
+  visits?: Array<any>;
 }
 
 const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
@@ -63,10 +63,6 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
     {
       header: t('patientName', 'Patient name'),
       key: 'patientName',
-    },
-    {
-      header: t('identifier', 'identifier'),
-      key: 'identifier',
     },
     {
       header: t('dateTime', 'Date & Time'),
@@ -105,7 +101,11 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
       <div style={{ display: 'flex', alignItems: 'center' }}>
         {}
         {hasVisit(appointment.patientUuid) ? (
-          patientQueueEntry(appointment.patientUuid)
+          patientQueueEntry(appointment.patientUuid) ?? (
+            <Button size="sm" kind="ghost">
+              {t('checkIn', 'Visit active')}
+            </Button>
+          )
         ) : (
           <AppointmentButton patientUuid={appointment.patientUuid} appointment={appointment} />
         )}
@@ -117,15 +117,6 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
                 launchOverlay(
                   t('editAppointments', 'Edit Appointment'),
                   <AppointmentForm appointment={appointment} context="editing" />,
-                )
-              }
-            />
-            <OverflowMenuItem
-              itemText={t('cancelAppointment', 'Cancel appointment')}
-              onClick={() =>
-                launchOverlay(
-                  t('cancelAppointment', 'Cancel appointment'),
-                  <CancelAppointment appointment={appointment} />,
                 )
               }
             />
