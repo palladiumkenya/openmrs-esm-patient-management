@@ -79,6 +79,18 @@ jobs:
         run: |
           mkdir -p dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}
           mv packages/${{ env.DIR_NAME }}/dist/*.* dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}/
+      # deploying to Data
+      - name: deploy-to-server
+        uses: Pendect/action-rsyncer@v1.1.0
+        env:
+          DEPLOY_KEY: ${{secrets.KEY}}
+        with:
+          flags: '-avzr --delete'
+          options: ''
+          ssh_options: '-p ${{secrets.PORT}}'
+          src: 'dist'
+          dest: '${{secrets.USER}}@${{secrets.HOST}}:/home/${{secrets.USER}}/testing'
+
       - name: Publish to Digital Ocean
         uses: jakejarvis/s3-sync-action@master
         with:
@@ -123,6 +135,17 @@ jobs:
         run: |
           mkdir -p dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}
           mv packages/${{ env.DIR_NAME }}/dist/*.* dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}/
+      # deploying to Data
+      - name: deploy-to-server
+        uses: Pendect/action-rsyncer@v1.1.0
+        env:
+          DEPLOY_KEY: ${{secrets.KEY}}
+        with:
+          flags: '-avzr --delete'
+          options: ''
+          ssh_options: '-p ${{secrets.PORT}}'
+          src: 'dist'
+          dest: '${{secrets.USER}}@${{secrets.HOST}}:/home/${{secrets.USER}}/testing'
       
       - name: Publish to Digital Ocean
         uses: jakejarvis/s3-sync-action@master
@@ -169,6 +192,17 @@ jobs:
         run: |
           mkdir -p dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}
           mv packages/${{ env.DIR_NAME }}/dist/*.* dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}/
+      # deploying to Data
+      - name: deploy-to-server
+        uses: Pendect/action-rsyncer@v1.1.0
+        env:
+          DEPLOY_KEY: ${{secrets.KEY}}
+        with:
+          flags: '-avzr --delete'
+          options: ''
+          ssh_options: '-p ${{secrets.PORT}}'
+          src: 'dist'
+          dest: '${{secrets.USER}}@${{secrets.HOST}}:/home/${{secrets.USER}}/testing'
       
       - name: Publish to Digital Ocean
         uses: jakejarvis/s3-sync-action@master
@@ -215,7 +249,17 @@ jobs:
         run: |
           mkdir -p dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}
           mv packages/${{ env.DIR_NAME }}/dist/*.* dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}/
-      
+      # deploying to Data
+      - name: deploy-to-server
+        uses: Pendect/action-rsyncer@v1.1.0
+        env:
+          DEPLOY_KEY: ${{secrets.KEY}}
+        with:
+          flags: '-avzr --delete'
+          options: ''
+          ssh_options: '-p ${{secrets.PORT}}'
+          src: 'dist'
+          dest: '${{secrets.USER}}@${{secrets.HOST}}:/home/${{secrets.USER}}/testing'
       - name: Publish to Digital Ocean
         uses: jakejarvis/s3-sync-action@master
         with:
@@ -261,6 +305,17 @@ jobs:
         run: |
           mkdir -p dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}
           mv packages/${{ env.DIR_NAME }}/dist/*.* dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}/
+      # deploying to Data
+      - name: deploy-to-server
+        uses: Pendect/action-rsyncer@v1.1.0
+        env:
+          DEPLOY_KEY: ${{secrets.KEY}}
+        with:
+          flags: '-avzr --delete'
+          options: ''
+          ssh_options: '-p ${{secrets.PORT}}'
+          src: 'dist'
+          dest: '${{secrets.USER}}@${{secrets.HOST}}:/home/${{secrets.USER}}/testing'
       
       - name: Publish to Digital Ocean
         uses: jakejarvis/s3-sync-action@master
@@ -307,6 +362,17 @@ jobs:
         run: |
           mkdir -p dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}
           mv packages/${{ env.DIR_NAME }}/dist/*.* dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}/
+      # deploying to Data
+      - name: deploy-to-server
+        uses: Pendect/action-rsyncer@v1.1.0
+        env:
+          DEPLOY_KEY: ${{secrets.KEY}}
+        with:
+          flags: '-avzr --delete'
+          options: ''
+          ssh_options: '-p ${{secrets.PORT}}'
+          src: 'dist'
+          dest: '${{secrets.USER}}@${{secrets.HOST}}:/home/${{secrets.USER}}/testing'
       
       - name: Publish to Digital Ocean
         uses: jakejarvis/s3-sync-action@master
