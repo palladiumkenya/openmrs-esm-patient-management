@@ -81,15 +81,15 @@ jobs:
           mv packages/${{ env.DIR_NAME }}/dist/*.* dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}/
       # deploying to Data
       - name: deploy-to-server
-        uses: Pendect/action-rsyncer@v1.1.0
+        uses: Pendect/action-rsyncer@v2.0.0
         env:
           DEPLOY_KEY: ${{secrets.KEY}}
         with:
-          flags: '-avzr --delete'
+          flags: '-avzr --update'
           options: ''
           ssh_options: '-p ${{secrets.PORT}}'
           src: 'dist'
-          dest: '${{secrets.USER}}@${{secrets.HOST}}:/home/${{secrets.USER}}/testing'
+          dest: '${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs3.x'
 
       - name: Publish to Digital Ocean
         uses: jakejarvis/s3-sync-action@master
@@ -137,15 +137,15 @@ jobs:
           mv packages/${{ env.DIR_NAME }}/dist/*.* dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}/
       # deploying to Data
       - name: deploy-to-server
-        uses: Pendect/action-rsyncer@v1.1.0
+        uses: Pendect/action-rsyncer@v2.0.0
         env:
           DEPLOY_KEY: ${{secrets.KEY}}
         with:
-          flags: '-avzr --delete'
+          flags: '-avzr --update'
           options: ''
           ssh_options: '-p ${{secrets.PORT}}'
           src: 'dist'
-          dest: '${{secrets.USER}}@${{secrets.HOST}}:/home/${{secrets.USER}}/testing'
+          dest: '${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs3.x'
       
       - name: Publish to Digital Ocean
         uses: jakejarvis/s3-sync-action@master
@@ -194,15 +194,15 @@ jobs:
           mv packages/${{ env.DIR_NAME }}/dist/*.* dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}/
       # deploying to Data
       - name: deploy-to-server
-        uses: Pendect/action-rsyncer@v1.1.0
+        uses: Pendect/action-rsyncer@v2.0.0
         env:
           DEPLOY_KEY: ${{secrets.KEY}}
         with:
-          flags: '-avzr --delete'
+          flags: '-avzr --update'
           options: ''
           ssh_options: '-p ${{secrets.PORT}}'
           src: 'dist'
-          dest: '${{secrets.USER}}@${{secrets.HOST}}:/home/${{secrets.USER}}/testing'
+          dest: '${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs3.x'
       
       - name: Publish to Digital Ocean
         uses: jakejarvis/s3-sync-action@master
@@ -251,15 +251,15 @@ jobs:
           mv packages/${{ env.DIR_NAME }}/dist/*.* dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}/
       # deploying to Data
       - name: deploy-to-server
-        uses: Pendect/action-rsyncer@v1.1.0
+        uses: Pendect/action-rsyncer@v2.0.0
         env:
           DEPLOY_KEY: ${{secrets.KEY}}
         with:
-          flags: '-avzr --delete'
+          flags: '-avzr --update'
           options: ''
           ssh_options: '-p ${{secrets.PORT}}'
           src: 'dist'
-          dest: '${{secrets.USER}}@${{secrets.HOST}}:/home/${{secrets.USER}}/testing'
+          dest: '${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs3.x'
       - name: Publish to Digital Ocean
         uses: jakejarvis/s3-sync-action@master
         with:
@@ -307,15 +307,15 @@ jobs:
           mv packages/${{ env.DIR_NAME }}/dist/*.* dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}/
       # deploying to Data
       - name: deploy-to-server
-        uses: Pendect/action-rsyncer@v1.1.0
+        uses: Pendect/action-rsyncer@v2.0.0
         env:
           DEPLOY_KEY: ${{secrets.KEY}}
         with:
-          flags: '-avzr --delete'
+          flags: '-avzr --update'
           options: ''
           ssh_options: '-p ${{secrets.PORT}}'
           src: 'dist'
-          dest: '${{secrets.USER}}@${{secrets.HOST}}:/home/${{secrets.USER}}/testing'
+          dest: '${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs3.x'
       
       - name: Publish to Digital Ocean
         uses: jakejarvis/s3-sync-action@master
@@ -364,15 +364,15 @@ jobs:
           mv packages/${{ env.DIR_NAME }}/dist/*.* dist/${{ env.ESM_NAME }}/${{ env.TIMESTAMP }}_${{ github.sha }}/
       # deploying to Data
       - name: deploy-to-server
-        uses: Pendect/action-rsyncer@v1.1.0
+        uses: Pendect/action-rsyncer@v2.0.0
         env:
           DEPLOY_KEY: ${{secrets.KEY}}
         with:
-          flags: '-avzr --delete'
+          flags: '-avzr --update'
           options: ''
           ssh_options: '-p ${{secrets.PORT}}'
           src: 'dist'
-          dest: '${{secrets.USER}}@${{secrets.HOST}}:/home/${{secrets.USER}}/testing'
+          dest: '${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs3.x'
       
       - name: Publish to Digital Ocean
         uses: jakejarvis/s3-sync-action@master
