@@ -89,7 +89,7 @@ jobs:
           options: ""
           ssh_options: "-p ${{secrets.PORT}}"
           src: "dist"
-          dest: "${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs3.x"
+          dest: "${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs"
 
       - name: Update Importmap
         uses: fjogeleit/http-request-action@master
@@ -135,7 +135,7 @@ jobs:
           options: ""
           ssh_options: "-p ${{secrets.PORT}}"
           src: "dist"
-          dest: "${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs3.x"
+          dest: "${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs"
 
       - name: Update Importmap
         uses: fjogeleit/http-request-action@master
@@ -181,7 +181,7 @@ jobs:
           options: ""
           ssh_options: "-p ${{secrets.PORT}}"
           src: "dist"
-          dest: "${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs3.x"
+          dest: "${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs"
 
       - name: Update Importmap
         uses: fjogeleit/http-request-action@master
@@ -227,7 +227,7 @@ jobs:
           options: ""
           ssh_options: "-p ${{secrets.PORT}}"
           src: "dist"
-          dest: "${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs3.x"
+          dest: "${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs"
 
       - name: Update Importmap
         uses: fjogeleit/http-request-action@master
@@ -273,7 +273,7 @@ jobs:
           options: ""
           ssh_options: "-p ${{secrets.PORT}}"
           src: "dist"
-          dest: "${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs3.x"
+          dest: "${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs"
 
       - name: Update Importmap
         uses: fjogeleit/http-request-action@master
@@ -319,7 +319,7 @@ jobs:
           options: ""
           ssh_options: "-p ${{secrets.PORT}}"
           src: "dist"
-          dest: "${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs3.x"
+          dest: "${{secrets.USER}}@${{secrets.HOST}}:/var/www/openmrs"
 
       - name: Update Importmap
         uses: fjogeleit/http-request-action@master
