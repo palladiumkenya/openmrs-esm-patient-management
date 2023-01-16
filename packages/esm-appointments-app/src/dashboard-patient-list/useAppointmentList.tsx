@@ -15,13 +15,14 @@ interface AppointmentPatientList {
     age: number;
     identifier: string;
   };
-  provider: Provider;
+  providers: Array<Provider>;
   service: AppointmentService;
   startDateTime: string;
 }
 
-const useAppointmentList = (appointmentStatus: string) => {
-  const forDate = useAppointmentDate();
+const useAppointmentList = (appointmentStatus: string, startDate?: string) => {
+  const appointmentDate = useAppointmentDate();
+  const forDate = startDate ? startDate : appointmentDate;
   const url = `/ws/rest/v1/appointment/appointmentStatus?status=${appointmentStatus}&forDate=${forDate}`;
   const { data, error } = useSWR<{ data: Array<AppointmentPatientList> }>(url, openmrsFetch);
   const appointments = data?.data.map((appointment) => ({
@@ -30,7 +31,7 @@ const useAppointmentList = (appointmentStatus: string) => {
     identifier: appointment.patient?.identifier,
     dateTime: appointment.startDateTime,
     serviceType: appointment.service?.name,
-    provider: appointment?.provider?.display ?? '',
+    provider: appointment?.providers[0]?.['name'] ?? '',
   }));
   return { appointmentList: (appointments as Array<any>) ?? [], isLoading: !data && !error, error };
 };

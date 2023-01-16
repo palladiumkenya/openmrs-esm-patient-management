@@ -61,7 +61,7 @@ const ScheduledAppointments: React.FC<ScheduledAppointmentsProps> = ({ isLoading
           <AppointmentsBaseTable
             appointments={rowData}
             isLoading={isLoading}
-            tableHeading={t('honoured', 'Honoured')}
+            tableHeading={t('honored', 'Honored')}
             visits={visits}
           />
         )}

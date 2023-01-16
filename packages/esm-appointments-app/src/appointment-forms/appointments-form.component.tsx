@@ -100,14 +100,12 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, patientU
   const [selectedProvider, setSelectedProvider] = useState(appointmentState.provider);
   const [reminder, setReminder] = useState('');
   const [appointmentComment, setAppointmentComment] = useState(appointmentState.comments);
-  const [reason, setReason] = useState('');
   const [timeFormat, setTimeFormat] = useState<amPm>(new Date().getHours() >= 12 ? 'PM' : 'AM');
   const [visitDate, setVisitDate] = React.useState(
     appointmentState.dateTime ? new Date(appointmentState.dateTime) : new Date(),
   );
-  const [isFullDay, setIsFullDay] = useState<boolean>(false);
+  const [isFullDay, setIsFullDay] = useState<boolean>(true);
   const [day, setDay] = useState(appointmentState.dateTime);
-  const [appointmentType, setAppointmentType] = useState(appointmentState.appointmentKind);
   const [appointmentStatus, setAppointmentStatus] = useState(appointmentState.status ?? 'Scheduled');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const appointmentStartDate = useAppointmentDate();
@@ -123,7 +121,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, patientU
     () => getWeeklyCalendarDistribution(new Date(appointmentStartDate), appointmentSummary) ?? [],
     [appointmentStartDate, appointmentSummary],
   );
-  const isMissingRequirements = !selectedService || !appointmentType.length || !selectedProvider;
+  const isMissingRequirements = !selectedService || !selectedProvider;
   const appointmentService = services?.find(({ uuid }) => uuid === selectedService);
 
   useEffect(() => {
@@ -160,7 +158,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, patientU
       new Date(dayjs(visitDate).year(), dayjs(visitDate).month(), dayjs(visitDate).date(), hours, minutes),
     );
     const appointmentPayload: AppointmentPayload = {
-      appointmentKind: appointmentType,
+      appointmentKind: 'Scheduled',
       status: appointmentStatus,
       serviceUuid: selectedService,
       startDateTime: dayjs(startDatetime).format(),
@@ -206,6 +204,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, patientU
           mutate(`/ws/rest/v1/appointment/appointmentStatus?forDate=${appointmentStartDate}&status=Scheduled`);
           mutate(`/ws/rest/v1/appointment/appointmentStatus?forDate=${appointmentStartDate}&status=CheckedIn`);
           mutate(`/ws/rest/v1/appointment/all?forDate=${appointmentStartDate}`);
+          mutate(`/ws/rest/v1/appointment/appointmentStatus?status=Scheduled&forDate=${appointmentStartDate}`);
+          mutate(`/ws/rest/v1/appointment/appointmentStatus?status=Pending&forDate=${appointmentStartDate}`);
           closeOverlay();
         }
       },
@@ -324,7 +324,14 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, patientU
       <p>{t('appointmentDateAndTime', 'Appointments Date and Time')}</p>
 
       <div className={styles.row}>
-        <Toggle onToggle={(value) => setIsFullDay(value)} id="allDay" labelA="Off" labelB="On" labelText="All Day" />
+        <Toggle
+          onToggle={(value) => setIsFullDay(value)}
+          id="allDay"
+          labelA="Off"
+          labelB="On"
+          labelText="All Day"
+          toggled={isFullDay}
+        />
         <DatePicker
           dateFormat="d/m/Y"
           datePickerType="single"
@@ -444,24 +451,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, patientU
         </div>
       )}
 
-      <Select
-        id="appointmentType"
-        invalidText="Required"
-        labelText={t('selectAppointmentType', 'Select an appointment type')}
-        light
-        className={styles.inputContainer}
-        onChange={(event) => setAppointmentType(event.target.value)}
-        value={appointmentType}>
-        {!appointmentType || appointmentType == '--' ? (
-          <SelectItem text={t('selectAppointmentType', 'Select an appointment type')} value="" />
-        ) : null}
-        {appointmentTypes?.length > 0 &&
-          appointmentTypes.map((service) => (
-            <SelectItem key={service} text={service} value={service}>
-              {service}
-            </SelectItem>
-          ))}
-      </Select>
       {context !== 'creating' && (
         <Select
           id="appointmentStatus"
@@ -516,24 +505,26 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, patientU
         </RadioButtonGroup>
       </div>
 
-      <Select
-        id="reason"
-        invalidText="Required"
-        labelText={t('reasonForChanges', 'Reason for change')}
-        light
-        className={styles.inputContainer}
-        onChange={(event) => setAppointmentComment(event.target.value)}
-        value={appointmentComment}>
-        {!appointmentComment || appointmentComment == '--' ? (
-          <SelectItem text={t('reasonForChanges', 'Reason for change')} value="" />
-        ) : null}
-        {appointmentComments?.length > 0 &&
-          appointmentComments.map((comments) => (
-            <SelectItem key={comments} text={comments} value={comments}>
-              {comments}
-            </SelectItem>
-          ))}
-      </Select>
+      {context !== 'creating' && (
+        <Select
+          id="reason"
+          invalidText="Required"
+          labelText={t('reasonForChanges', 'Reason for change')}
+          light
+          className={styles.inputContainer}
+          onChange={(event) => setAppointmentComment(event.target.value)}
+          value={appointmentComment}>
+          {!appointmentComment || appointmentComment == '--' ? (
+            <SelectItem text={t('reasonForChanges', 'Reason for change')} value="" />
+          ) : null}
+          {appointmentComments?.length > 0 &&
+            appointmentComments.map((comments) => (
+              <SelectItem key={comments} text={comments} value={comments}>
+                {comments}
+              </SelectItem>
+            ))}
+        </Select>
+      )}
       <ButtonSet>
         <Button onClick={closeOverlay} className={styles.button} kind="secondary">
           {t('discard', 'Discard')}

@@ -3,8 +3,9 @@ import styles from './weekly-workload-module.scss';
 import React from 'react';
 import { CalendarType } from '../types';
 import { isSameMonth } from '../helpers';
-import { useLayoutType } from '@openmrs/esm-framework';
+import { navigate, useLayoutType } from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
+import { spaBasePath } from '../constants';
 
 interface WeeklyCellProps {
   type: CalendarType;
@@ -40,12 +41,21 @@ const WeeklyWorkloadView: React.FC<WeeklyCellProps> = ({ type, dateTime, current
             {index !== 0 && currentData?.service && (
               <div className={styles.currentData}>
                 {currentData?.service.map(({ serviceName, count }, index) => (
-                  <div key={serviceName} className={`${styles.serviceArea} ${styles[colorCoding[serviceName]]}`}>
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => navigate({ to: `${spaBasePath}/calendarlist/${dateTime}/${serviceName}` })}
+                    key={serviceName}
+                    className={`${styles.serviceArea} ${styles[colorCoding[serviceName]]}`}>
                     <span>{serviceName}</span>
                     <span>{count}</span>
                   </div>
                 ))}
-                <div className={`${styles.serviceArea} ${styles.green}`}>
+                <div
+                  className={`${styles.serviceArea} ${styles.green}`}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => navigate({ to: `${spaBasePath}/calendarlist/${dateTime}/Total` })}>
                   <span>{t('total', 'Total')}</span>
                   <span>{currentData?.service.reduce((sum, currentValue) => sum + currentValue?.count ?? 0, 0)}</span>
                 </div>

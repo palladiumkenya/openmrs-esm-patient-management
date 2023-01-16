@@ -81,8 +81,9 @@
 }
 .serviceArea {
   display: grid;
+  padding: 0.125rem;
   column-gap: 2rem;
-  grid-template-columns: 0fr 1fr;
+  grid-template-columns: 4fr 1fr;
   justify-content: flex-start;
   text-align: left;
   margin: 0.125rem;
@@ -93,7 +94,6 @@
   & > span:first-child {
     text-align: left;
     text-overflow: ellipsis;
-    width: layout.$spacing-06;
   }
 }
 
@@ -111,29 +111,25 @@
 }
 
 .red {
-  background-color: colors.$red-60;
+  background-color: colors.$red-70;
   color: colors.$white;
   font-weight: bold;
-  padding: 0.0125rem;
 }
 
 .purple {
-  background-color: colors.$purple-50;
+  background-color: colors.$yellow-70;
   color: colors.$white;
   font-weight: bold;
-  padding: 0.0125rem;
 }
 
 .blue {
-  background-color: colors.$blue-60;
+  background-color: colors.$blue-70;
   color: colors.$white;
   font-weight: bold;
-  padding: 0.0125rem;
 }
 
 .green {
-  background-color: colors.$green-50;
+  background-color: colors.$green-70;
   color: colors.$white;
   font-weight: bold;
-  padding: 0.0125rem;
 }
