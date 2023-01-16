@@ -1,8 +1,7 @@
 import useSWR from 'swr';
 import { openmrsFetch } from '@openmrs/esm-framework';
-import { Appointment, AppointmentService, Provider } from '../types';
+import { AppointmentService, Provider } from '../types';
 import { useAppointmentDate } from '../helpers';
-import { string } from 'yup';
 
 interface AppointmentPatientList {
   uuid: string;

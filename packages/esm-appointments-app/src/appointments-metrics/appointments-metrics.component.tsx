@@ -1,14 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { InlineLoading } from '@carbon/react';
-import { ErrorState, formatDate, formatDatetime, parseDate } from '@openmrs/esm-framework';
+import { ErrorState, formatDate, parseDate } from '@openmrs/esm-framework';
 import { useClinicalMetrics, useAllAppointmentsByDate, useScheduledAppointment } from '../hooks/useClinicalMetrics';
 import MetricsCard from './metrics-card.component';
 import MetricsHeader from './metrics-header.component';
 import styles from './appointments-metrics.scss';
 import { useAppointmentDate } from '../helpers';
-import { useAppointments } from '../appointments-tabs/appointments-table.resource';
-import { useVisits } from '../hooks/useVisits';
+import useAppointmentList from '../dashboard-patient-list/useAppointmentList';
 
 const AppointmentsMetrics: React.FC = () => {
   const { t } = useTranslation();
@@ -17,13 +16,8 @@ const AppointmentsMetrics: React.FC = () => {
   const { totalScheduledAppointments } = useScheduledAppointment();
   const startDate = useAppointmentDate();
   const formattedStartDate = formatDate(parseDate(startDate), { mode: 'standard', time: false });
-  const { appointments } = useAppointments();
-  const { visits } = useVisits();
-
-  const hashTable = new Map([]);
-  visits?.map((visit) => hashTable.set(visit.patient.uuid, visit));
-  const pendingAppointments = appointments.filter((appointment) => !hashTable.get(appointment.patientUuid));
-  const arrivedAppointments = appointments.filter((appointment) => hashTable.get(appointment.patientUuid));
+  const { appointmentList: arrivedAppointments } = useAppointmentList('Honoured');
+  const { appointmentList: pendingAppointments } = useAppointmentList('Pending');
 
   if (isLoading || loading) {
     return <InlineLoading role="progressbar" description={t('loading', 'Loading...')} />;

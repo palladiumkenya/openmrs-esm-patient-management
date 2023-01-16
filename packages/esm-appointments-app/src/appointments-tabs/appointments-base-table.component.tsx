@@ -167,7 +167,6 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
             overlayHeader: t('createNewAppointment', 'Create new appointment'),
             buttonProps: {
               kind: 'secondary',
-              size: 'sm',
               renderIcon: (props) => <Add size={20} {...props} />,
             },
           }}
@@ -179,7 +178,12 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
             title={`${startCase(tableHeading)} ${t('appointments', 'appointment')} ${appointments.length ?? 0}`}>
             <TableToolbar>
               <TableToolbarContent>
-                <TableToolbarSearch style={{ backgroundColor: '#f4f4f4' }} tabIndex={0} onChange={onInputChange} />
+                <TableToolbarSearch
+                  size="sm"
+                  style={{ backgroundColor: '#f4f4f4' }}
+                  tabIndex={0}
+                  onChange={onInputChange}
+                />
               </TableToolbarContent>
             </TableToolbar>
             <Table {...getTableProps()} size="sm" useZebraStyles>
