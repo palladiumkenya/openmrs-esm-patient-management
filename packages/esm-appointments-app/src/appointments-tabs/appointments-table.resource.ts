@@ -5,8 +5,9 @@ import { useMemo } from 'react';
 import { getAppointment, useAppointmentDate } from '../helpers';
 import isEmpty from 'lodash-es/isEmpty';
 
-export function useAppointments(status?: string) {
-  const startDate = useAppointmentDate();
+export function useAppointments(status?: string, forDate?: string) {
+  const appointmentDate = useAppointmentDate();
+  const startDate = forDate ? forDate : appointmentDate;
   const apiUrl = `/ws/rest/v1/appointment/appointmentStatus?forDate=${startDate}&status=${status}`;
   const allAppointmentsUrl = `/ws/rest/v1/appointment/all?forDate=${startDate}`;
   const { data, error, isValidating, mutate } = useSWR<{ data: Array<Appointment> }, Error>(

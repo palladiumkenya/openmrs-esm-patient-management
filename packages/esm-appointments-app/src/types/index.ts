@@ -175,6 +175,7 @@ export interface Provider {
   comments: string;
   response?: string;
   person: OpenmrsResource;
+  name?: string;
 }
 
 export enum DurationPeriod {

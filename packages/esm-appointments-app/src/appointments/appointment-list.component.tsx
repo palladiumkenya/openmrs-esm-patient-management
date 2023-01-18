@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Tab, TabList, Tabs, TabPanel, TabPanels } from '@carbon/react';
 import { Calendar, Download } from '@carbon/react/icons';
-import CompletedAppointments from '../appointments-tabs/completed-appointments.component';
 import styles from './appointment-list.scss';
 import { formatDate, navigate } from '@openmrs/esm-framework';
 import { spaBasePath } from '../constants';

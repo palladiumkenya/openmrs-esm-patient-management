@@ -6,6 +6,7 @@ import AppointmentsDashboard from './dashboard/appointments-dashboard.component'
 import Overlay from './overlay.component';
 import AppointmentsCalendarListView from './appointments-calendar/appointments-calendar-list-view.component';
 import MissedAppointmentList from './appointments/missed-appointment-list.component';
+import CalendarPatientList from './appointments-calendar/calendar-patient-list/calendar-patient-list.component';
 
 const swrConfiguration = {
   errorRetryCount: 3,
@@ -19,7 +20,7 @@ const Root: React.FC = () => {
           <Routes>
             <Route path="" element={<AppointmentsDashboard />} />
             <Route path="/calendar" element={<AppointmentsCalendarListView />} />
-            <Route path="/missed" element={<MissedAppointmentList />} />
+            <Route path="/calendarlist/:forDate/:serviceName" element={<CalendarPatientList />} />
           </Routes>
           <Overlay />
         </BrowserRouter>

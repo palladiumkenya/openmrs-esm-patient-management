@@ -27,12 +27,17 @@ function setupOpenMRS() {
     {
       path: `${window.spaBase}/appointments`,
       title: 'Appointments',
-      parent: `${window.spaBase}/home`,
+      parent: `${window.spaBase}/appointments`,
     },
     {
       path: `${window.spaBase}/appointments/calendar`,
       title: 'Calendar',
-      parent: `${window.spaBase}/appointments`,
+      parent: `${window.spaBase}`,
+    },
+    {
+      path: `${window.spaBase}/appointments/calendarlist/:forDate/:serviceName`,
+      title: ([date, serviceName]) => `Patient Lists / ${decodeURI(serviceName)}`,
+      parent: `${window.spaBase}/appointments/calendar`,
     },
   ]);
 

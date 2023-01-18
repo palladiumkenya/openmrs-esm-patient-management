@@ -38,8 +38,6 @@ const ScheduledAppointments: React.FC<ScheduledAppointmentsProps> = ({ isLoading
       <div style={{ padding: '0.425rem 0 0.25rem 1rem' }}>
         <ContentSwitcher style={{ maxWidth: '70%' }} size="sm" onChange={({ name }) => setScheduleType(name)}>
           <Switch name={'Scheduled'} text={t('scheduled', 'Scheduled')} />
-          <Switch name={'CameEarly'} text={t('CameEarly', 'Came Early')} />
-          <Switch name={'Rescheduled'} text={t('Rescheduled', 'Rescheduled')} />
           <Switch name={'Honoured'} text={t('honored', 'Honored')} />
           <Switch name={'Pending'} text={isDateInPast ? t('notArrived', 'Not arrived') : t('missed', 'Missed')} />
         </ContentSwitcher>
@@ -63,7 +61,7 @@ const ScheduledAppointments: React.FC<ScheduledAppointmentsProps> = ({ isLoading
           <AppointmentsBaseTable
             appointments={rowData}
             isLoading={isLoading}
-            tableHeading={t('honoured', 'Honoured')}
+            tableHeading={t('honored', 'Honored')}
             visits={visits}
           />
         )}
