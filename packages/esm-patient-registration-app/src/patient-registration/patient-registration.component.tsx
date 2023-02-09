@@ -19,7 +19,7 @@ import { PatientRegistrationContext } from './patient-registration-context';
 import { type SavePatientForm, SavePatientTransactionManager } from './form-manager';
 import { DummyDataInput } from './input/dummy-data/dummy-data-input.component';
 import { cancelRegistration, filterOutUndefinedPatientIdentifiers, scrollIntoView } from './patient-registration-utils';
-import { useInitialAddressFieldValues, useInitialFormValues, usePatientUuidMap } from './patient-registration-hooks';
+import { useInitialAddressFieldValues, useInitialFormValues, usePatientUuidMap,usePatientObs } from './patient-registration-hooks';
 import { ResourcesContext } from '../offline.resources';
 import { builtInSections, type RegistrationConfig, type SectionDefinition } from '../config-schema';
 import { SectionWrapper } from './section/section-wrapper.component';
@@ -54,6 +54,9 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
   const savePatientTransactionManager = useRef(new SavePatientTransactionManager());
   const fieldDefinition = config?.fieldDefinitions?.filter((def) => def.type === 'address');
   const validationSchema = getValidationSchema(config);
+  const [enableClientRegistry, setEnableClientRegistry] = useState(
+    inEditMode ? initialFormValues.identifiers['nationalUniquePatientIdentifier']?.identifierValue : false,
+  );
 
   useEffect(() => {
     exportedInitialFormValuesForTesting = initialFormValues;
@@ -157,7 +160,7 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
 
   return (
     <Formik
-      enableReinitialize={true}
+      enableReinitialize
       initialValues={initialFormValues}
       validationSchema={validationSchema}
       onSubmit={onFormSubmit}>
@@ -185,8 +188,9 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
                   renderIcon={ShareKnowledge}
                   disabled={!currentSession || !identifierTypes}
                   onClick={() => {
+                    setEnableClientRegistry(true);
                     props.isValid
-                      ? handleSavePatientToClientRegistry(props.values, props.setValues)
+                      ? handleSavePatientToClientRegistry(props.values, props.setValues, inEditMode)
                       : props.validateForm().then((errors) => displayErrors(errors));
                   }}
                   className={styles.submitButton}>
