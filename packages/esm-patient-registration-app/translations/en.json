@@ -136,6 +136,8 @@
   "updatePatientSuccessSnackbarSubtitle": "The patient's information has been successfully updated",
   "updatePatientSuccessSnackbarTitle": "Patient Details Updated",
   "yearsEstimateRequired": "Estimated years required",
+  "updationSuccessToastDescription": "The patient's information has been successfully updated",
+  "useValues": "Use values",
   "validate": "Validate",
   "years": "Years",
   "yes": "Yes"
