@@ -187,6 +187,9 @@ export interface FormValues {
   relationships: Array<RelationshipValue>;
   telephoneNumber: string;
   yearsEstimated: number;
+  observation?: ObsResponse;
+  concepts?: Array<ConceptAnswers>;
+  token?: string;
 }
 
 export interface PatientUuidMapType {
@@ -317,5 +320,7 @@ export interface RestAddressTemplate {
   description: string;
   property: string;
   display: string;
-  value: string;
+  value: string;}
+export interface ObsResponse {
+  results: Array<{ obs: Array<{ uuid: string; display: string; value: OpenmrsResource; concept: OpenmrsResource }> }>;
 }

@@ -62,6 +62,9 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
   const savePatientTransactionManager = useRef(new SavePatientTransactionManager());
   const fieldDefinition = config?.fieldDefinitions?.filter((def) => def.type === 'address');
   const validationSchema = getValidationSchema(config);
+  const [enableClientRegistry, setEnableClientRegistry] = useState(
+    inEditMode ? initialFormValues.identifiers['nationalUniquePatientIdentifier']?.identifierValue : false,
+  );
 
   useEffect(() => {
     if (initialMPIFormValues) {
@@ -172,7 +175,7 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
 
   return (
     <Formik
-      enableReinitialize={true}
+      enableReinitialize
       initialValues={initialFormValues}
       validationSchema={validationSchema}
       onSubmit={onFormSubmit}>
@@ -200,8 +203,9 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
                   renderIcon={ShareKnowledge}
                   disabled={!currentSession || !identifierTypes}
                   onClick={() => {
+                    setEnableClientRegistry(true);
                     props.isValid
-                      ? handleSavePatientToClientRegistry(props.values, props.setValues)
+                      ? handleSavePatientToClientRegistry(props.values, props.setValues, inEditMode)
                       : props.validateForm().then((errors) => displayErrors(errors));
                   }}
                   className={styles.submitButton}>
