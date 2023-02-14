@@ -37,6 +37,7 @@ const AppointmentsMetrics: React.FC = () => {
           headerLabel={t('scheduledAppointments', 'Scheduled appointments')}
           view="patients"
           count={{ pendingAppointments, arrivedAppointments }}
+          appointmentDate={startDate}
         />
         <MetricsCard
           label={

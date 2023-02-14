@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tile } from '@carbon/react';
 import { ArrowRight } from '@carbon/react/icons';
 import styles from './metrics-card.scss';
 import { ConfigurableLink } from '@openmrs/esm-framework';
 import isEmpty from 'lodash-es/isEmpty';
-import { useAppointmentDate } from '../helpers';
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 dayjs.extend(isSameOrBefore);
@@ -17,12 +16,20 @@ interface MetricsCardProps {
   children?: React.ReactNode;
   view: string;
   count?: { pendingAppointments: Array<any>; arrivedAppointments: Array<any> };
+  appointmentDate?: string;
 }
 
-const MetricsCard: React.FC<MetricsCardProps> = ({ label, value, headerLabel, children, view, count }) => {
+const MetricsCard: React.FC<MetricsCardProps> = ({
+  label,
+  value,
+  headerLabel,
+  children,
+  view,
+  count,
+  appointmentDate,
+}) => {
   const { t } = useTranslation();
-  const appointmentDate = useAppointmentDate();
-  const isDateInPast = !dayjs(appointmentDate).isBefore(dayjs(), 'date');
+  const isDateInPast = useMemo(() => !dayjs(appointmentDate).isBefore(dayjs(), 'date'), [appointmentDate]);
 
   const metricsLink = {
     patients: 'appointments-list/scheduled',
