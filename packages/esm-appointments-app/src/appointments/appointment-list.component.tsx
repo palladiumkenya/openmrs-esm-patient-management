@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import UnScheduledAppointments from '../appointments-tabs/unscheduled-appointments.component';
 import { useAppointments } from '../appointments-tabs/appointments-table.resource';
 import { useVisits } from '../hooks/useVisits';
+import { DownloadAppointmentAsExcel } from '../helpers/excel';
 
 const AppointmentList: React.FC<{ appointmentServiceType: string }> = ({ appointmentServiceType }) => {
   const { t } = useTranslation();
@@ -19,32 +20,12 @@ const AppointmentList: React.FC<{ appointmentServiceType: string }> = ({ appoint
   const [selectedTab, setSelectedTab] = useState(0);
   const { isLoading, visits } = useVisits();
 
-  const appointmentDownloadInfo = () => {
-    const downloadInfo: any = appointments
-      ?.map((appointment) => ({
-        patientName: appointment.name,
-        phoneNumber: appointment.phoneNumber ?? '--',
-      }))
-      .map(function (appointment) {
-        return JSON.stringify(Object.values(appointment));
-      })
-      .join('\n')
-      .replace(/(^\[)|(\]$)/gm, '');
-    return new Blob([downloadInfo], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    });
-  };
   return (
     <div className={styles.appointmentList}>
       <div className={styles.downloadButton}>
         {appointments.length > 0 && (
-          <Button renderIcon={Download} kind="ghost">
-            <a
-              className={styles.downloadLink}
-              download={`Patient appointments list - ${dayjs().format('DD-MMMM-YYYY')}.xls`}
-              href={window.URL.createObjectURL(appointmentDownloadInfo())}>
-              {t('downloadAppointmentList', 'Download appointment list')}
-            </a>
+          <Button renderIcon={Download} kind="ghost" onClick={() => DownloadAppointmentAsExcel(appointments)}>
+            {t('downloadAppointmentList', 'Download appointment list')}
           </Button>
         )}
       </div>

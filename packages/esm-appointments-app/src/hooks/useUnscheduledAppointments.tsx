@@ -2,7 +2,7 @@ import { openmrsFetch } from '@openmrs/esm-framework';
 import useSWR from 'swr';
 import { useAppointmentDate } from '../helpers';
 
-interface UnScheduleAppointmentResponse {
+export interface UnScheduleAppointmentResponse {
   age: number;
   dob: number;
   gender: string;

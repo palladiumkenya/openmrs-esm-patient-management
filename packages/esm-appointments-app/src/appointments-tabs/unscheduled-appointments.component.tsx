@@ -22,6 +22,7 @@ import { ConfigurableLink, usePagination } from '@openmrs/esm-framework';
 import { EmptyState } from '../empty-state/empty-state.component';
 import isEmpty from 'lodash-es/isEmpty';
 import { useUnScheduleAppointments } from '../hooks/useUnscheduledAppointments';
+import { DownloadUnscheduleAppointments } from '../helpers/excel';
 
 const UnScheduledAppointments: React.FC = () => {
   const { t } = useTranslation();
@@ -82,7 +83,11 @@ const UnScheduledAppointments: React.FC = () => {
             <TableToolbar>
               <TableToolbarContent>
                 <TableToolbarSearch style={{ backgroundColor: '#f4f4f4' }} tabIndex={0} onChange={onInputChange} />
-                <Button size="lg" kind="ghost" renderIcon={Download}>
+                <Button
+                  size="lg"
+                  kind="ghost"
+                  renderIcon={Download}
+                  onClick={() => DownloadUnscheduleAppointments(unScheduledAppointments)}>
                   Download
                 </Button>
               </TableToolbarContent>
