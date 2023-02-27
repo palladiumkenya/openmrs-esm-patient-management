@@ -97,6 +97,11 @@
   }
 }
 
+.serviceArea:hover {
+  opacity: 0.8;
+  border: 1px solid grey;
+}
+
 .currentData {
   margin: 5px;
   width: 100%;

@@ -12,11 +12,10 @@ import UnScheduledAppointments from '../appointments-tabs/unscheduled-appointmen
 import { useAppointments } from '../appointments-tabs/appointments-table.resource';
 import { useVisits } from '../hooks/useVisits';
 
-const AppointmentList: React.FC = () => {
+const AppointmentList: React.FC<{ appointmentServiceType: string }> = ({ appointmentServiceType }) => {
   const { t } = useTranslation();
   const startDate = useAppointmentDate();
   const { appointments } = useAppointments();
-  const isToday = dayjs(new Date(startDate)).isSame(new Date(), 'date');
   const [selectedTab, setSelectedTab] = useState(0);
   const { isLoading, visits } = useVisits();
 
@@ -68,7 +67,11 @@ const AppointmentList: React.FC = () => {
         </TabList>
         <TabPanels>
           <TabPanel style={{ padding: 0 }}>
-            <ScheduledAppointments visits={visits} isLoading={isLoading} />
+            <ScheduledAppointments
+              visits={visits}
+              isLoading={isLoading}
+              appointmentServiceType={appointmentServiceType}
+            />
           </TabPanel>
           <TabPanel style={{ padding: 0 }}>
             <UnScheduledAppointments />

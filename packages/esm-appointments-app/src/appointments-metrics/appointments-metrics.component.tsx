@@ -9,15 +9,22 @@ import styles from './appointments-metrics.scss';
 import { useAppointmentDate } from '../helpers';
 import useAppointmentList from '../dashboard-patient-list/useAppointmentList';
 
-const AppointmentsMetrics: React.FC = () => {
+const AppointmentsMetrics: React.FC<{ serviceUuid: string }> = ({ serviceUuid }) => {
   const { t } = useTranslation();
   const { highestServiceLoad, isLoading, error } = useClinicalMetrics();
   const { totalProviders, isLoading: loading } = useAllAppointmentsByDate();
-  const { totalScheduledAppointments } = useScheduledAppointment();
+  const { totalScheduledAppointments } = useScheduledAppointment(serviceUuid);
   const startDate = useAppointmentDate();
   const formattedStartDate = formatDate(parseDate(startDate), { mode: 'standard', time: false });
   const { appointmentList: arrivedAppointments } = useAppointmentList('Honoured');
   const { appointmentList: pendingAppointments } = useAppointmentList('Pending');
+  const filteredArrivedAppointment = serviceUuid
+    ? arrivedAppointments.filter((arrivedAppt) => arrivedAppt.serviceTypeUuid === serviceUuid)
+    : arrivedAppointments;
+
+  const filteredPendingAppointment = serviceUuid
+    ? pendingAppointments.filter((arrivedAppt) => arrivedAppt.serviceTypeUuid === serviceUuid)
+    : pendingAppointments;
 
   if (isLoading || loading) {
     return <InlineLoading role="progressbar" description={t('loading', 'Loading...')} />;
@@ -36,7 +43,7 @@ const AppointmentsMetrics: React.FC = () => {
           value={totalScheduledAppointments}
           headerLabel={t('scheduledAppointments', 'Scheduled appointments')}
           view="patients"
-          count={{ pendingAppointments, arrivedAppointments }}
+          count={{ pendingAppointments: filteredPendingAppointment, arrivedAppointments: filteredArrivedAppointment }}
           appointmentDate={startDate}
         />
         <MetricsCard

@@ -15,68 +15,62 @@ import {
   TableToolbarSearch,
   Pagination,
   DataTableSkeleton,
+  Button,
 } from '@carbon/react';
-import { useAppointments } from './appointments-table.resource';
-import { ConfigurableLink, formatDatetime, usePagination } from '@openmrs/esm-framework';
+import { Download } from '@carbon/react/icons';
+import { ConfigurableLink, usePagination } from '@openmrs/esm-framework';
 import { EmptyState } from '../empty-state/empty-state.component';
 import isEmpty from 'lodash-es/isEmpty';
+import { useUnScheduleAppointments } from '../hooks/useUnscheduledAppointments';
 
 const UnScheduledAppointments: React.FC = () => {
   const { t } = useTranslation();
-  const { isLoading: isVisitLoading, visits } = useVisits();
-  const { appointments, isLoading } = useAppointments();
-  const patientUuids = appointments?.map(({ patientUuid }) => patientUuid);
-  const filteredAppointment = useMemo(
-    () => (!isVisitLoading ? visits?.filter((visit) => !patientUuids.includes(visit.patient.uuid)) : []),
-    [isVisitLoading, patientUuids, visits],
-  );
+  const { data: unScheduledAppointments, isLoading, error } = useUnScheduleAppointments();
   const headerData = [
     {
-      header: 'Name',
+      header: 'Patient Name',
       key: 'name',
     },
     {
-      header: 'Start date & time',
-      key: 'startDateTime',
+      header: 'Identifier',
+      key: 'identifier',
     },
     {
-      header: 'Visit Type',
-      key: 'visitType',
+      header: 'Gender',
+      key: 'gender',
     },
     {
-      header: 'Location',
-      key: 'location',
+      header: 'Phone Number',
+      key: 'phoneNumber',
     },
   ];
 
-  const { results, currentPage, goTo } = usePagination(filteredAppointment, 10);
+  const { results, currentPage, goTo } = usePagination(unScheduledAppointments, 10);
 
   const rowData = results?.map((visit) => ({
     id: `${visit.uuid}`,
     name: (
-      <ConfigurableLink
-        style={{ textDecoration: 'none' }}
-        to={`\${openmrsSpaBase}/patient/${visit.patient.uuid}/chart`}>
-        {visit.patient['person'].display}
+      <ConfigurableLink style={{ textDecoration: 'none' }} to={`\${openmrsSpaBase}/patient/${visit.uuid}/chart`}>
+        {visit.name}
       </ConfigurableLink>
     ),
-    startDateTime: formatDatetime(new Date(visit.startDatetime), { mode: 'wide' }),
-    visitType: visit.visitType.display,
-    location: visit.location.display,
+    identifier: visit.identifier,
+    gender: visit.gender === 'F' ? 'Female' : 'Male',
+    phoneNumber: visit.phoneNumber === '' ? '--' : visit.phoneNumber,
   }));
 
   const pageSizes = useMemo(() => {
-    const numberOfPages = Math.ceil(filteredAppointment.length / 10);
+    const numberOfPages = Math.ceil(unScheduledAppointments.length / 10);
     return [...Array(numberOfPages).keys()].map((x) => {
       return (x + 1) * 10;
     });
-  }, [filteredAppointment]);
+  }, [unScheduledAppointments]);
 
-  if (isLoading && isVisitLoading) {
+  if (isLoading) {
     return <DataTableSkeleton />;
   }
 
-  if (isEmpty(filteredAppointment)) {
+  if (isEmpty(unScheduledAppointments)) {
     return <EmptyState headerTitle="UnScheduled Appointments" displayText="UnScheduled Appointments" />;
   }
 
@@ -88,6 +82,9 @@ const UnScheduledAppointments: React.FC = () => {
             <TableToolbar>
               <TableToolbarContent>
                 <TableToolbarSearch style={{ backgroundColor: '#f4f4f4' }} tabIndex={0} onChange={onInputChange} />
+                <Button size="lg" kind="ghost" renderIcon={Download}>
+                  Download
+                </Button>
               </TableToolbarContent>
             </TableToolbar>
             <Table {...getTableProps()}>
@@ -120,7 +117,7 @@ const UnScheduledAppointments: React.FC = () => {
         pageSize={10}
         onChange={({ page }) => goTo(page)}
         pageSizes={pageSizes.length > 0 ? pageSizes : [10]}
-        totalItems={appointments.length ?? 0}
+        totalItems={unScheduledAppointments.length ?? 0}
       />
     </div>
   );

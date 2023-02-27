@@ -2,13 +2,15 @@ import React from 'react';
 import AppointmentList from './appointments/appointment-list.component';
 import ClinicMetrics from './appointments-metrics/appointments-metrics.component';
 
-interface ClinicalAppointmentsProps {}
+interface ClinicalAppointmentsProps {
+  appointmentServiceType: string;
+}
 
-const ClinicalAppointments: React.FC<ClinicalAppointmentsProps> = () => {
+const ClinicalAppointments: React.FC<ClinicalAppointmentsProps> = ({ appointmentServiceType }) => {
   return (
     <div>
-      <ClinicMetrics />
-      <AppointmentList />
+      <ClinicMetrics serviceUuid={appointmentServiceType} />
+      <AppointmentList appointmentServiceType={appointmentServiceType} />
     </div>
   );
 };

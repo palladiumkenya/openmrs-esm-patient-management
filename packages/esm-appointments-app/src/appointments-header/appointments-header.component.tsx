@@ -4,18 +4,19 @@ import { Calendar, Location } from '@carbon/react/icons';
 import { formatDate, navigate, useSession } from '@openmrs/esm-framework';
 import AppointmentsIllustration from './appointments-illustration.component';
 import styles from './appointments-header.scss';
-import { DatePicker, DatePickerInput } from '@carbon/react';
+import { DatePicker, DatePickerInput, Dropdown, Layer } from '@carbon/react';
 import dayjs from 'dayjs';
 import { changeStartDate } from '../helpers';
 import { spaBasePath } from '../constants';
+import { useAppointmentServices } from '../hooks/useAppointmentService';
 
-const AppointmentsHeader: React.FC<{ title: string }> = ({ title }) => {
+const AppointmentsHeader: React.FC<{ title: string; onChange?: Function }> = ({ title, onChange }) => {
   const { t } = useTranslation();
   const session = useSession();
   const datePickerRef = useRef(null);
   const [appointmentDate, setDateTime] = useState(new Date());
   const location = session?.sessionLocation?.display;
-
+  const { serviceTypes } = useAppointmentServices();
   return (
     <div className={styles.header}>
       <div
@@ -48,6 +49,22 @@ const AppointmentsHeader: React.FC<{ title: string }> = ({ title }) => {
               value={dayjs(appointmentDate).format('DD MMM YYYY')}
             />
           </DatePicker>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '0.25rem' }}>
+          <Layer>
+            <Dropdown
+              ariaLabel="Dropdown"
+              id="carbon-dropdown-example"
+              items={[{ name: 'All', uuid: '' }, ...serviceTypes]}
+              itemToString={(item) => (item ? item.name : '')}
+              label="Select service type"
+              titleText="View"
+              type="inline"
+              size="sm"
+              direction="left"
+              onChange={({ selectedItem }) => onChange(selectedItem?.uuid)}
+            />
+          </Layer>
         </div>
       </div>
     </div>

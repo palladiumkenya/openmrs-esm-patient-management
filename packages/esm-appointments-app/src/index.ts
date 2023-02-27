@@ -1,7 +1,7 @@
 import { defineConfigSchema, getAsyncLifecycle, getSyncLifecycle, registerBreadcrumbs } from '@openmrs/esm-framework';
 import { configSchema } from './config-schema';
 import { createDashboardLink } from './createDashboardLink';
-import { clinicalAppointmentsDashboardMeta } from './dashboard.meta';
+import { AppointmentCalendarDashboardMeta, clinicalAppointmentsDashboardMeta } from './dashboard.meta';
 
 declare var __VERSION__: string;
 // __VERSION__ is replaced by Webpack with the version from package.json
@@ -75,6 +75,14 @@ function setupOpenMRS() {
         slot: 'appointments-dashboard-slot',
         load: getSyncLifecycle(createDashboardLink(clinicalAppointmentsDashboardMeta), options),
         meta: clinicalAppointmentsDashboardMeta,
+        online: true,
+        offline: true,
+      },
+      {
+        name: 'appointments-calendar-db-link',
+        slot: 'appointments-dashboard-slot',
+        load: getSyncLifecycle(createDashboardLink(AppointmentCalendarDashboardMeta), options),
+        meta: AppointmentCalendarDashboardMeta,
         online: true,
         offline: true,
       },

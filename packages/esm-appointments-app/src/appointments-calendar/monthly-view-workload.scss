@@ -108,6 +108,11 @@
   }
 }
 
+.serviceArea:hover {
+  opacity: 0.8;
+  border: 1px solid grey;
+}
+
 .smallDesktop {
   height: 100px;
 }
