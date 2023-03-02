@@ -38,6 +38,8 @@ import utc from 'dayjs/plugin/utc';
 import AppointmentButton from './appointments-button.component';
 import { useServiceQueues } from '../hooks/useServiceQueus';
 import { DownloadAppointmentAsExcel } from '../helpers/excel';
+import FormEntry from '../form-entry/form-entry.component';
+import { useAppointmentDate } from '../helpers';
 dayjs.extend(utc);
 dayjs.extend(isToday);
 
@@ -58,6 +60,8 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
 }) => {
   const { t } = useTranslation();
   const [pageSize, setPageSize] = useState(10);
+  const appointmentDate = useAppointmentDate();
+  const isDateInPast = !dayjs(appointmentDate).isBefore(dayjs(), 'date');
   const { results, goTo, currentPage } = usePagination(appointments, pageSize);
 
   const launchCreateAppointmentForm = (patientUuid) => {
@@ -67,7 +71,8 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
       <AppointmentForm patientUuid={patientUuid} context="creating" />,
     );
   };
-
+  const renderFollowupForm =
+    tableHeading === 'Missed' || (tableHeading === 'Not arrived' && new Date().getHours() > 12);
   const { isLoading: isLoadingQueueEntries, queueEntries } = useServiceQueues();
   const headerData = [
     {
@@ -87,6 +92,7 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
       key: 'actions',
     },
   ];
+
   const patientQueueEntry = (patientUuid: string) => {
     const queryEntries = queueEntries.find((entry) => entry.queueEntry.patient.uuid === patientUuid);
     return ` ${queryEntries?.queueEntry?.status?.display ?? ''} ${queryEntries?.queueEntry?.queue?.display ?? ''}`;
@@ -131,6 +137,16 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
               }
             />
           </OverflowMenu>
+        )}
+        {renderFollowupForm && (
+          <Button
+            size="sm"
+            kind="tertiary"
+            onClick={() =>
+              launchOverlay('CCC Defaulter tracing form', <FormEntry patientUuid={appointment.patientUuid} />)
+            }>
+            Follow up form
+          </Button>
         )}
       </div>
     ),
