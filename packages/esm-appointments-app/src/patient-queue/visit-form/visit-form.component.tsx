@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import dayjs from 'dayjs';
 import { first } from 'rxjs/operators';
 import {
@@ -32,15 +32,14 @@ import {
   showNotification,
   showToast,
   usePatient,
+  useConfig,
 } from '@openmrs/esm-framework';
 import styles from './visit-form.scss';
 import BaseVisitType from './base-visit-type.component';
 import { saveQueueEntry } from './queue.resource';
 import { useSWRConfig } from 'swr';
-import isNull from 'lodash-es/isNull';
 import { amPm, convertTime12to24, useAppointmentDate } from '../../helpers';
 import { closeOverlay } from '../../hooks/useOverlay';
-import { usePriority, useQueues, useStatus } from './useVisit';
 import { MappedAppointment } from '../../types';
 import { changeAppointmentStatus } from '../../change-appointment-status/appointment-status.resource';
 
@@ -64,13 +63,13 @@ const VisitForm: React.FC<VisitFormProps> = ({ patientUuid, appointment }) => {
   const [visitType, setVisitType] = useState<string | null>(null);
   const state = useMemo(() => ({ patientUuid }), [patientUuid]);
   const allVisitTypes = useVisitTypes();
-  const [priority, setPriority] = useState('');
-  const { priorities } = usePriority();
-  const { statuses } = useStatus();
-  const { queues } = useQueues(selectedLocation);
   const { mutate } = useSWRConfig();
-  const [service, setSelectedService] = useState('');
   const { isLoading, patient } = usePatient(patientUuid);
+  const config = useConfig();
+
+  useEffect(() => {
+    setVisitType(allVisitTypes?.length === 1 ? allVisitTypes[0].uuid : null);
+  }, [allVisitTypes]);
 
   const handleSubmit = useCallback(
     (event) => {
@@ -102,65 +101,53 @@ const VisitForm: React.FC<VisitFormProps> = ({ patientUuid, appointment }) => {
         .subscribe(
           (response) => {
             if (response.status === 201) {
-              if (isNull(service)) {
-                const [uuid] = queues;
-                setSelectedService(uuid);
-              }
-              const status = statuses.find((data) => data.display.toLowerCase() === 'waiting')?.uuid;
-              const defaultPriority = priorities.find((data) => data.display.toLowerCase() === 'not urgent').uuid;
+              // retrieve values from queue extension
 
-              const queuePayload = {
-                visit: {
-                  uuid: response.data.uuid,
-                },
-                queueEntry: {
-                  status: {
-                    uuid: status,
-                  },
-                  priority: {
-                    uuid: priority ? priority : defaultPriority,
-                  },
-                  queue: {
-                    uuid: service,
-                  },
-                  patient: {
-                    uuid: patientUuid,
-                  },
-                  startedAt: toDateObjectStrict(toOmrsIsoString(new Date())),
-                },
-              };
+              const queueLocation = event?.target['queueLocation']?.value;
+              const serviceUuid = event?.target['service']?.value;
+              const priority = event?.target['priority']?.value;
+              const status = event?.target['status']?.value;
+              const sortWeight = event?.target['sortWeight']?.value;
 
-              saveQueueEntry(queuePayload, abortController)
-                .pipe(first())
-                .subscribe(
-                  async (response) => {
-                    if (response.status === 201) {
-                      showToast({
-                        kind: 'success',
-                        title: t('startVisit', 'Start a visit'),
-                        description: t(
-                          'startVisitQueueSuccessfully',
-                          'Patient has been added to active visits list and queue.',
-                          `${hours} : ${minutes}`,
-                        ),
-                      });
-                      await changeAppointmentStatus('CheckedIn', appointment.id, new AbortController());
-                      mutate(`/ws/rest/v1/appointment/appointmentStatus?forDate=${startDate}&status=Scheduled`);
-                      mutate(`/ws/rest/v1/appointment/appointmentStatus?forDate=${startDate}&status=CheckedIn`);
-                      mutate(`/ws/rest/v1/appointment/all?forDate=${startDate}`);
-                      mutate(`/ws/rest/v1/visit-queue-entry?v=full`);
-                      closeOverlay();
-                    }
-                  },
-                  (error) => {
-                    showNotification({
-                      title: t('queueEntryError', 'Error adding patient to the queue'),
-                      kind: 'error',
-                      critical: true,
-                      description: error?.message,
+              saveQueueEntry(
+                response.data.uuid,
+                serviceUuid,
+                patientUuid,
+                priority,
+                status,
+                sortWeight,
+                new AbortController(),
+                queueLocation,
+                config.visitQueueNumberAttributeUuid,
+              ).then(
+                ({ status }) => {
+                  if (status === 201) {
+                    showToast({
+                      kind: 'success',
+                      title: t('startVisit', 'Start a visit'),
+                      description: t(
+                        'startVisitQueueSuccessfully',
+                        'Patient has been added to active visits list and queue.',
+                        `${hours} : ${minutes}`,
+                      ),
                     });
-                  },
-                );
+                    changeAppointmentStatus('CheckedIn', appointment.id, new AbortController());
+                    mutate(`/ws/rest/v1/appointment/appointmentStatus?forDate=${startDate}&status=Scheduled`);
+                    mutate(`/ws/rest/v1/appointment/appointmentStatus?forDate=${startDate}&status=CheckedIn`);
+                    mutate(`/ws/rest/v1/appointment/all?forDate=${startDate}`);
+                    mutate(`/ws/rest/v1/visit-queue-entry?v=full`);
+                    closeOverlay();
+                  }
+                },
+                (error) => {
+                  showNotification({
+                    title: t('queueEntryError', 'Error adding patient to the queue'),
+                    kind: 'error',
+                    critical: true,
+                    description: error?.message,
+                  });
+                },
+              );
             }
           },
           (error) => {
@@ -173,24 +160,11 @@ const VisitForm: React.FC<VisitFormProps> = ({ patientUuid, appointment }) => {
           },
         );
     },
-    [
-      visitType,
-      visitTime,
-      timeFormat,
-      patientUuid,
-      visitDate,
-      selectedLocation,
-      service,
-      statuses,
-      priority,
-      queues,
-      priorities,
-      t,
-    ],
+    [visitType, visitTime, timeFormat, patientUuid, visitDate, selectedLocation, t],
   );
 
   return (
-    <Form className={styles.form}>
+    <Form className={styles.form} onSubmit={handleSubmit}>
       <div>
         {isTablet ? (
           <Row className={styles.headerGridRow}>
@@ -347,53 +321,14 @@ const VisitForm: React.FC<VisitFormProps> = ({ patientUuid, appointment }) => {
               />
             </section>
           )}
-
-          <section className={styles.section}>
-            <div className={styles.sectionTitle}>{t('queue', 'Queue')}</div>
-            <Select
-              labelText={t('selectQueue', 'Select queue')}
-              id="queue"
-              invalidText="Required"
-              value={service}
-              onChange={(event) => setSelectedService(event.target.value)}>
-              {!service ? <SelectItem text={t('chooseQueue', 'Select a queue')} value="" /> : null}
-              {queues?.length > 0 &&
-                queues.map((service) => (
-                  <SelectItem key={service.uuid} text={service.display} value={service.uuid}>
-                    {service.display}
-                  </SelectItem>
-                ))}
-            </Select>
-          </section>
-
-          <section className={styles.section}>
-            <div className={styles.sectionTitle}>{t('priority', 'Priority')}</div>
-            <ContentSwitcher
-              size="sm"
-              selectionMode="manual"
-              onChange={(event) => {
-                setPriority(event.name as any);
-              }}>
-              {priorities?.length > 0 ? (
-                priorities.map(({ uuid, display }) => {
-                  return <Switch name={uuid} text={display} value={uuid} index={uuid} />;
-                })
-              ) : (
-                <Switch
-                  name={t('noPriorityFound', 'No priority found')}
-                  text={t('noPriorityFound', 'No priority found')}
-                  value={null}
-                />
-              )}
-            </ContentSwitcher>
-          </section>
         </Stack>
+        <ExtensionSlot className={styles.queueContaainer} extensionSlotName="add-queue-entry-slot" />
       </div>
       <ButtonSet className={isTablet ? styles.tablet : styles.desktop}>
         <Button className={styles.button} kind="secondary" onClick={closeOverlay}>
           {t('discard', 'Discard')}
         </Button>
-        <Button onClick={handleSubmit} className={styles.button} disabled={isSubmitting} kind="primary" type="submit">
+        <Button className={styles.button} disabled={isSubmitting} kind="primary" type="submit">
           {t('addPatientToQueue', 'Add patient to queue')}
         </Button>
       </ButtonSet>
