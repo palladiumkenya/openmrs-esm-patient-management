@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { attach, detach, ExtensionSlot, isDesktop, useExtensionStore, useLayoutType } from '@openmrs/esm-framework';
 import { useNavGroups } from '../side-menu/nav-group/nav-group';
@@ -15,6 +15,7 @@ const AppointmentsDashboard: React.FC = () => {
   const { view } = useParams();
   const { navGroups } = useNavGroups();
   const extensionStore = useExtensionStore();
+  const [appointmentServiceType, setAppointmentServiceType] = useState<string>('');
   const layout = useLayoutType();
   const ungroupedDashboards =
     extensionStore.slots['appointments-dashboard-slot']?.assignedExtensions
@@ -38,11 +39,12 @@ const AppointmentsDashboard: React.FC = () => {
       {isDesktop(layout) && <ExtensionSlot extensionSlotName="appointments-sidebar-slot" key={layout} />}
       {currentDashboard && (
         <div className={`cds--grid ${styles.dashboardContent}`}>
-          <PatientQueueHeader title={currentDashboard.title} />
+          <PatientQueueHeader title={currentDashboard.title} onChange={setAppointmentServiceType} />
           <DashboardView
             dashboardSlot={currentDashboard.slot}
             title={currentDashboard.title}
             key={currentDashboard.slot}
+            appointmentServiceType={appointmentServiceType}
           />
         </div>
       )}
@@ -50,12 +52,16 @@ const AppointmentsDashboard: React.FC = () => {
   );
 };
 
-const DashboardView: React.FC<{ dashboardSlot: string; title: string }> = ({ dashboardSlot, title }) => {
+const DashboardView: React.FC<{ dashboardSlot: string; title: string; appointmentServiceType: string }> = ({
+  dashboardSlot,
+  title,
+  appointmentServiceType,
+}) => {
   return (
     <ExtensionSlot
       style={{ backgroundColor: 'white' }}
       extensionSlotName={dashboardSlot}
-      state={{ dashboardTitle: title }}
+      state={{ dashboardTitle: title, appointmentServiceType }}
     />
   );
 };

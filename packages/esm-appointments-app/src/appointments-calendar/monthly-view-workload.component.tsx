@@ -30,7 +30,7 @@ const MonthlyWorkload: React.FC<MonthlyCellProps> = ({ type, dateTime, currentDa
         <p>
           {isSameMonth(dateTime, currentDate) && (
             <>
-              {!currentData?.service && dateTime.format('D')} {''}
+              <b>{dateTime.format('D')}</b>
               {currentData?.service && (
                 <div className={styles.currentData}>
                   {currentData?.service.map(({ serviceName, count }) => (

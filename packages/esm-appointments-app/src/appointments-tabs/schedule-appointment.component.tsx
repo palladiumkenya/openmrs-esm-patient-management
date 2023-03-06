@@ -14,25 +14,33 @@ dayjs.extend(isSameOrBefore);
 interface ScheduledAppointmentsProps {
   visits: Array<any>;
   isLoading: boolean;
+  appointmentServiceType?: string;
 }
 type scheduleType = 'CameEarly' | 'Rescheduled' | 'Honoured' | 'Pending' | 'Scheduled';
 
-const ScheduledAppointments: React.FC<ScheduledAppointmentsProps> = ({ isLoading: isLoadingVisit, visits }) => {
+const ScheduledAppointments: React.FC<ScheduledAppointmentsProps> = ({
+  isLoading: isLoadingVisit,
+  visits,
+  appointmentServiceType,
+}) => {
   const { t } = useTranslation();
-  const session = useSession();
   const appointmentDate = useAppointmentDate();
-
   const { appointments, isLoading } = useAppointments();
   const [scheduleType, setScheduleType] = useState<scheduleType>('Scheduled');
   const { appointmentList } = useAppointmentList(scheduleType);
   const isDateInPast = !dayjs(appointmentDate).isBefore(dayjs(), 'date');
-
+  const filteredAppointments = appointmentServiceType
+    ? appointments.filter(({ serviceUuid }) => serviceUuid === appointmentServiceType)
+    : appointments;
   const rowData = appointmentList.map((appointment, index) => {
     return {
       id: `${index}`,
       ...appointment,
     };
   });
+  const filteredRow = appointmentServiceType
+    ? rowData.filter((app) => app.serviceTypeUuid === appointmentServiceType)
+    : rowData;
   return (
     <div>
       <div style={{ padding: '0.425rem 0 0.25rem 1rem' }}>
@@ -43,7 +51,7 @@ const ScheduledAppointments: React.FC<ScheduledAppointmentsProps> = ({ isLoading
         </ContentSwitcher>
         {scheduleType === 'Scheduled' && (
           <AppointmentsBaseTable
-            appointments={appointments}
+            appointments={filteredAppointments}
             isLoading={isLoading}
             tableHeading={t('scheduled', 'Scheduled')}
             visits={visits}
@@ -51,7 +59,7 @@ const ScheduledAppointments: React.FC<ScheduledAppointmentsProps> = ({ isLoading
         )}
         {scheduleType === 'CameEarly' && (
           <AppointmentsBaseTable
-            appointments={rowData}
+            appointments={filteredRow}
             isLoading={isLoading}
             tableHeading={t('cameEarly', 'Came Early')}
             visits={visits}
@@ -59,7 +67,7 @@ const ScheduledAppointments: React.FC<ScheduledAppointmentsProps> = ({ isLoading
         )}
         {scheduleType === 'Honoured' && (
           <AppointmentsBaseTable
-            appointments={rowData}
+            appointments={filteredRow}
             isLoading={isLoading}
             tableHeading={t('honored', 'Honored')}
             visits={visits}
@@ -67,7 +75,7 @@ const ScheduledAppointments: React.FC<ScheduledAppointmentsProps> = ({ isLoading
         )}
         {scheduleType === 'Rescheduled' && (
           <AppointmentsBaseTable
-            appointments={rowData}
+            appointments={filteredRow}
             isLoading={isLoading}
             tableHeading={t('rescheduled', 'Rescheduled')}
             visits={visits}
@@ -75,7 +83,7 @@ const ScheduledAppointments: React.FC<ScheduledAppointmentsProps> = ({ isLoading
         )}
         {scheduleType === 'Pending' && (
           <AppointmentsBaseTable
-            appointments={rowData}
+            appointments={filteredRow}
             isLoading={isLoading}
             tableHeading={isDateInPast ? t('notArrived', 'Not arrived') : t('missed', 'Missed')}
             visits={visits}

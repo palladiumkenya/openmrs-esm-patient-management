@@ -54,15 +54,17 @@ export function useAllAppointmentsByDate() {
   };
 }
 
-export const useScheduledAppointment = () => {
+export const useScheduledAppointment = (serviceUuid: string) => {
   const startDate = useAppointmentDate();
   const url = `/ws/rest/v1/appointment/all?forDate=${startDate}`;
 
   const { data, error, mutate } = useSWR<{
-    data: Array<AppointmentSummary>;
+    data: Array<any>;
   }>(url, openmrsFetch);
 
-  const totalScheduledAppointments = data?.data.length ?? 0;
+  const totalScheduledAppointments = serviceUuid
+    ? data?.data?.filter((appt) => appt?.service?.uuid === serviceUuid)?.length ?? 0
+    : data?.data?.length ?? 0;
 
   return {
     isLoading: !data && !error,

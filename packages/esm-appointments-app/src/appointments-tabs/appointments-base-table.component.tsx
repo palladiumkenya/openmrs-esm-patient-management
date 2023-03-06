@@ -1,7 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '../empty-state/empty-state.component';
-
 import { closeOverlay, launchOverlay } from '../hooks/useOverlay';
 import PatientSearch from '../patient-search/patient-search.component';
 import { MappedAppointment } from '../types';
@@ -28,12 +27,11 @@ import {
 } from '@carbon/react';
 import { ExtensionSlot, ConfigurableLink, formatDatetime, usePagination } from '@openmrs/esm-framework';
 import startCase from 'lodash-es/startCase';
-import { Add } from '@carbon/react/icons';
+import { Add, Download, Hospital } from '@carbon/react/icons';
 import AppointmentDetails from '../appointment-details/appointment-details.component';
 import styles from './appointments-base-table.scss';
 import { handleFilter } from './utils';
 import AppointmentForm from '../appointment-forms/appointments-form.component';
-import CancelAppointment from '../appointment-forms/cancel-appointment.component';
 import dayjs from 'dayjs';
 import isToday from 'dayjs/plugin/isToday';
 import utc from 'dayjs/plugin/utc';
@@ -58,7 +56,8 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
   visits,
 }) => {
   const { t } = useTranslation();
-  const { results, goTo, currentPage } = usePagination(appointments, 10);
+  const [pageSize, setPageSize] = useState(10);
+  const { results, goTo, currentPage } = usePagination(appointments, pageSize);
 
   const launchCreateAppointmentForm = (patientUuid) => {
     closeOverlay();
@@ -167,13 +166,14 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
             overlayHeader: t('createNewAppointment', 'Create new appointment'),
             buttonProps: {
               kind: 'secondary',
-              renderIcon: (props) => <Add size={20} {...props} />,
+              renderIcon: (props) => <Hospital size={16} {...props} />,
+              size: 'sm',
             },
           }}
         />
       </div>
       <DataTable rows={rowData} headers={headerData} isSortable filterRows={handleFilter}>
-        {({ rows, headers, getHeaderProps, getRowProps, getTableProps, getBatchActionProps, onInputChange }) => (
+        {({ rows, headers, getHeaderProps, getRowProps, getTableProps, onInputChange }) => (
           <TableContainer
             title={`${startCase(tableHeading)} ${t('appointments', 'appointment')} ${appointments.length ?? 0}`}>
             <TableToolbar>
@@ -184,6 +184,9 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
                   tabIndex={0}
                   onChange={onInputChange}
                 />
+                <Button size="lg" kind="ghost" renderIcon={Download}>
+                  Download
+                </Button>
               </TableToolbarContent>
             </TableToolbar>
             <Table {...getTableProps()} size="sm" useZebraStyles>
@@ -222,7 +225,10 @@ const AppointmentsBaseTable: React.FC<AppointmentsBaseTableProps> = ({
         page={currentPage}
         pageNumberText="Page Number"
         pageSize={10}
-        onChange={({ page }) => goTo(page)}
+        onChange={({ page, pageSize }) => {
+          goTo(page);
+          setPageSize(pageSize);
+        }}
         pageSizes={pageSizes}
         totalItems={appointments.length ?? 0}
       />
