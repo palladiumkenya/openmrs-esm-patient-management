@@ -79,10 +79,14 @@
   "male": "Male",
   "middleNameLabelText": "Middle Name",
 <<<<<<< HEAD
+<<<<<<< HEAD
   "negativeMonths": "Estimated months cannot be negative",
   "negativeYears": "Estimated years cannot be negative",
 =======
   "months": "Months",
+=======
+  "nascopNumber": "Nascop facility no",
+>>>>>>> 57bc0958 ((feat) add nascop facility number to use value modal)
   "nationalId": "National ID",
   "negativeMonths": "Negative months",
   "negativeYears": "Negative years",
@@ -105,8 +109,6 @@
   "registerPatient": "Register patient",
 =======
   "patientNotFound": "The patient records could not be found in Client registry, do you want to continue to create and post patient to registry",
-  "phoneEmailLabelText": "Phone, Email, etc.",
-  "phoneNumberInputLabelText": "Phone number",
   "postalCode": "Postcode",
   "postToRegistry": "Post to registry",
   "registerPatient": "Register Patient",
@@ -126,6 +128,7 @@
   "resetIdentifierTooltip": "Reset",
   "restoreRelationshipActionButton": "Undo",
   "searchAddress": "Search address",
+  "selectAnOption": "Select an option",
   "selectCountry": "Select country",
   "selectIdentifierType": "Select identifier type",
   "sexFieldLabelText": "Sex",
@@ -147,7 +150,6 @@
   "updationSuccessToastTitle": "Patient Details Updated",
   "useValues": "Use values",
   "validate": "Validate",
-  "years": "Years",
   "yearsEstimateRequired": "Years estimate required",
 >>>>>>> 38b24a39 ((test): Add test for `patient-list-detail.component` (#790))
   "yes": "Yes"

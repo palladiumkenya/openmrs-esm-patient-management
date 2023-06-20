@@ -54,7 +54,22 @@
     },
     {
       "name": "delete-identifier-confirmation-modal",
-      "component": "deleteIdentifierConfirmationModal"
+      "component": "deleteIdentifierConfirmationModal",
+      "online": true,
+      "offline": true
+    },
+    {
+      "component": "emptyClientRegistryModal",
+      "name": "empty-client-registry-modal",
+      "online": true,
+      "offline": true
+    },
+    {
+      "component": "confirmClientRegistryModal",
+      "name": "confirm-client-registry-modal",
+      "online": true,
+      "offline": true
     }
   ]
 }
+    
