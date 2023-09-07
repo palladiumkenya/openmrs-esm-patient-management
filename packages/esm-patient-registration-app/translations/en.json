@@ -9,7 +9,13 @@
   "birthdayRequired": "Birthday is required",
   "birthFieldLabelText": "Birth",
   "cancel": "Cancel",
+<<<<<<< HEAD
   "causeOfDeathInputLabel": "Cause of death",
+=======
+  "causeOfDeathInputLabel": "Cause of Death",
+  "clientRegistryEmpty": "Create & Post Patient",
+  "clientVerificationWithClientRegistry": "Client verification with client registry",
+>>>>>>> 7bf4b6b1 (KHP3-4128 Add patient facility of origin on client registry modal (#808))
   "closeOverlay": "Close overlay",
   "codedPersonAttributeAnswerSetEmpty": "The coded person attribute field '{{codedPersonAttributeFieldId}}' has been defined with an answer concept set UUID '{{answerConceptSetUuid}}' that does not have any concept answers.",
   "codedPersonAttributeAnswerSetInvalid": "The coded person attribute field '{{codedPersonAttributeFieldId}}' has been defined with an invalid answer concept set UUID '{{answerConceptSetUuid}}'.",
@@ -20,6 +26,7 @@
   "confirmDiscardChangesTitle": "Are you sure you want to discard these changes?",
   "confirmIdentifierDeletionText": "Are you sure you want to remove this identifier?",
   "contactSection": "Contact Details",
+<<<<<<< HEAD
   "createNewPatient": "Create new patient",
   "dateOfBirthLabelText": "Date of birth",
   "deathCauseRequired": "Cause of death is required",
@@ -32,9 +39,9 @@
   "cityVillage": "City",
   "clientRegistryEmpty": "Create & Post Patient",
   "clientVerificationWithClientRegistry": "Client verification with client registry",
+=======
+>>>>>>> 7bf4b6b1 (KHP3-4128 Add patient facility of origin on client registry modal (#808))
   "continue": "Continue",
-  "country": "Country",
-  "countyDistrict": "District",
   "createNew": "Create New",
   "dateOfBirth": "Date of birth",
   "deathSection": "Death Info",
@@ -90,6 +97,8 @@
   "numberInNameDubious": "Number in name is dubious",
   "obsFieldUnknownDatatype": "Concept for obs field '{{fieldDefinitionId}}' has unknown datatype '{{datatypeName}}'",
   "optional": "optional",
+  "originFacilityCode": "Origin facility code",
+  "originFacilityName": "Origin facility name",
   "other": "Other",
   "patient": "Patient",
   "patientDetailsFound": "Patient information found in the registry, do you want to use the information to continue with registration?",
@@ -99,7 +108,7 @@
   "refreshOrContactAdmin": "Try refreshing the page or contact your system administrator",
   "registerPatient": "Register patient",
   "patientNotFound": "The patient records could not be found in Client registry, do you want to continue to create and post patient to registry",
-  "postalCode": "Postcode",
+  "patientRegistrationBreadcrumb": "Patient Registration",
   "postToRegistry": "Post to registry",
   "registerPatientSuccessSnackbarSubtitle": "The patient can now be found by searching for them using their name or ID number",
   "registerPatientSuccessSnackbarTitle": "New Patient Created",
@@ -116,6 +125,7 @@
   "resetIdentifierTooltip": "Reset",
   "restoreRelationshipActionButton": "Undo",
   "searchAddress": "Search address",
+  "searchIdentifierPlaceholder": "Search identifier",
   "selectAnOption": "Select an option",
   "selectCountry": "Select country",
   "selectIdentifierType": "Select identifier type",
