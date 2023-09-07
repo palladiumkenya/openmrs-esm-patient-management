@@ -22,6 +22,8 @@ interface ConfirmPromptProps {
 
 const ConfirmPrompt: React.FC<ConfirmPromptProps> = ({ close, onConfirm, patient }) => {
   const { t } = useTranslation();
+  const { facilityName, isLoading } = useFacilityName(patient?.originFacilityKmflCode);
+
   return (
     <>
       <div className="cds--modal-header">
@@ -56,6 +58,15 @@ const ConfirmPrompt: React.FC<ConfirmPromptProps> = ({ close, onConfirm, patient
             <PatientInfo label={t('gender', 'Gender')} value={capitalize(patient?.gender)} />
             <PatientInfo label={t('nupi', 'NUPI')} value={patient?.clientNumber} />
             <PatientInfo label={t('shaNumber', 'SHA Number')} value={'--'} />
+            <PatientInfo label={t('nascopNumber', 'Nascop facility no')} value={capitalize(patient?.nascopCCCNumber)} />
+            <PatientInfo
+              label={t('originFacilityCode', 'Origin facility code')}
+              value={patient?.originFacilityKmflCode}
+            />
+            <PatientInfo
+              label={t('originFacilityName', 'Origin facility name')}
+              value={isLoading ? '--' : facilityName?.name}
+            />
           </div>
         </div>
       </div>
