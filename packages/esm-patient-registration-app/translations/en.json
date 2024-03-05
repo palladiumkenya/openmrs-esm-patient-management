@@ -9,13 +9,7 @@
   "birthdayRequired": "Birthday is required",
   "birthFieldLabelText": "Birth",
   "cancel": "Cancel",
-<<<<<<< HEAD
   "causeOfDeathInputLabel": "Cause of death",
-=======
-  "causeOfDeathInputLabel": "Cause of Death",
-  "clientRegistryEmpty": "Create & Post Patient",
-  "clientVerificationWithClientRegistry": "Client verification with client registry",
->>>>>>> 7bf4b6b1 (KHP3-4128 Add patient facility of origin on client registry modal (#808))
   "closeOverlay": "Close overlay",
   "codedPersonAttributeAnswerSetEmpty": "The coded person attribute field '{{codedPersonAttributeFieldId}}' has been defined with an answer concept set UUID '{{answerConceptSetUuid}}' that does not have any concept answers.",
   "codedPersonAttributeAnswerSetInvalid": "The coded person attribute field '{{codedPersonAttributeFieldId}}' has been defined with an invalid answer concept set UUID '{{answerConceptSetUuid}}'.",
@@ -26,7 +20,6 @@
   "confirmDiscardChangesTitle": "Are you sure you want to discard these changes?",
   "confirmIdentifierDeletionText": "Are you sure you want to remove this identifier?",
   "contactSection": "Contact Details",
-<<<<<<< HEAD
   "createNewPatient": "Create new patient",
   "dateOfBirthLabelText": "Date of birth",
   "deathCauseRequired": "Cause of death is required",
@@ -39,8 +32,6 @@
   "cityVillage": "City",
   "clientRegistryEmpty": "Create & Post Patient",
   "clientVerificationWithClientRegistry": "Client verification with client registry",
-=======
->>>>>>> 7bf4b6b1 (KHP3-4128 Add patient facility of origin on client registry modal (#808))
   "continue": "Continue",
   "createNew": "Create New",
   "dateOfBirth": "Date of birth",
@@ -95,10 +86,9 @@
   "nonCodedCauseOfDeathRequired": "Cause of death is required",
   "nonsensicalYears": "Estimated years cannot be more than 140",
   "numberInNameDubious": "Number in name is dubious",
+  "NUPI": "",
   "obsFieldUnknownDatatype": "Concept for obs field '{{fieldDefinitionId}}' has unknown datatype '{{datatypeName}}'",
   "optional": "optional",
-  "originFacilityCode": "Origin facility code",
-  "originFacilityName": "Origin facility name",
   "other": "Other",
   "patient": "Patient",
   "patientDetailsFound": "Patient information found in the registry, do you want to use the information to continue with registration?",
@@ -125,11 +115,13 @@
   "resetIdentifierTooltip": "Reset",
   "restoreRelationshipActionButton": "Undo",
   "searchAddress": "Search address",
+  "searchClientRegistry": "Search client registry",
   "searchIdentifierPlaceholder": "Search identifier",
   "selectAnOption": "Select an option",
   "selectCountry": "Select country",
   "selectIdentifierType": "Select identifier type",
   "sexFieldLabelText": "Sex",
+  "SHA Number": "",
   "source": "Source",
   "submitting": "Submitting",
   "timeFormat": "Time Format",
