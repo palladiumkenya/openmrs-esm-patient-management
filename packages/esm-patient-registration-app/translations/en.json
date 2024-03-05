@@ -71,6 +71,7 @@
   "middleNameLabelText": "Middle Name",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   "negativeMonths": "Estimated months cannot be negative",
   "negativeYears": "Estimated years cannot be negative",
 =======
@@ -78,6 +79,8 @@
 =======
   "nascopNumber": "Nascop facility no",
 >>>>>>> 57bc0958 ((feat) add nascop facility number to use value modal)
+=======
+>>>>>>> b364e3f0 ((enhc) further enhancements to patient registration)
   "nationalId": "National ID",
   "negativeMonths": "Negative months",
   "negativeYears": "Negative years",
@@ -87,10 +90,9 @@
   "nonCodedCauseOfDeathRequired": "Cause of death is required",
   "nonsensicalYears": "Estimated years cannot be more than 140",
   "numberInNameDubious": "Number in name is dubious",
+  "NUPI": "",
   "obsFieldUnknownDatatype": "Concept for obs field '{{fieldDefinitionId}}' has unknown datatype '{{datatypeName}}'",
   "optional": "optional",
-  "originFacilityCode": "Origin facility code",
-  "originFacilityName": "Origin facility name",
   "other": "Other",
   "patient": "Patient",
   "patientDetailsFound": "Patient information found in the registry, do you want to use the information to continue with registration?",
@@ -121,11 +123,13 @@
   "resetIdentifierTooltip": "Reset",
   "restoreRelationshipActionButton": "Undo",
   "searchAddress": "Search address",
+  "searchClientRegistry": "Search client registry",
   "searchIdentifierPlaceholder": "Search identifier",
   "selectAnOption": "Select an option",
   "selectCountry": "Select country",
   "selectIdentifierType": "Select identifier type",
   "sexFieldLabelText": "Sex",
+  "SHA Number": "",
   "source": "Source",
   "submitting": "Submitting",
   "timeFormat": "Time Format",
