@@ -8,7 +8,7 @@ import AppointmentsTable from './appointments-table.component';
 import { configSchema } from '../../config-schema';
 import { getByTextWithMarkup } from '../../../../../tools/test-utils';
 
-defineConfigSchema('@openmrs/esm-appointments-app', configSchema);
+defineConfigSchema('@kenyaemr/esm-appointments-app', configSchema);
 
 const appointments: Array<Appointment> = [
   {

@@ -7,9 +7,11 @@ import {
 } from '@openmrs/esm-framework';
 import { configSchema } from './config-schema';
 import rootComponent from './root.component';
-import { moduleName } from './constant';
+import admissionRequestsWorkspace from "./ward-workspace/admission-requests-workspace.component"
 
 export const importTranslation = require.context('../translations', false, /.json$/, 'lazy');
+
+const moduleName = '@kenyaemr/esm-ward-app';
 
 const options = {
   featureName: 'ward',
