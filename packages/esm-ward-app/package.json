@@ -1,8 +1,8 @@
 {
-  "name": "@openmrs/esm-ward-app",
-  "version": "8.0.2",
+  "name": "@kenyaemr/esm-ward-app",
+  "version": "7.0.2",
   "description": "Ward and bed management module for O3",
-  "browser": "dist/openmrs-esm-ward-app.js",
+  "browser": "dist/kenyaemr-esm-ward-app.js",
   "main": "src/index.ts",
   "source": true,
   "license": "MPL-2.0",
@@ -49,5 +49,6 @@
   },
   "devDependencies": {
     "webpack": "^5.74.0"
-  }
+  },
+  "stableVersion": "7.0.1"
 }

@@ -14,7 +14,7 @@ import VisitFormQueueFields from './create-queue-entry/queue-fields/visit-form-q
 
 export const importTranslation = require.context('../translations', false, /.json$/, 'lazy');
 
-const moduleName = '@openmrs/esm-service-queues-app';
+const moduleName = '@kenyaemr/esm-service-queues-app';
 
 const options = {
   featureName: 'outpatient',
