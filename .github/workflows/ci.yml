@@ -2,9 +2,9 @@ name: OpenMRS CI
 
 on:
   push:
-    branches: [main]
+    branches: [kenyaemr-releases]
   pull_request:
-    branches: [main]
+    branches: [kenyaemr-releases]
   release:
     types:
       - created
@@ -86,7 +86,7 @@ jobs:
         run: yarn install --immutable
 
       - name: Version
-        run: yarn workspaces foreach --worktree --topological --exclude @openmrs/esm-patient-management version "$(node -e "console.log(require('semver').inc(require('./package.json').version, 'patch'))")-pre.${{ github.run_number }}"
+        run: npx lerna version "$(node -e "console.log(require('./lerna.json').version)")-pre.${{ github.run_number }}" --no-git-tag-version --yes
 
       - name: Build
         run: yarn turbo run build --concurrency=5

@@ -4,7 +4,7 @@ import rootComponent from './root.component';
 
 export const importTranslation = require.context('../translations', false, /.json$/, 'lazy');
 
-const moduleName = '@openmrs/esm-ward-app';
+const moduleName = '@kenyaemr/esm-ward-app';
 
 const options = {
   featureName: 'ward',
