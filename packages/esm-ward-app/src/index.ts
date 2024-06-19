@@ -12,6 +12,7 @@ import rootComponent from './root.component';
 
 export const importTranslation = require.context('../translations', false, /.json$/, 'lazy');
 
+
 const options = {
   featureName: 'ward',
   moduleName,
