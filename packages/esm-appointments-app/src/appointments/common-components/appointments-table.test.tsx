@@ -1,7 +1,7 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
-import { getDefaultsFromConfigSchema, useConfig } from '@openmrs/esm-framework';
+import { getDefaultsFromConfigSchema, useConfig, defineConfigSchema } from '@openmrs/esm-framework';
 import { type ConfigObject, configSchema } from '../../config-schema';
 import type { Appointment, AppointmentKind, AppointmentStatus } from '../../types';
 import { downloadAppointmentsAsExcel } from '../../helpers/excel';
@@ -15,6 +15,7 @@ const defaultProps = {
   tableHeading: 'scheduled',
   visits: [],
 };
+defineConfigSchema('@kenyaemr/esm-appointments-app', configSchema);
 
 const mockAppointments = [
   {
