@@ -1,8 +1,8 @@
 {
-  "name": "@openmrs/esm-patient-search-app",
-  "version": "8.1.1",
-  "description": "Patient search microfrontend for O3",
-  "browser": "dist/openmrs-esm-patient-search-app.js",
+  "name": "@kenyaemr/esm-patient-search-app",
+  "version": "7.0.2",
+  "description": "Patient search microfrontend for the OpenMRS SPA",
+  "browser": "dist/kenyaemr-esm-patient-search-app.js",
   "main": "src/index.ts",
   "source": true,
   "license": "MPL-2.0",
@@ -49,5 +49,6 @@
   },
   "devDependencies": {
     "webpack": "^5.74.0"
-  }
+  },
+  "stableVersion": "7.0.1"
 }
