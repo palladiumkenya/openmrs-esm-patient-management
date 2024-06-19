@@ -13,7 +13,7 @@ import patientSearchIconComponent from './patient-search-icon';
 import patientSearchButtonComponent from './patient-search-button/patient-search-button.component';
 import patientSearchBarComponent from './compact-patient-search-extension';
 
-const moduleName = '@openmrs/esm-patient-search-app';
+const moduleName = '@kenyaemr/esm-patient-search-app';
 
 const options = {
   featureName: 'patient-search',

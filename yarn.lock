@@ -2490,6 +2490,60 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kenyaemr/esm-active-visits-app@workspace:packages/esm-active-visits-app":
+  version: 0.0.0-use.local
+  resolution: "@kenyaemr/esm-active-visits-app@workspace:packages/esm-active-visits-app"
+  dependencies:
+    "@carbon/react": "npm:~1.37.0"
+    lodash-es: "npm:^4.17.15"
+    webpack: "npm:^5.74.0"
+  peerDependencies:
+    "@openmrs/esm-framework": 5.x
+    dayjs: 1.x
+    react: ^18.1.0
+    react-dom: ^18.1.0
+    react-i18next: 11.x
+    swr: 2.x
+  languageName: unknown
+  linkType: soft
+
+"@kenyaemr/esm-appointments-app@workspace:packages/esm-appointments-app":
+  version: 0.0.0-use.local
+  resolution: "@kenyaemr/esm-appointments-app@workspace:packages/esm-appointments-app"
+  dependencies:
+    "@carbon/react": "npm:~1.37.0"
+    formik: "npm:^2.2.9"
+    lodash-es: "npm:^4.17.15"
+    webpack: "npm:^5.74.0"
+    yup: "npm:^0.32.11"
+  peerDependencies:
+    "@openmrs/esm-framework": 5.x
+    "@openmrs/esm-patient-common-lib": 7.x
+    react: 18.x
+    react-i18next: 11.x
+    react-router-dom: 6.x
+    swr: 2.x
+  languageName: unknown
+  linkType: soft
+
+"@kenyaemr/esm-patient-list-management-app@workspace:packages/esm-patient-list-management-app":
+  version: 0.0.0-use.local
+  resolution: "@kenyaemr/esm-patient-list-management-app@workspace:packages/esm-patient-list-management-app"
+  dependencies:
+    "@carbon/react": "npm:~1.37.0"
+    dexie: "npm:^3.0.3"
+    fuzzy: "npm:^0.1.3"
+    lodash-es: "npm:^4.17.15"
+    webpack: "npm:^5.74.0"
+  peerDependencies:
+    "@openmrs/esm-framework": 5.x
+    react: 18.x
+    react-i18next: 11.x
+    react-router-dom: 6.x
+    swr: 2.x
+  languageName: unknown
+  linkType: soft
+
 "@kenyaemr/esm-patient-registration-app@workspace:packages/esm-patient-registration-app":
   version: 0.0.0-use.local
   resolution: "@kenyaemr/esm-patient-registration-app@workspace:packages/esm-patient-registration-app"
@@ -2504,6 +2558,54 @@ __metadata:
     "@openmrs/esm-framework": 5.x
     dayjs: 1.x
     react: 18.x
+    react-i18next: 11.x
+    react-router-dom: 6.x
+    swr: 2.x
+  languageName: unknown
+  linkType: soft
+
+"@kenyaemr/esm-patient-search-app@workspace:packages/esm-patient-search-app":
+  version: 0.0.0-use.local
+  resolution: "@kenyaemr/esm-patient-search-app@workspace:packages/esm-patient-search-app"
+  dependencies:
+    "@carbon/react": "npm:~1.37.0"
+    lodash-es: "npm:^4.17.15"
+    webpack: "npm:^5.74.0"
+  peerDependencies:
+    "@openmrs/esm-framework": 5.x
+    react: ^18.1.0
+    react-i18next: 11.x
+    react-router-dom: 6.x
+    swr: 2.x
+  languageName: unknown
+  linkType: soft
+
+"@kenyaemr/esm-service-queues-app@workspace:packages/esm-service-queues-app":
+  version: 0.0.0-use.local
+  resolution: "@kenyaemr/esm-service-queues-app@workspace:packages/esm-service-queues-app"
+  dependencies:
+    "@carbon/react": "npm:~1.37.0"
+    lodash-es: "npm:^4.17.15"
+    webpack: "npm:^5.74.0"
+  peerDependencies:
+    "@openmrs/esm-framework": 5.x
+    react: ^18.1.0
+    react-i18next: 11.x
+    react-router-dom: 6.x
+    swr: 2.x
+  languageName: unknown
+  linkType: soft
+
+"@kenyaemr/esm-ward-app@workspace:packages/esm-ward-app":
+  version: 0.0.0-use.local
+  resolution: "@kenyaemr/esm-ward-app@workspace:packages/esm-ward-app"
+  dependencies:
+    "@carbon/react": "npm:~1.37.0"
+    lodash-es: "npm:^4.17.15"
+    webpack: "npm:^5.74.0"
+  peerDependencies:
+    "@openmrs/esm-framework": 5.x
+    react: ^18.1.0
     react-i18next: 11.x
     react-router-dom: 6.x
     swr: 2.x
@@ -2641,23 +2743,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openmrs/esm-active-visits-app@workspace:packages/esm-active-visits-app":
-  version: 0.0.0-use.local
-  resolution: "@openmrs/esm-active-visits-app@workspace:packages/esm-active-visits-app"
-  dependencies:
-    "@carbon/react": "npm:~1.37.0"
-    lodash-es: "npm:^4.17.15"
-    webpack: "npm:^5.74.0"
-  peerDependencies:
-    "@openmrs/esm-framework": 5.x
-    dayjs: 1.x
-    react: ^18.1.0
-    react-dom: ^18.1.0
-    react-i18next: 11.x
-    swr: 2.x
-  languageName: unknown
-  linkType: soft
-
 "@openmrs/esm-api@npm:5.6.1-pre.1966":
   version: 5.6.1-pre.1966
   resolution: "@openmrs/esm-api@npm:5.6.1-pre.1966"
@@ -2707,25 +2792,6 @@ __metadata:
   checksum: 10/0966ee0a1b1a2b84d98f2dd2c1a73651736e92af9c7c6bbb842989c3e3f903f63e307556c1e919edc6205fcd8d016d8ff8be51c23d49e29d9980a2ab605103f8
   languageName: node
   linkType: hard
-
-"@openmrs/esm-appointments-app@workspace:packages/esm-appointments-app":
-  version: 0.0.0-use.local
-  resolution: "@openmrs/esm-appointments-app@workspace:packages/esm-appointments-app"
-  dependencies:
-    "@carbon/react": "npm:~1.37.0"
-    formik: "npm:^2.2.9"
-    lodash-es: "npm:^4.17.15"
-    webpack: "npm:^5.74.0"
-    yup: "npm:^0.32.11"
-  peerDependencies:
-    "@openmrs/esm-framework": 5.x
-    "@openmrs/esm-patient-common-lib": 7.x
-    react: 18.x
-    react-i18next: 11.x
-    react-router-dom: 6.x
-    swr: 2.x
-  languageName: unknown
-  linkType: soft
 
 "@openmrs/esm-config@npm:5.6.1-pre.1966":
   version: 5.6.1-pre.1966
@@ -2888,24 +2954,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openmrs/esm-patient-list-management-app@workspace:packages/esm-patient-list-management-app":
-  version: 0.0.0-use.local
-  resolution: "@openmrs/esm-patient-list-management-app@workspace:packages/esm-patient-list-management-app"
-  dependencies:
-    "@carbon/react": "npm:~1.37.0"
-    dexie: "npm:^3.0.3"
-    fuzzy: "npm:^0.1.3"
-    lodash-es: "npm:^4.17.15"
-    webpack: "npm:^5.74.0"
-  peerDependencies:
-    "@openmrs/esm-framework": 5.x
-    react: 18.x
-    react-i18next: 11.x
-    react-router-dom: 6.x
-    swr: 2.x
-  languageName: unknown
-  linkType: soft
-
 "@openmrs/esm-patient-management@workspace:.":
   version: 0.0.0-use.local
   resolution: "@openmrs/esm-patient-management@workspace:."
@@ -2972,22 +3020,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openmrs/esm-patient-search-app@workspace:packages/esm-patient-search-app":
-  version: 0.0.0-use.local
-  resolution: "@openmrs/esm-patient-search-app@workspace:packages/esm-patient-search-app"
-  dependencies:
-    "@carbon/react": "npm:~1.37.0"
-    lodash-es: "npm:^4.17.15"
-    webpack: "npm:^5.74.0"
-  peerDependencies:
-    "@openmrs/esm-framework": 5.x
-    react: ^18.1.0
-    react-i18next: 11.x
-    react-router-dom: 6.x
-    swr: 2.x
-  languageName: unknown
-  linkType: soft
-
 "@openmrs/esm-react-utils@npm:5.6.1-pre.1966":
   version: 5.6.1-pre.1966
   resolution: "@openmrs/esm-react-utils@npm:5.6.1-pre.1966"
@@ -3024,22 +3056,6 @@ __metadata:
   checksum: 10/6f4d5445f37befb78a69f63ac92b35f2a8bf34f6cfb5f1a7b63063aaabe9770eefb4938957eba039692c6a2ca49e136d64f12a5268002f87d158a2e248eaa521
   languageName: node
   linkType: hard
-
-"@openmrs/esm-service-queues-app@workspace:packages/esm-service-queues-app":
-  version: 0.0.0-use.local
-  resolution: "@openmrs/esm-service-queues-app@workspace:packages/esm-service-queues-app"
-  dependencies:
-    "@carbon/react": "npm:~1.37.0"
-    lodash-es: "npm:^4.17.15"
-    webpack: "npm:^5.74.0"
-  peerDependencies:
-    "@openmrs/esm-framework": 5.x
-    react: ^18.1.0
-    react-i18next: 11.x
-    react-router-dom: 6.x
-    swr: 2.x
-  languageName: unknown
-  linkType: soft
 
 "@openmrs/esm-state@npm:5.6.1-pre.1966":
   version: 5.6.1-pre.1966
@@ -3106,22 +3122,6 @@ __metadata:
   checksum: 10/99ab688ad264b507d0189eeb93763db1de3dc2f4d7949d6a422f773f4aeac0cd0fadc7895f255675e8d2a80aa2049af7aeea6678362ee4aeedd7d7ab6e07a4f0
   languageName: node
   linkType: hard
-
-"@openmrs/esm-ward-app@workspace:packages/esm-ward-app":
-  version: 0.0.0-use.local
-  resolution: "@openmrs/esm-ward-app@workspace:packages/esm-ward-app"
-  dependencies:
-    "@carbon/react": "npm:~1.37.0"
-    lodash-es: "npm:^4.17.15"
-    webpack: "npm:^5.74.0"
-  peerDependencies:
-    "@openmrs/esm-framework": 5.x
-    react: ^18.1.0
-    react-i18next: 11.x
-    react-router-dom: 6.x
-    swr: 2.x
-  languageName: unknown
-  linkType: soft
 
 "@openmrs/webpack-config@npm:5.6.1-pre.1966":
   version: 5.6.1-pre.1966
