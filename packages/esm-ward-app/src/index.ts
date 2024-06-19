@@ -17,6 +17,7 @@ import { pendingItemsExtensionConfigSchema } from './config-schema-pending-items
 
 export const importTranslation = require.context('../translations', false, /.json$/, 'lazy');
 
+
 const options = {
   featureName: 'ward',
   moduleName,

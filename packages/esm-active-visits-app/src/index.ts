@@ -3,7 +3,7 @@ import { configSchema } from './config-schema';
 import activeVisitsComponent from './active-visits-widget/active-visits.component';
 import visitDetailComponent from './visits-summary/visit-detail.component';
 
-const moduleName = '@openmrs/esm-active-visits-app';
+const moduleName = '@kenyaemr/esm-active-visits-app';
 
 const options = {
   featureName: 'active-visits',
