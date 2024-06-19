@@ -49,5 +49,6 @@
   },
   "devDependencies": {
     "webpack": "^5.74.0"
-  }
+  },
+  "stableVersion": "7.0.1"
 }

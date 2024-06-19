@@ -10,11 +10,8 @@
   "cancel": "Cancel",
   "causeOfDeathInputLabel": "Cause of Death",
   "clientRegistryEmpty": "Create & Post Patient",
-<<<<<<< HEAD
   "clientRegistryError": "Error occurred while reaching the client registry",
   "clientRegistryErrorSubtitle": "Please proceed with registration contact system admin and  try again later",
-=======
->>>>>>> 5c9ecfbe (KHP3-4128 Add patient facility of origin on client registry modal (#808))
   "clientVerificationWithClientRegistry": "Client verification with client registry",
   "closeOverlay": "Close overlay",
   "codedPersonAttributeAnswerSetEmpty": "The coded person attribute field '{{codedPersonAttributeFieldId}}' has been defined with an answer concept set UUID '{{answerConceptSetUuid}}' that does not have any concept answers.",
@@ -25,11 +22,8 @@
   "confirmIdentifierDeletionText": "Are you sure you want to remove this identifier?",
   "contactSection": "Contact Details",
   "continue": "Continue",
-<<<<<<< HEAD
-  "createNewPatient": "Create new patient",
-=======
   "createNew": "Create New",
->>>>>>> 5c9ecfbe (KHP3-4128 Add patient facility of origin on client registry modal (#808))
+  "createNewPatient": "Create new patient",
   "dateOfBirth": "Date of birth",
   "dateOfBirthLabelText": "Date of Birth",
   "deathDateInputLabel": "Date of Death",
@@ -104,10 +98,7 @@
   "resetIdentifierTooltip": "Reset",
   "restoreRelationshipActionButton": "Undo",
   "searchAddress": "Search address",
-<<<<<<< HEAD
   "searchClientRegistry": "Search client registry",
-=======
->>>>>>> 5c9ecfbe (KHP3-4128 Add patient facility of origin on client registry modal (#808))
   "searchIdentifierPlaceholder": "Search identifier",
   "selectAnOption": "Select an option",
   "selectCountry": "Select country",
