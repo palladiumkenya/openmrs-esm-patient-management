@@ -25,7 +25,7 @@ import appointmentsFormComponent from './form/appointments-form.component';
 import patientSearch from './patient-search/patient-search.component';
 export const importTranslation = require.context('../translations', false, /.json$/, 'lazy');
 
-const moduleName = '@openmrs/esm-appointments-app';
+const moduleName = '@kenyaemr/esm-appointments-app';
 
 const options = {
   featureName: 'appointments',
