@@ -12,10 +12,15 @@ import { coloredObsTagsCardRowConfigSchema } from './config-schema-extension-col
 import { moduleName } from './constant';
 import { createDashboardLink } from './createDashboardLink.component';
 import rootComponent from './root.component';
+<<<<<<< HEAD
 import { motherChildRowConfigSchema } from './config-schema-mother-child-row';
 import { pendingItemsExtensionConfigSchema } from './config-schema-pending-items-extension';
+=======
+import admissionRequestsWorkspace from "./ward-workspace/admission-requests-workspace.component"
+>>>>>>> aa480d7c (Initial commit to fork management for kenyaemr)
 
 export const importTranslation = require.context('../translations', false, /.json$/, 'lazy');
+
 
 const options = {
   featureName: 'ward',
