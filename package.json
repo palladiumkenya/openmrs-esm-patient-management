@@ -1,10 +1,6 @@
 {
   "name": "@openmrs/esm-patient-management",
-<<<<<<< HEAD
   "version": "7.0.2",
-=======
-  "version": "7.0.1",
->>>>>>> d829f381 (Initial commit to fork management for kenyaemr)
   "private": true,
   "description": "Patient management microfrontend for the OpenMRS 3.x frontend",
   "workspaces": [
