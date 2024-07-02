@@ -19,10 +19,10 @@ import {
   useSelectedService,
 } from '../helpers/helpers';
 import { useColumns } from './cells/columns.resource';
-import { useQueueEntries } from '../hooks/useQueueEntries';
 import useQueueStatuses from '../hooks/useQueueStatuses';
 import useQueueServices from '../hooks/useQueueService';
 import ClearQueueEntries from '../clear-queue-entries-dialog/clear-queue-entries.component';
+import { useMutateQueueEntries, useQueueEntries } from '../hooks/useQueueEntries';
 import QueueTableExpandedRow from './queue-table-expanded-row.component';
 import QueueTable from './queue-table.component';
 import styles from './queue-table.scss';
@@ -155,6 +155,7 @@ function DefaultQueueTable() {
 }
 
 function QueueDropdownFilter() {
+  const mutateQueueEntries = useMutateQueueEntries();
   const { t } = useTranslation();
   const layout = useLayoutType();
   const { services } = useQueueServices();
