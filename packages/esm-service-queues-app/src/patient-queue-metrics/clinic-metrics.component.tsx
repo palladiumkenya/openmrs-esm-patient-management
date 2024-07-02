@@ -5,9 +5,9 @@ import { isDesktop, useLayoutType } from '@openmrs/esm-framework';
 import { updateSelectedService, useSelectedService, useSelectedQueueLocationUuid } from '../helpers/helpers';
 import { useActiveVisits, useAverageWaitTime } from './clinic-metrics.resource';
 import { useServiceMetricsCount } from './queue-metrics.resource';
-import { useQueueEntries } from '../hooks/useQueueEntries';
 import MetricsCard from './metrics-card.component';
 import MetricsHeader from './metrics-header.component';
+import { useMutateQueueEntries, useQueueEntries } from '../hooks/useQueueEntries';
 import useQueueServices from '../hooks/useQueueService';
 import styles from './clinic-metrics.scss';
 
@@ -19,7 +19,7 @@ export interface Service {
 function ClinicMetrics() {
   const { t } = useTranslation();
   const layout = useLayoutType();
-
+  const mutate = useMutateQueueEntries();
   const currentQueueLocation = useSelectedQueueLocationUuid();
   const { services } = useQueueServices();
   const currentService = useSelectedService();
@@ -27,8 +27,9 @@ function ClinicMetrics() {
   const [initialSelectedItem, setInitialSelectItem] = useState(() => {
     return !currentService?.serviceDisplay || !currentService?.serviceUuid;
   });
+  const service = currentService?.serviceUuid === 'undefined' ? null : currentService?.serviceUuid;
   const { totalCount } = useQueueEntries({
-    service: currentService?.serviceUuid,
+    service: service,
     location: currentQueueLocation,
     isEnded: false,
   });
@@ -37,6 +38,7 @@ function ClinicMetrics() {
 
   const handleServiceChange = ({ selectedItem }) => {
     updateSelectedService(selectedItem.uuid, selectedItem.display);
+    mutate.mutateQueueEntries();
     if (selectedItem.uuid == undefined) {
       setInitialSelectItem(true);
     } else {
