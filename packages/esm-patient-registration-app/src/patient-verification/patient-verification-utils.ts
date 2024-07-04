@@ -12,25 +12,9 @@ export function handleClientRegistryResponse(
   searchTerm: string,
   identifierType: string,
 ) {
-  // Map identifier types to form identifier types
-  const mapIdentifierType = (apiType: string) => {
-    switch (apiType) {
-      case 'national-id':
-        return 'nationalId';
-      case 'birth-certificate':
-        return 'birthCertificateNumber';
-      case 'passport':
-        return 'passportNumber';
-      default:
-        return apiType;
-    }
-  };
-
-  const formIdentifierType = mapIdentifierType(identifierType);
-
   if (clientResponse?.clientExists === false) {
     const allNupiIdentifiers = {
-      ['nationalId']: {
+      ['national-id']: {
         initialValue: '',
         identifierUuid: undefined,
         selectedSource: { uuid: '', name: '' },
@@ -41,7 +25,7 @@ export function handleClientRegistryResponse(
         identifierValue: searchTerm,
       },
 
-      ['birthCertificateNumber']: {
+      ['birth-certificate']: {
         initialValue: '',
         identifierUuid: undefined,
         selectedSource: { uuid: '', name: '' },
@@ -52,7 +36,7 @@ export function handleClientRegistryResponse(
         identifierValue: searchTerm,
       },
 
-      ['passportNumber']: {
+      ['passport']: {
         initialValue: '',
         identifierUuid: undefined,
         selectedSource: { uuid: '', name: '' },
@@ -66,7 +50,7 @@ export function handleClientRegistryResponse(
 
     // Select only the relevant identifier based on the mapped identifier type
     const nupiIdentifiers = {
-      [formIdentifierType]: allNupiIdentifiers[formIdentifierType],
+      [identifierType]: allNupiIdentifiers[identifierType],
     };
 
     const dispose = showModal('empty-client-registry-modal', {
