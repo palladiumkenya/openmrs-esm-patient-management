@@ -32,7 +32,7 @@ export function handleClientRegistryResponse(
         preferred: false,
         required: false,
         identifierTypeUuid: '68449e5a-8829-44dd-bfef-c9c8cf2cb9b2',
-        identifierName: 'Birth Certificate Number)',
+        identifierName: 'Birth Certificate Number',
         identifierValue: searchTerm,
       },
 
@@ -48,7 +48,7 @@ export function handleClientRegistryResponse(
       },
     };
 
-    // Select only the relevant identifier based on the mapped identifier type
+    // Select only the relevant identifier
     const nupiIdentifiers = {
       [identifierType]: allNupiIdentifiers[identifierType],
     };
