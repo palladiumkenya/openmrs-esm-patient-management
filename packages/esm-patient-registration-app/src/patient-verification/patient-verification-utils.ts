@@ -4,16 +4,18 @@ import { type ClientRegistryPatient, type RegistryPatient } from './verification
 import counties from './assets/counties.json';
 import { type FormValues } from '../patient-registration/patient-registration.types';
 import { capitalize } from 'lodash-es';
+import { IdentifierInput } from '../patient-registration/input/custom-input/identifier/identifier-input.component';
 
 export function handleClientRegistryResponse(
   clientResponse: ClientRegistryPatient,
   props: FormikProps<FormValues>,
   searchTerm: string,
+  identifierType: string,
 ) {
   if (clientResponse?.clientExists === false) {
-    const nupiIdentifiers = {
-      ['nationalId']: {
-        initialValue: searchTerm,
+    const allNupiIdentifiers = {
+      ['national-id']: {
+        initialValue: '',
         identifierUuid: undefined,
         selectedSource: { uuid: '', name: '' },
         preferred: false,
@@ -22,7 +24,35 @@ export function handleClientRegistryResponse(
         identifierName: 'National ID',
         identifierValue: searchTerm,
       },
+
+      ['birth-certificate']: {
+        initialValue: '',
+        identifierUuid: undefined,
+        selectedSource: { uuid: '', name: '' },
+        preferred: false,
+        required: false,
+        identifierTypeUuid: '68449e5a-8829-44dd-bfef-c9c8cf2cb9b2',
+        identifierName: 'Birth Certificate Number',
+        identifierValue: searchTerm,
+      },
+
+      ['passport']: {
+        initialValue: '',
+        identifierUuid: undefined,
+        selectedSource: { uuid: '', name: '' },
+        preferred: false,
+        required: false,
+        identifierTypeUuid: 'be9beef6-aacc-4e1f-ac4e-5babeaa1e303',
+        identifierName: 'Passport Number',
+        identifierValue: searchTerm,
+      },
     };
+
+    // Select only the relevant identifier
+    const nupiIdentifiers = {
+      [identifierType]: allNupiIdentifiers[identifierType],
+    };
+
     const dispose = showModal('empty-client-registry-modal', {
       onConfirm: () => {
         props.setValues({ ...props.values, identifiers: { ...props.values.identifiers, ...nupiIdentifiers } });
