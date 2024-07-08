@@ -35,7 +35,12 @@ const PatientVerification: React.FC<PatientVerificationProps> = ({ props }) => {
       );
       setIsLoadingSearch(false);
 
-      handleClientRegistryResponse(clientRegistryResponse, props, verificationCriteria.searchTerm);
+      handleClientRegistryResponse(
+        clientRegistryResponse,
+        props,
+        verificationCriteria.searchTerm,
+        verificationCriteria.identifierType,
+      );
     } catch (error) {
       showSnackbar({
         title: 'Client registry error',
