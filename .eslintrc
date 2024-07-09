@@ -2,6 +2,7 @@
   "env": {
     "node": true
   },
+  "ignorePatterns": ["*.test.tsx"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",

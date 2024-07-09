@@ -1,13 +1,13 @@
 import { getLocale } from '@openmrs/esm-framework';
 import { useMemo } from 'react';
 import { useQueues } from './useQueues';
+import uniqBy from 'lodash-es/unionBy';
 
 function useQueueServices() {
   const { queues, isLoading } = useQueues();
-
   const results = useMemo(
     () => ({
-      services: [...new Set(queues?.map((queue) => queue.service) ?? [])].sort((a, b) =>
+      services: uniqBy([...new Set(queues?.map((queue) => queue.service) ?? [])], (s) => s.uuid).sort((a, b) =>
         a.display.localeCompare(b.display, getLocale()),
       ),
       isLoadingQueueServices: isLoading,
