@@ -82,19 +82,19 @@ describe('PatientListDetailComponent', () => {
     });
   });
 
-  it('opens edit overlay when "Edit Name/ Description" is clicked', () => {
+  it('opens edit overlay when "Edit Name/ Description" is clicked', async () => {
     render(<PatientListDetailComponent />);
 
-    userEvent.click(screen.getByText('Actions'));
+    await userEvent.click(screen.getByText('Actions'));
     const editBtn = screen.getByText('Edit Name/ Description');
-    userEvent.click(editBtn);
+    await userEvent.click(editBtn);
   });
 
   it('deletes patient list and navigates on successful delete', async () => {
     render(<PatientListDetailComponent />);
 
-    await waitFor(() => {
-      userEvent.click(screen.getByText('Delete'));
+    await waitFor(async () => {
+      await userEvent.click(screen.getByText('Delete'));
     });
 
     await waitFor(() => {
