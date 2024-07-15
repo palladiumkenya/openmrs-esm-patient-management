@@ -65,14 +65,14 @@ function ClinicMetrics() {
           locationUuid={currentQueueLocation}>
           <Dropdown
             id="inline"
+            type="inline"
+            label={currentService?.serviceDisplay ?? t('all', 'All')}
             items={[{ display: `${t('all', 'All')}` }, ...(services ?? [])]}
             itemToString={(item) =>
               item ? `${item.display} ${item.location?.display ? `- ${item.location.display}` : ''}` : ''
             }
-            label=""
             onChange={handleServiceChange}
             size={isDesktop(layout) ? 'sm' : 'lg'}
-            type="inline"
           />
         </MetricsCard>
         <MetricsCard
