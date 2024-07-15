@@ -8,6 +8,8 @@ import { useServiceMetricsCount } from './queue-metrics.resource';
 import styles from './clinic-metrics.scss';
 import { useMutateQueueEntries, useQueueEntries } from '../hooks/useQueueEntries';
 import useQueueServices from '../hooks/useQueueService';
+import MetricsHeader from './metrics-header.component';
+import MetricsCard from './metrics-card.component';
 
 export interface Service {
   uuid: string;
