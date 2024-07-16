@@ -46,7 +46,7 @@ export const DobField: React.FC = () => {
 
   const onDateChange = useCallback(
     (birthdate: CalendarDate) => {
-      setFieldValue('birthdate', new Date(birthdate.year, birthdate.month, birthdate.day, 0, 0, 0, 0));
+      setFieldValue('birthdate', birthdate?.toDate(getLocalTimeZone()));
     },
     [setFieldValue],
   );
