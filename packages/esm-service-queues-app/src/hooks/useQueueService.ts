@@ -2,8 +2,8 @@ import { getLocale } from '@openmrs/esm-framework';
 import { useMemo } from 'react';
 import { useQueues } from './useQueues';
 
-function useQueueServices() {
-  const { queues, isLoading } = useQueues();
+function useQueueServices(locationUuid?: string) {
+  const { queues, isLoading } = useQueues(locationUuid);
 
   const results = useMemo(
     () => ({

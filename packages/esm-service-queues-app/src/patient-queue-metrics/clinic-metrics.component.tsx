@@ -21,7 +21,7 @@ function ClinicMetrics() {
   const layout = useLayoutType();
   const mutate = useMutateQueueEntries();
   const currentQueueLocation = useSelectedQueueLocationUuid();
-  const { services } = useQueueServices();
+  const { services } = useQueueServices(currentQueueLocation);
   const currentService = useSelectedService();
   const { serviceCount } = useServiceMetricsCount(currentService?.serviceUuid, currentQueueLocation);
   const [initialSelectedItem, setInitialSelectItem] = useState(() => {
@@ -66,6 +66,7 @@ function ClinicMetrics() {
           <Dropdown
             id="inline"
             type="inline"
+            label={currentService?.serviceDisplay ?? t('all', 'All')}
             items={[{ display: `${t('all', 'All')}` }, ...(services ?? [])]}
             itemToString={(item) =>
               item ? `${item.display} ${item.location?.display ? `- ${item.location.display}` : ''}` : ''
