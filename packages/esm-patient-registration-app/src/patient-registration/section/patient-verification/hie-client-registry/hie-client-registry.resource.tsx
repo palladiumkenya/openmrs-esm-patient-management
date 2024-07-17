@@ -1,11 +1,13 @@
 import { type OpenmrsResource, openmrsFetch, restBaseUrl, showModal, showSnackbar } from '@openmrs/esm-framework';
 import { type FormValues } from '../../../patient-registration.types';
 import useSWRImmutable from 'swr/immutable';
+import { util } from 'zod';
+import jsonStringifyReplacer = util.jsonStringifyReplacer;
 
 export type HiePayload = {
   firstName: string;
   identificationNumber: string;
-  identificationType: string;
+  identificationType: any;
 };
 
 type HieClientRegistryResponse = fhir.Patient & {
@@ -13,10 +15,26 @@ type HieClientRegistryResponse = fhir.Patient & {
   issue?: Array<{ code: string; diagnostics: string; severity: string }>;
 };
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) =>
+  openmrsFetch(url, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Basic RHJ0eXR5dDZ0eWZoNmpoZ2o4dTR5Nnk6RlRHSFQmSk5IZnRkZXJ3dGVyNGQ2MzI=',
+    },
+  }).then((res) => res.json());
 
 export const searchHieClientRegistry = (hiePayload: HiePayload, url): Promise<HieClientRegistryResponse> => {
-  return fetcher(url);
+  let id_type = hiePayload?.identificationType?.uuid;
+  let param_val = '';
+  if (id_type == 1) {
+    param_val = 'national-id';
+  } else if (id_type == 2) {
+    param_val = 'passport';
+  } else if (id_type == 3) {
+    param_val = 'birth-certificate-number';
+  }
+
+  return fetcher(url + '?' + param_val + '=' + hiePayload.identificationNumber);
 };
 
 export const useIdenfierTypes = () => {

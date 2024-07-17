@@ -56,7 +56,7 @@ const HIECOnfirmModal: React.FC<HIECOnfirmModalProps> = ({ close, onConfirm, pat
                 value={identifier.value}
               />
             ))}
-            <PatientInfo label={t('shaNumber', 'SHA Number')} value={'--'} />
+            <PatientInfo label={t('shaNumber', 'CR Number')} value={patient?.id} />
           </div>
         </div>
       </div>
