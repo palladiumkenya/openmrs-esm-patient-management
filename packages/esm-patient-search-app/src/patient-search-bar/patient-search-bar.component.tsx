@@ -6,9 +6,9 @@ import styles from './patient-search-bar.scss';
 interface PatientSearchBarProps {
   buttonProps?: Object;
   initialSearchTerm?: string;
-  onChange?: (searchTerm) => void;
+  onChange?: (searchTerm: string) => void;
   onClear: () => void;
-  onSubmit: (searchTerm) => void;
+  onSubmit: (searchTerm: string) => void;
   small?: boolean;
 }
 
@@ -27,7 +27,7 @@ const PatientSearchBar = React.forwardRef<HTMLInputElement, React.PropsWithChild
       [onChange, setSearchTerm],
     );
 
-    const handleSubmit = (evt) => {
+    const handleSubmit = (evt: React.FormEvent) => {
       evt.preventDefault();
       onSubmit(searchTerm);
     };
@@ -38,8 +38,7 @@ const PatientSearchBar = React.forwardRef<HTMLInputElement, React.PropsWithChild
           autoFocus
           className={styles.patientSearchInput}
           closeButtonLabelText={t('clearSearch', 'Clear')}
-          labelText=""
-          onChange={(event) => handleChange(event.target.value)}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event.target.value)}
           onClear={onClear}
           placeholder={t('searchForPatient', 'Search for a patient by name or identifier number')}
           size={small ? 'sm' : 'lg'}

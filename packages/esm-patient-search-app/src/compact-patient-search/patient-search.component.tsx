@@ -15,6 +15,7 @@ const PatientSearch = React.forwardRef<HTMLDivElement, PatientSearchProps>(
   ({ isLoading, data: searchResults, fetchError, loadingNewData, setPage, hasMore, totalResults }, ref) => {
     const { t } = useTranslation();
     const observer = useRef(null);
+
     const loadingIconRef = useCallback(
       (node) => {
         if (loadingNewData) {
