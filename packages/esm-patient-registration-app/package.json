@@ -1,8 +1,8 @@
 {
-  "name": "@kenyaemr/esm-patient-registration-app",
-  "version": "7.0.2",
-  "description": "Patient registration microfrontend for the OpenMRS SPA",
-  "browser": "dist/kenyaemr-esm-patient-registration-app.js",
+  "name": "@openmrs/esm-patient-registration-app",
+  "version": "7.1.0",
+  "description": "Patient registration microfrontend for O3",
+  "browser": "dist/openmrs-esm-patient-registration-app.js",
   "main": "src/index.ts",
   "source": true,
   "license": "MPL-2.0",
