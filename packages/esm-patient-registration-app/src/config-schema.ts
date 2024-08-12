@@ -128,6 +128,18 @@ export const esmPatientRegistrationSchema = {
           uuid: '2',
           display: 'Passport',
         },
+        {
+          uuid: '3',
+          display: 'Birth Certificate Number',
+        },
+        {
+          uuid: '4',
+          display: 'Alien ID Number',
+        },
+        {
+          uuid: '5',
+          display: 'Refugee ID Number',
+        },
       ],
     },
   },

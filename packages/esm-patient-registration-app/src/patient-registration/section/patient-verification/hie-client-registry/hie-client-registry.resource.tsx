@@ -32,6 +32,10 @@ export const searchHieClientRegistry = (hiePayload: HiePayload, url): Promise<Hi
     param_val = 'passport';
   } else if (id_type == 3) {
     param_val = 'birth-certificate-number';
+  } else if (id_type == 4) {
+    param_val = 'alien-id';
+  } else if (id_type == 5) {
+    param_val = 'refugee-id';
   }
 
   return fetcher(url + '?' + param_val + '=' + hiePayload.identificationNumber);
