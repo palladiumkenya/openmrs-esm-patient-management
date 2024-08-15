@@ -56,6 +56,8 @@ const ConfirmPrompt: React.FC<ConfirmPromptProps> = ({ close, onConfirm, patient
             <PatientInfo label={t('gender', 'Gender')} value={capitalize(patient?.gender)} />
             <PatientInfo label={t('nupi', 'NUPI')} value={patient?.clientNumber} />
             <PatientInfo label={t('shaNumber', 'SHA Number')} value={'--'} />
+            <PatientInfo label={t('emailAddress', 'Email Address')} value={patient?.contact?.emailAddress ?? '--'} />
+            <PatientInfo label={t('address', 'Address')} value={patient?.residence?.address ?? '--'} />
           </div>
         </div>
       </div>
