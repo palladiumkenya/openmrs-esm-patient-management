@@ -21,7 +21,7 @@ function ClinicMetrics() {
   const layout = useLayoutType();
   const mutate = useMutateQueueEntries();
   const currentQueueLocation = useSelectedQueueLocationUuid();
-  const { services } = useQueueServices(currentQueueLocation);
+  const { services } = useQueueServices();
   const currentService = useSelectedService();
   const { serviceCount } = useServiceMetricsCount(currentService?.serviceUuid, currentQueueLocation);
   const [initialSelectedItem, setInitialSelectItem] = useState(() => {
