@@ -12,7 +12,6 @@ import { coloredObsTagsCardRowConfigSchema } from './config-schema-extension-col
 import { moduleName } from './constant';
 import { createDashboardLink } from './createDashboardLink.component';
 import rootComponent from './root.component';
-import admissionRequestsWorkspace from "./ward-workspace/admission-requests-workspace.component"
 
 export const importTranslation = require.context('../translations', false, /.json$/, 'lazy');
 

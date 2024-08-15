@@ -1,6 +1,6 @@
 import { mockPatientAlice } from './patient.mock';
 import { mockLocationInpatientWard } from './locations.mock';
-import { type InpatientRequest } from '@openmrs/esm-ward-app/src/types';
+import { type InpatientRequest } from '@kenyaemr/esm-ward-app/src/types';
 import { mockPastVisit } from './visits.mock';
 import { mockAddress } from './address.mock';
 
