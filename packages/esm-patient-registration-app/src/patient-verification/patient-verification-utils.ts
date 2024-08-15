@@ -4,7 +4,6 @@ import { type ClientRegistryPatient, type RegistryPatient } from './verification
 import counties from './assets/counties.json';
 import { type FormValues } from '../patient-registration/patient-registration.types';
 import { capitalize } from 'lodash-es';
-import { IdentifierInput } from '../patient-registration/input/custom-input/identifier/identifier-input.component';
 
 export function handleClientRegistryResponse(
   clientResponse: ClientRegistryPatient,
