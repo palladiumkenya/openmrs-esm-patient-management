@@ -58,6 +58,9 @@ const PatientVerification: React.FC<PatientVerificationProps> = ({ props }) => {
       <h3 className={styles.productiveHeading02} style={{ color: '#161616' }}>
         {t('clientVerificationWithClientRegistry', 'Client verification with client registry')}
       </h3>
+      <span className={styles.label01}>
+        {t('allFieldsRequiredText', 'All fields are required unless marked optional')}
+      </span>
       <div style={{ margin: '1rem 0 1rem' }}>
         <Layer>
           {isLoading && <InlineLoading status="active" iconDescription="Loading" description="Loading data..." />}
