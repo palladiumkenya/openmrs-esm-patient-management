@@ -108,7 +108,7 @@ export function useGlobalProperties() {
   const { data, isLoading, error } = useSWRImmutable(
     `https://afyakenyaidentityapi.health.go.ke/connect/token`,
     swrFetcher,
-    { refreshInterval: 864000 },
+    { refreshInterval: 864000, errorRetryCount: 0 },
   );
   return { data: data, isLoading, error };
 }

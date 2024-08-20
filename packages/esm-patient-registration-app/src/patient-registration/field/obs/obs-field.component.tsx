@@ -33,7 +33,7 @@ export function ObsField({ fieldDefinition }: ObsFieldProps) {
     return null;
   }
 
-  switch (concept.datatype.display) {
+  switch (concept?.datatype?.display) {
     case 'Text':
       return (
         <TextObsField
