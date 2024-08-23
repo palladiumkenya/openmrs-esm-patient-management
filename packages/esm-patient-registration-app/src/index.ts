@@ -68,11 +68,11 @@ export const deleteIdentifierConfirmationModal = getAsyncLifecycle(
 );
 
 export const confirmClientRegistryModal = getAsyncLifecycle(
-  () => import('./patient-verification/verification-modal/confirm-prompt.component'),
+  () => import('./client-registry/patient-verification/verification-modal/confirm-prompt.component'),
   options,
 );
 
 export const emptyClientRegistryModal = getAsyncLifecycle(
-  () => import('./patient-verification/verification-modal/empty-prompt.component'),
+  () => import('./client-registry/patient-verification/verification-modal/empty-prompt.component'),
   options,
 );

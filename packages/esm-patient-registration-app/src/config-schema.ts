@@ -83,6 +83,9 @@ export interface RegistrationConfig {
     encounterProviderRoleUuid: string;
     registrationFormUuid: string | null;
   };
+  hieClientRegistry: {
+    identifierTypes: Array<{ identifierType: string; identifierValue: string }>;
+  };
 }
 
 export const builtInSections: Array<SectionDefinition> = [
@@ -362,6 +365,28 @@ export const esmPatientRegistrationSchema = {
       _default: null,
       _description:
         'The form UUID to associate with the registration encounter. By default no form will be associated.',
+    },
+  },
+  hieClientRegistry: {
+    identifierTypes: {
+      _type: Type.Array,
+      _elements: {
+        identifierType: {
+          _type: Type.String,
+          _description: 'The label of the identifier type',
+        },
+        identifierValue: {
+          _type: Type.String,
+          _description: 'The value of the identifier type',
+        },
+      },
+      _default: [
+        { identifierType: 'National ID', identifierValue: 'national-id' },
+        { identifierType: 'Passport Number', identifierValue: 'passport  number' },
+        { identifierType: 'Birth Certificate Number', identifierValue: 'birth-certificate-number' },
+        { identifierType: 'Alien ID Number', identifierValue: 'alien-id-number' },
+        { identifierType: 'Refugee ID Number', identifierValue: 'refugee-number' },
+      ],
     },
   },
   _validators: [

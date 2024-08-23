@@ -1,0 +1,46 @@
+@use '@carbon/type';
+@use '@carbon/layout';
+@use '@carbon/colors';
+
+.hieContainer {
+  margin-bottom: layout.$layout-01;
+}
+
+.productiveHeading02 {
+  @include type.type-style('heading-compact-02');
+}
+
+.label01 {
+  @include type.type-style('label-01');
+  margin-top: layout.$spacing-05;
+  margin-bottom: layout.$spacing-05;
+  color: colors.$gray-50;
+}
+
+/* Tablet viewport */
+:global(.omrs-breakpoint-lt-desktop) {
+  .grid {
+    display: flex;
+    flex-direction: column;
+    row-gap: layout.$spacing-05;
+    margin: layout.$spacing-01 0;
+    padding-bottom: layout.$layout-02;
+    column-gap: layout.$spacing-05;
+
+    & > button {
+      width: 50%;
+    }
+  }
+}
+
+/* Desktop viewport */
+:global(.omrs-breakpoint-gt-tablet) {
+  .grid {
+    margin: layout.$spacing-01 0;
+    padding-bottom: layout.$layout-02;
+    display: grid;
+    grid-template-columns: 1fr 1fr 0.5fr;
+    column-gap: layout.$spacing-05;
+    align-items: flex-end;
+  }
+}
