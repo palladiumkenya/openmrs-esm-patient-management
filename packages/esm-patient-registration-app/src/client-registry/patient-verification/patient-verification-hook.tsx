@@ -6,7 +6,7 @@ import {
   type ConceptAnswers,
   type ConceptResponse,
   type FormValues,
-} from '../patient-registration/patient-registration.types';
+} from '../../patient-registration/patient-registration.types';
 
 export function searchClientRegistry(
   identifierType: string,

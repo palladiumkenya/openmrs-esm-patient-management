@@ -13,6 +13,7 @@ import {
   useConfig,
   usePatient,
   usePatientPhoto,
+  useFeatureFlag,
 } from '@openmrs/esm-framework';
 import { getValidationSchema } from './validation/patient-registration-validation';
 import { type CapturePhotoProps, type FormValues } from './patient-registration.types';
@@ -31,8 +32,9 @@ import { builtInSections, type RegistrationConfig, type SectionDefinition } from
 import { SectionWrapper } from './section/section-wrapper.component';
 import BeforeSavePrompt from './before-save-prompt';
 import styles from './patient-registration.scss';
-import PatientVerification from '../patient-verification/patient-verification.component';
-import { handleSavePatientToClientRegistry } from '../patient-verification/patient-verification-hook';
+import PatientVerification from '../client-registry/patient-verification/patient-verification.component';
+import { handleSavePatientToClientRegistry } from '../client-registry/patient-verification/patient-verification-hook';
+import ClientRegistry from '../client-registry/client-registry.component';
 
 let exportedInitialFormValuesForTesting = {} as FormValues;
 
@@ -42,6 +44,7 @@ export interface PatientRegistrationProps {
 }
 
 export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePatientForm, isOffline }) => {
+  const healthInformationExchangeFlag = useFeatureFlag('healthInformationExchange');
   const { currentSession, identifierTypes } = useContext(ResourcesContext);
   const { search } = useLocation();
   const config = useConfig() as RegistrationConfig;
@@ -182,6 +185,7 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
       </ul>
     );
   };
+  const enableRegistryButton = healthInformationExchangeFlag ? false : !enableClientRegistry;
 
   const displayErrors = (errors) => {
     if (errors && typeof errors === 'object' && !!Object.keys(errors).length) {
@@ -220,18 +224,20 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
                     </Link>
                   </div>
                 ))}
-                <Button
-                  renderIcon={ShareKnowledge}
-                  disabled={!currentSession || !identifierTypes}
-                  onClick={() => {
-                    setEnableClientRegistry(true);
-                    props.isValid
-                      ? handleSavePatientToClientRegistry(props.values, props.setValues, inEditMode)
-                      : props.validateForm().then((errors) => displayErrors(errors));
-                  }}
-                  className={styles.submitButton}>
-                  {t('postToRegistry', 'Post to registry')}
-                </Button>
+                {!healthInformationExchangeFlag && (
+                  <Button
+                    renderIcon={ShareKnowledge}
+                    disabled={!currentSession || !identifierTypes}
+                    onClick={() => {
+                      setEnableClientRegistry(true);
+                      props.isValid
+                        ? handleSavePatientToClientRegistry(props.values, props.setValues, inEditMode)
+                        : props.validateForm().then((errors) => displayErrors(errors));
+                    }}
+                    className={styles.submitButton}>
+                    {t('postToRegistry', 'Post to registry')}
+                  </Button>
+                )}
                 <Button
                   className={styles.submitButton}
                   type="submit"
@@ -239,7 +245,7 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
                   // Current session and identifiers are required for patient registration.
                   // If currentSession or identifierTypes are not available, then the
                   // user should be blocked to register the patient.
-                  disabled={!currentSession || !identifierTypes || props.isSubmitting || !enableClientRegistry}>
+                  disabled={!currentSession || !identifierTypes || props.isSubmitting || enableRegistryButton}>
                   {props.isSubmitting ? (
                     <InlineLoading
                       className={styles.spinner}
@@ -272,7 +278,7 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
                   initialFormValues: props.initialValues,
                   setInitialFormValues,
                 }}>
-                <PatientVerification props={props} setInitialFormValues={setInitialFormValues} />
+                <ClientRegistry props={props} setInitialFormValues={setInitialFormValues} />
                 {sections.map((section, index) => (
                   <SectionWrapper
                     key={`registration-section-${section.id}`}
