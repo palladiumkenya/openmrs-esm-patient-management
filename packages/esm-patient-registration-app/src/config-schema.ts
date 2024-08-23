@@ -89,6 +89,9 @@ export interface RegistrationConfig {
     registrationFormUuid: string | null;
   };
   freeTextFieldConceptUuid: string;
+  hieClientRegistry: {
+    identifierTypes: Array<{ identifierType: string; identifierValue: string }>;
+  };
 }
 
 export const builtInSections: Array<SectionDefinition> = [
@@ -396,6 +399,28 @@ export const esmPatientRegistrationSchema = {
   freeTextFieldConceptUuid: {
     _default: '5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
     _type: Type.ConceptUuid,
+  },
+  hieClientRegistry: {
+    identifierTypes: {
+      _type: Type.Array,
+      _elements: {
+        identifierType: {
+          _type: Type.String,
+          _description: 'The label of the identifier type',
+        },
+        identifierValue: {
+          _type: Type.String,
+          _description: 'The value of the identifier type',
+        },
+      },
+      _default: [
+        { identifierType: 'National ID', identifierValue: 'national-id' },
+        { identifierType: 'Passport Number', identifierValue: 'passport  number' },
+        { identifierType: 'Birth Certificate Number', identifierValue: 'birth-certificate-number' },
+        { identifierType: 'Alien ID Number', identifierValue: 'alien-id-number' },
+        { identifierType: 'Refugee ID Number', identifierValue: 'refugee-number' },
+      ],
+    },
   },
   _validators: [
     validator(

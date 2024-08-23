@@ -2,7 +2,7 @@ import { showModal } from '@openmrs/esm-framework';
 import { type FormikProps } from 'formik';
 import { type ClientRegistryPatient, type RegistryPatient } from './verification-types';
 import counties from './assets/counties.json';
-import { type FormValues } from '../patient-registration/patient-registration.types';
+import { type FormValues } from '../../patient-registration/patient-registration.types';
 import { capitalize } from 'lodash-es';
 
 export function handleClientRegistryResponse(
