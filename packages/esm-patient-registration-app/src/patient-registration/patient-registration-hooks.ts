@@ -14,7 +14,10 @@ import useSWR from 'swr';
 import { v4 } from 'uuid';
 import { type RegistrationConfig } from '../config-schema';
 import { patientRegistration } from '../constants';
-import { useConceptAnswers, useGlobalProperties } from '../patient-verification/patient-verification-hook';
+import {
+  useConceptAnswers,
+  useGlobalProperties,
+} from '../client-registry/patient-verification/patient-verification-hook';
 import {
   type Encounter,
   type FormValues,
