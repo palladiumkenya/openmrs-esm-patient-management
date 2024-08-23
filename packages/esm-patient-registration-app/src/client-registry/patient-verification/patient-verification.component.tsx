@@ -7,7 +7,7 @@ import { searchClientRegistry, useGlobalProperties } from './patient-verificatio
 import { showSnackbar, showToast } from '@openmrs/esm-framework';
 import { handleClientRegistryResponse } from './patient-verification-utils';
 import { type FormikProps } from 'formik';
-import { type FormValues } from '../patient-registration/patient-registration.types';
+import { type FormValues } from '../../patient-registration/patient-registration.types';
 
 interface PatientVerificationProps {
   props: FormikProps<FormValues>;
