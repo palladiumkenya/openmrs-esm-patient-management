@@ -64,5 +64,11 @@
       "component": "confirmClientRegistryModal",
       "name": "confirm-client-registry-modal"
     }
+  ],
+  "modals": [
+    {
+      "component": "hieConfirmationModal",
+      "name": "hie-confirmation-modal"
+    }
   ]
 }
