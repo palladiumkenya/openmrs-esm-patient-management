@@ -49,6 +49,7 @@
   "error": "Error",
   "errorFetchingCodedCausesOfDeath": "Error fetching coded causes of death",
   "errorFetchingOrderedFields": "Error occured fetching ordered fields for address hierarchy",
+  "errorFetchingPatient": "Error fetching patient",
   "estimatedAgeInMonthsLabelText": "Estimated age in months",
   "estimatedAgeInYearsLabelText": "Estimated age in years",
   "familyNameLabelText": "Family Name",
@@ -62,6 +63,8 @@
   "genderUnspecified": "Gender unspecified",
   "givenNameLabelText": "First Name",
   "givenNameRequired": "Given name is required",
+  "healthID": "HealthID",
+  "hieModal": "HIE Patient Record Found",
   "identifierSearch": "Identifier search",
   "identifierType": "Identifier type",
   "identifierValueRequired": "Identifier value is required",
@@ -72,6 +75,7 @@
   "isDeadInputLabel": "Is dead",
   "jumpTo": "Jump to",
   "male": "Male",
+  "maritalStatus": "Marital status",
   "middleNameLabelText": "Middle Name",
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -119,6 +123,7 @@
   "relationshipPersonMustExist": "Related person must be an existing person",
   "relationshipPlaceholder": "Relationship",
   "relationshipRemovedText": "Relationship removed",
+  "relationships": "Relationships",
   "relationshipsSection": "Relationships",
   "relationshipToPatient": "Relationship to patient",
   "relativeFullNameLabelText": "Full name",
@@ -126,10 +131,10 @@
   "removeIdentifierButton": "Remove identifier",
   "resetIdentifierTooltip": "Reset",
   "restoreRelationshipActionButton": "Undo",
-  "search": "Search",
   "searchAddress": "Search address",
   "searchClientRegistry": "Search client registry",
   "searchIdentifierPlaceholder": "Search identifier",
+  "searchingRegistry": "Searching registry...",
   "searchRegistry": "Search registry",
   "selectAnOption": "Select an option",
   "selectCountry": "Select country",
@@ -157,6 +162,7 @@
 >>>>>>> 7bf4b6b1 (KHP3-4128 Add patient facility of origin on client registry modal (#808))
   "useValues": "Use values",
   "validate": "Validate",
+  "viewFullResponse": "View full response",
   "yearsEstimateRequired": "Years estimate required",
 >>>>>>> 38b24a39 ((test): Add test for `patient-list-detail.component` (#790))
   "yes": "Yes"
