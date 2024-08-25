@@ -41,6 +41,13 @@
     display: grid;
     grid-template-columns: 1fr 1fr 0.5fr;
     column-gap: layout.$spacing-05;
-    align-items: flex-end;
+    align-items: flex-start;
+
+    & > button {
+      align-self: flex-start;
+      margin-top: 1.4rem;
+      max-width: 14rem;
+      min-width: 14rem;
+    }
   }
 }
