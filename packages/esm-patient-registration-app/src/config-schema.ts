@@ -93,6 +93,8 @@ export interface RegistrationConfig {
   freeTextFieldConceptUuid: string;
   hieClientRegistry: {
     identifierTypes: Array<{ identifierType: string; identifierValue: string }>;
+    baseUrl: string;
+    encodedCredentials: string;
   };
 }
 
@@ -427,11 +429,21 @@ export const esmPatientRegistrationSchema = {
       },
       _default: [
         { identifierType: 'National ID', identifierValue: 'national-id' },
-        { identifierType: 'Passport Number', identifierValue: 'passport  number' },
+        { identifierType: 'Passport Number', identifierValue: 'passport-number' },
         { identifierType: 'Birth Certificate Number', identifierValue: 'birth-certificate-number' },
         { identifierType: 'Alien ID Number', identifierValue: 'alien-id-number' },
         { identifierType: 'Refugee ID Number', identifierValue: 'refugee-number' },
       ],
+    },
+    baseUrl: {
+      _type: Type.String,
+      _default: 'https://hie.paperless.co.ke/v4/custom/',
+      _description: 'The base URL for the HIE API',
+    },
+    encodedCredentials: {
+      _type: Type.String,
+      _default: 'a2VueWFfZW1yOkFsZG5iJmtmayZKc2whMjM0',
+      _description: 'The base64 encoded credentials for the HIE API',
     },
   },
   _validators: [
