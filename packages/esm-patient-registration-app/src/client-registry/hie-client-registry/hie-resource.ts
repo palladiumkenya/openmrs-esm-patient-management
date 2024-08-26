@@ -83,9 +83,10 @@ class PatientMapper extends Mapper<HIEPatient, FormValues> {
   ): Record<string, PatientIdentifierValue> {
     const updatedIdentifiers: Record<string, PatientIdentifierValue> = { ...currentFormValues.identifiers };
 
-    // Map healthId to hiePatient.id
-    updatedIdentifiers.healthId = {
-      ...currentFormValues.identifiers['healthId'],
+    // Map Social Health Authority Unique Identification Number to HIE Patient ID
+    // See https://github.com/palladiumkenya/openmrs-module-kenyaemr/blob/1e1d281eaba8041c45318e60ca0730449b8e4197/api/src/main/distro/metadata/identifierTypes.xml#L33
+    updatedIdentifiers.socialHealthAuthorityIdentificationNumber = {
+      ...currentFormValues.identifiers['socialHealthAuthorityIdentificationNumber'],
       identifierValue: hiePatient.id,
     };
 
