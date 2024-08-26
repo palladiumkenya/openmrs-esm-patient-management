@@ -44,14 +44,14 @@ const HIEConfirmationModal: React.FC<HIEConfirmationModalProps> = ({ closeModal,
             state={{ patientName: `${firstName} ${lastName}` }}
           />
           <div style={{ width: '100%', marginLeft: '0.625rem' }}>
-            <PatientInfo label={t('healthID', 'HealthID')} value={patient.id} />
+            <PatientInfo label={t('healthID', 'HealthID')} value={patient?.id} />
             <PatientInfo label={t('patientName', 'Patient name')} value={`${firstName} ${lastName}`} />
             <PatientInfo label={t('age', 'Age')} value={age(patient?.birthDate)} />
             <PatientInfo label={t('dateOfBirth', 'Date of birth')} value={formatDate(new Date(patient?.birthDate))} />
             <PatientInfo label={t('gender', 'Gender')} value={capitalize(patient?.gender)} />
             <PatientInfo
               label={t('maritalStatus', 'Marital status')}
-              value={patient.maritalStatus.coding.map((m) => m.code).join('')}
+              value={patient?.maritalStatus?.coding?.map((m) => m.code).join('')}
             />
             <PatientInfo label={t('dependents', 'Dependents')} value="--" />
           </div>
