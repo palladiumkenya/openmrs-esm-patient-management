@@ -53,7 +53,7 @@ const HIEConfirmationModal: React.FC<HIEConfirmationModalProps> = ({ closeModal,
               label={t('maritalStatus', 'Marital status')}
               value={patient.maritalStatus.coding.map((m) => m.code).join('')}
             />
-            <PatientInfo label={t('relationships', 'Relationships')} value="--" />
+            <PatientInfo label={t('dependents', 'Dependents')} value="--" />
           </div>
         </div>
         <div>
