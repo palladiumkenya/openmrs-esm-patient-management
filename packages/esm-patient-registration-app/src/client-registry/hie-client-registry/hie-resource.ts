@@ -1,8 +1,9 @@
 import { add, capitalize } from 'lodash-es';
 import { type PatientIdentifierValue, type FormValues } from '../../patient-registration/patient-registration.types';
-import { APIClientConfig, type MapperConfig, type HIEPatient, type ErrorResponse } from './hie-types';
+import { type MapperConfig, type HIEPatient, type ErrorResponse } from './hie-types';
 import { getConfig } from '@openmrs/esm-framework';
 import { type RegistrationConfig } from '../../config-schema';
+import { v4 } from 'uuid';
 /**
  * Represents a client for interacting with a Health Information Exchange (HIE) resource.
  * @template T - The type of the resource being fetched.
@@ -59,13 +60,18 @@ class PatientMapper extends Mapper<HIEPatient, FormValues> {
       address: extensionAddressEntries,
       identifiers: updatedIdentifiers,
       attributes: telecomAttributes,
+      relationships: [],
+      patientUuid: v4(),
     } as FormValues;
   }
 
   private mapTelecomToAttributes(telecom: Array<fhir.ContactPoint>): Record<string, string> {
     return telecom.reduce<Record<string, string>>((acc, { system, value }) => {
       if (system && value && this.config.teleComMap[system]) {
-        acc[this.config.teleComMap[system]] = value.replace(/^254/, '0');
+        const filteredValue = value.replace(/^254/, '0');
+        if (filteredValue) {
+          acc[this.config.teleComMap[system]] = filteredValue;
+        }
       }
       return acc;
     }, {});
@@ -95,17 +101,27 @@ class PatientMapper extends Mapper<HIEPatient, FormValues> {
       }
     });
 
+    // Filter out undefined keys and values
+    Object.keys(updatedIdentifiers).forEach((key) => {
+      if (updatedIdentifiers[key] === undefined || updatedIdentifiers[key].identifierValue === undefined) {
+        delete updatedIdentifiers[key];
+      }
+    });
+
     return updatedIdentifiers;
   }
 
   private mapExtensionsToAddress(extensions: HIEPatient['extension']): Record<string, string> {
-    return extensions
-      .map((ext) => {
-        const identifierType = ext.url.split('/').pop();
-        const identifierValue = ext.valueString;
-        return { [this.config.addressHierarchyMap[identifierType]]: capitalize(identifierValue) };
-      })
-      .reduce<Record<string, string>>((acc, curr) => ({ ...acc, ...curr }), {});
+    return extensions.reduce<Record<string, string>>((acc, ext) => {
+      const identifierType = ext.url.split('/').pop();
+      const mappedKey = this.config.addressHierarchyMap[identifierType];
+
+      if (mappedKey && ext.valueString) {
+        acc[mappedKey] = capitalize(ext.valueString);
+      }
+
+      return acc;
+    }, {});
   }
 }
 
