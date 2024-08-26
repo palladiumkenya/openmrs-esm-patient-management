@@ -1,1 +1,1 @@
-export const moduleName = '@openmrs/esm-ward-app';
+export const moduleName = '@kenyaemr/esm-ward-app';
