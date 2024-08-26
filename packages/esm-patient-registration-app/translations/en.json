@@ -33,7 +33,7 @@
   "deleteIdentifierTooltip": "Delete",
   "deleteRelationshipTooltipText": "Delete",
   "demographicsSection": "Basic Info",
-  "dependants": "Dependants",
+  "dependents": "Dependents",
   "discard": "Discard",
   "discardModalBody": "The changes you made to this patient's details have not been saved. Discard changes?",
   "discardModalHeader": "Confirm Discard Changes",
