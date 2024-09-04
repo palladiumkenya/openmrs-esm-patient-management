@@ -69,9 +69,7 @@
       "name": "confirm-client-registry-modal",
       "online": true,
       "offline": true
-    }
-  ],
-  "modals": [
+    },
     {
       "component": "hieConfirmationModal",
       "name": "hie-confirmation-modal"

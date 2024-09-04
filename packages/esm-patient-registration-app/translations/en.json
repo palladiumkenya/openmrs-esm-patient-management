@@ -22,30 +22,36 @@
   "configureIdentifiers": "Configure identifiers",
   "confirmDiscardChangesBody": "Your unsaved changes will be lost if you proceed to discard the form",
   "confirmDiscardChangesTitle": "Are you sure you want to discard these changes?",
-  "confirmIdentifierDeletionText": "Are you sure you want to remove this identifier?",
+  "confirmIdentifierDeletionText": "Are you sure you want to delete this identifier?",
   "contactSection": "Contact Details",
-  "continue": "Continue",
+  "continue": "Continue to registration",
   "createNewPatient": "Create new patient",
   "dateOfBirth": "Date of birth",
-  "dateOfBirthLabelText": "Date of Birth",
-  "deathDateInputLabel": "Date of Death",
-  "deathdayNotInTheFuture": "Death day cannot be in the future",
+  "dateOfBirthLabelText": "Date of birth",
+  "deathCauseRequired": "Cause of death is required",
+  "deathDateInFuture": "Death date cannot be in future",
+  "deathDateInputLabel": "Date of death",
+  "deathDateRequired": "Death date is required",
+  "deathdayInvalidDate": "Death date and time cannot be before the birthday",
+  "deathdayIsRequired": "Death date is required when the patient is marked as deceased.",
+  "deathdayNotInTheFuture": "",
   "deathSection": "Death Info",
   "deathTimeFormatInvalid": "Time format is invalid",
   "deathTimeFormatRequired": "Time format is required",
   "deathTimeInvalid": "Time doesn't match the format 'hh:mm'",
   "deathTimeRequired": "Death time is required",
-  "deleteIdentifierModalHeading": "Remove identifier?",
+  "deleteIdentifierModalHeading": "Delete identifier?",
   "deleteIdentifierModalText": " has a value of ",
   "deleteIdentifierTooltip": "Delete",
   "deleteRelationshipTooltipText": "Delete",
   "demographicsSection": "Basic Info",
   "dependents": "Dependents",
   "discard": "Discard",
-  "dobToggleLabelText": "Date of Birth Known?",
+  "dobToggleLabelText": "Date of birth known?",
   "editIdentifierTooltip": "Edit",
   "editPatientDetails": "Edit patient details",
   "editPatientDetailsBreadcrumb": "Edit patient details",
+  "enterIdentifierSearchValue": "Enter identifier search value",
   "enterNonCodedCauseOfDeath": "Enter non-coded cause of death",
   "error": "Error",
   "errorFetchingCodedCausesOfDeath": "Error fetching coded causes of death",
@@ -56,7 +62,7 @@
   "familyNameLabelText": "Family Name",
   "familyNameRequired": "Family name is required",
   "female": "Female",
-  "fieldsWithErrors": "The following fields have errors: ",
+  "fieldsWithErrors": "The following fields have errors:",
   "fullNameLabelText": "Full Name",
   "gender": "Gender",
   "genderLabelText": "Sex",
@@ -78,27 +84,14 @@
   "male": "Male",
   "maritalStatus": "Marital status",
   "middleNameLabelText": "Middle Name",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+  "nationalId": "National ID",
   "negativeMonths": "Estimated months cannot be negative",
   "negativeYears": "Estimated years cannot be negative",
-=======
-  "months": "Months",
-=======
-  "nascopNumber": "Nascop facility no",
->>>>>>> 57bc0958 ((feat) add nascop facility number to use value modal)
-=======
->>>>>>> b364e3f0 ((enhc) further enhancements to patient registration)
-  "nationalId": "National ID",
-  "negativeMonths": "Negative months",
-  "negativeYears": "Negative years",
->>>>>>> 38b24a39 ((test): Add test for `patient-list-detail.component` (#790))
   "no": "No",
   "nonCodedCauseOfDeath": "Non-coded cause of death",
   "nonCodedCauseOfDeathRequired": "Cause of death is required",
   "nonsensicalYears": "Estimated years cannot be more than 140",
-  "numberInNameDubious": "Number in name is dubious",
+  "numberInNameDubious": "",
   "nupi": "NUPI",
   "obsFieldUnknownDatatype": "Concept for obs field '{{fieldDefinitionId}}' has unknown datatype '{{datatypeName}}'",
   "optional": "optional",
@@ -106,17 +99,12 @@
   "patientDetailsFound": "Patient information found in the registry, do you want to use the information to continue with registration?",
   "patientName": "Patient name",
   "patientNameKnown": "Patient's Name is Known?",
-<<<<<<< HEAD
-  "patientRegistrationBreadcrumb": "Patient Registration",
-  "refreshOrContactAdmin": "Try refreshing the page or contact your system administrator",
-  "registerPatient": "Register patient",
-=======
   "patientNotFound": "The patient records could not be found in Client registry, do you want to continue to create and post patient to registry",
   "patientRegistrationBreadcrumb": "Patient Registration",
   "patientVerificationFromHIE": "Patient verification from HIE",
   "postToRegistry": "Post to registry",
-  "registerPatient": "Register Patient",
->>>>>>> 38b24a39 ((test): Add test for `patient-list-detail.component` (#790))
+  "refreshOrContactAdmin": "Try refreshing the page or contact your system administrator",
+  "registerPatient": "Register patient",
   "registerPatientSuccessSnackbarSubtitle": "The patient can now be found by searching for them using their name or ID number",
   "registerPatientSuccessSnackbarTitle": "New Patient Created",
   "registrationErrorSnackbarTitle": "Patient Registration Failed",
@@ -152,18 +140,9 @@
   "updatePatientErrorSnackbarTitle": "Patient Details Update Failed",
   "updatePatientSuccessSnackbarSubtitle": "The patient's information has been successfully updated",
   "updatePatientSuccessSnackbarTitle": "Patient Details Updated",
-<<<<<<< HEAD
-<<<<<<< HEAD
-  "yearsEstimateRequired": "Estimated years required",
-=======
-  "updationSuccessToastDescription": "The patient's information has been successfully updated",
-  "updationSuccessToastTitle": "Patient Details Updated",
-=======
->>>>>>> 7bf4b6b1 (KHP3-4128 Add patient facility of origin on client registry modal (#808))
   "useValues": "Use values",
   "validate": "Validate",
   "viewFullResponse": "View full response",
-  "yearsEstimateRequired": "Years estimate required",
->>>>>>> 38b24a39 ((test): Add test for `patient-list-detail.component` (#790))
+  "yearsEstimateRequired": "Estimated years required",
   "yes": "Yes"
 }

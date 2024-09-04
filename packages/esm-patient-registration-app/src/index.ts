@@ -7,6 +7,7 @@ import addPatientLinkComponent from './add-patient-link';
 import editPatientDetailsButtonComponent from './widgets/edit-patient-details-button.component';
 import { PatientPhotoExtension } from './patient-photo.extension';
 import HIEConfirmationModal from './client-registry/hie-client-registry/modal/confirm-hie.modal';
+import CancelPatientEditModal from './widgets/cancel-patient-edit.modal';
 
 export const importTranslation = require.context('../translations', false, /.json$/, 'lazy');
 
@@ -51,7 +52,7 @@ export const editPatient = getSyncLifecycle(rootComponent, {
 
 export const addPatientLink = getSyncLifecycle(addPatientLinkComponent, options);
 
-export const cancelPatientEditModal = getAsyncLifecycle(() => import('./widgets/cancel-patient-edit.modal'), options);
+export const cancelPatientEditModal = getSyncLifecycle(CancelPatientEditModal, options);
 
 export const patientPhotoExtension = getSyncLifecycle(PatientPhotoExtension, options);
 
