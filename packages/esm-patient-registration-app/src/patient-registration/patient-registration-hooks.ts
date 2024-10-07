@@ -363,10 +363,11 @@ function useConcepts() {
     config.fieldDefinitions.find((fieldDefinition) => fieldDefinition.id === 'maritalStatus')?.customConceptAnswers ??
     [];
 
-  const martialStatus: Array<ConceptAnswers> = maritalStatusCustomConceptAnswers.map((concept) => ({
-    uuid: concept?.uuid,
-    display: concept?.label,
-  }));
+  const martialStatus: Array<ConceptAnswers> =
+    maritalStatusCustomConceptAnswers.map((concept) => ({
+      uuid: concept?.uuid,
+      display: concept?.label,
+    })) ?? [];
 
   return { martialStatus, education, occupation, educationLoad };
 }
