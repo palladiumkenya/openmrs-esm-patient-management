@@ -474,9 +474,15 @@ function useConcepts() {
     },
   ];
 
-  const martialStatus: Array<ConceptAnswers> = config.fieldDefinitions
-    .find((fieldDefinition) => fieldDefinition.id === 'maritalStatus')
-    .customConceptAnswers.map((concept) => ({ uuid: concept.uuid, display: concept.label }));
+  const maritalStatusCustomConceptAnswers =
+    config.fieldDefinitions.find((fieldDefinition) => fieldDefinition.id === 'maritalStatus')?.customConceptAnswers ??
+    [];
+
+  const martialStatus: Array<ConceptAnswers> =
+    maritalStatusCustomConceptAnswers.map((concept) => ({
+      uuid: concept?.uuid,
+      display: concept?.label,
+    })) ?? [];
 
   return { martialStatus, education, occupation, educationLoad };
 }
