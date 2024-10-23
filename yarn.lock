@@ -2853,23 +2853,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openmrs/esm-active-visits-app@workspace:packages/esm-active-visits-app":
-  version: 0.0.0-use.local
-  resolution: "@openmrs/esm-active-visits-app@workspace:packages/esm-active-visits-app"
-  dependencies:
-    "@carbon/react": "npm:~1.37.0"
-    lodash-es: "npm:^4.17.15"
-    webpack: "npm:^5.74.0"
-  peerDependencies:
-    "@openmrs/esm-framework": 5.x
-    dayjs: 1.x
-    react: ^18.1.0
-    react-dom: ^18.1.0
-    react-i18next: 11.x
-    swr: 2.x
-  languageName: unknown
-  linkType: soft
-
 "@openmrs/esm-api@npm:5.8.2-pre.2411":
   version: 5.8.2-pre.2411
   resolution: "@openmrs/esm-api@npm:5.8.2-pre.2411"
@@ -2919,42 +2902,6 @@ __metadata:
   checksum: 10/6cc275d312f869b3b3a78280be44c975307b590ed3798bb620633ec0eaf368368b6202c3e19f81e18f0939d590c38c78cc794b7050492b475e0daffdfa40d095
   languageName: node
   linkType: hard
-
-"@openmrs/esm-appointments-app@workspace:packages/esm-appointments-app":
-  version: 0.0.0-use.local
-  resolution: "@openmrs/esm-appointments-app@workspace:packages/esm-appointments-app"
-  dependencies:
-    "@carbon/react": "npm:~1.37.0"
-    formik: "npm:^2.2.9"
-    lodash-es: "npm:^4.17.15"
-    webpack: "npm:^5.74.0"
-    yup: "npm:^0.32.11"
-  peerDependencies:
-    "@openmrs/esm-framework": 5.x
-    "@openmrs/esm-patient-common-lib": 8.x
-    react: 18.x
-    react-i18next: 11.x
-    react-router-dom: 6.x
-    swr: 2.x
-  languageName: unknown
-  linkType: soft
-
-"@openmrs/esm-bed-management-app@workspace:packages/esm-bed-management-app":
-  version: 0.0.0-use.local
-  resolution: "@openmrs/esm-bed-management-app@workspace:packages/esm-bed-management-app"
-  dependencies:
-    "@carbon/react": "npm:~1.37.0"
-    lodash-es: "npm:^4.17.15"
-    webpack: "npm:^5.74.0"
-  peerDependencies:
-    "@openmrs/esm-framework": 5.x
-    dayjs: 1.x
-    react: 18.x
-    react-i18next: 11.x
-    react-router-dom: 6.x
-    swr: 2.x
-  languageName: unknown
-  linkType: soft
 
 "@openmrs/esm-config@npm:5.8.2-pre.2411":
   version: 5.8.2-pre.2411
@@ -3203,22 +3150,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openmrs/esm-patient-search-app@workspace:packages/esm-patient-search-app":
-  version: 0.0.0-use.local
-  resolution: "@openmrs/esm-patient-search-app@workspace:packages/esm-patient-search-app"
-  dependencies:
-    "@carbon/react": "npm:~1.37.0"
-    lodash-es: "npm:^4.17.15"
-    webpack: "npm:^5.74.0"
-  peerDependencies:
-    "@openmrs/esm-framework": 5.x
-    react: ^18.1.0
-    react-i18next: 11.x
-    react-router-dom: 6.x
-    swr: 2.x
-  languageName: unknown
-  linkType: soft
-
 "@openmrs/esm-react-utils@npm:5.8.2-pre.2411":
   version: 5.8.2-pre.2411
   resolution: "@openmrs/esm-react-utils@npm:5.8.2-pre.2411"
@@ -3260,22 +3191,6 @@ __metadata:
   checksum: 10/e2c4aa6c29982f0e3a937d88a116edca876166a589fb8fde377b0e71980ccb0f3cb452f99def5e1dad25a5cab38ff2aeda73687e67b2f8ee42c20451637e245a
   languageName: node
   linkType: hard
-
-"@openmrs/esm-service-queues-app@workspace:packages/esm-service-queues-app":
-  version: 0.0.0-use.local
-  resolution: "@openmrs/esm-service-queues-app@workspace:packages/esm-service-queues-app"
-  dependencies:
-    "@carbon/react": "npm:~1.37.0"
-    lodash-es: "npm:^4.17.15"
-    webpack: "npm:^5.74.0"
-  peerDependencies:
-    "@openmrs/esm-framework": 5.x
-    react: ^18.1.0
-    react-i18next: 11.x
-    react-router-dom: 6.x
-    swr: 2.x
-  languageName: unknown
-  linkType: soft
 
 "@openmrs/esm-state@npm:5.8.2-pre.2411":
   version: 5.8.2-pre.2411
@@ -3345,22 +3260,6 @@ __metadata:
   checksum: 10/3ccd5587fc03e07a10a344cc39eaf55564e21569d70a7d29a833b28ca11f35ad37c3539f662b131a2f2974bb5ecb38f0be6250dcdc81757f6608656a3775de09
   languageName: node
   linkType: hard
-
-"@openmrs/esm-ward-app@workspace:packages/esm-ward-app":
-  version: 0.0.0-use.local
-  resolution: "@openmrs/esm-ward-app@workspace:packages/esm-ward-app"
-  dependencies:
-    "@carbon/react": "npm:~1.37.0"
-    lodash-es: "npm:^4.17.15"
-    webpack: "npm:^5.74.0"
-  peerDependencies:
-    "@openmrs/esm-framework": 5.x
-    react: ^18.1.0
-    react-i18next: 11.x
-    react-router-dom: 6.x
-    swr: 2.x
-  languageName: unknown
-  linkType: soft
 
 "@openmrs/webpack-config@npm:5.8.2-pre.2411":
   version: 5.8.2-pre.2411
