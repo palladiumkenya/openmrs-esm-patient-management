@@ -61,7 +61,7 @@ class PatientMapper extends Mapper<HIEPatient, FormValues> {
   private mapTelecomToAttributes(telecom: Array<fhir.ContactPoint>): Record<string, string> {
     return telecom.reduce<Record<string, string>>((acc, { system, value }) => {
       if (system && value && this.config.teleComMap[system]) {
-        const filteredValue = value.replace(/^254/, '0');
+        const filteredValue = value.replace(/^\+254/, '0');
         if (filteredValue) {
           acc[this.config.teleComMap[system]] = filteredValue;
         }
@@ -75,22 +75,24 @@ class PatientMapper extends Mapper<HIEPatient, FormValues> {
     currentFormValues: FormValues,
   ): Record<string, PatientIdentifierValue> {
     const updatedIdentifiers: Record<string, PatientIdentifierValue> = { ...currentFormValues.identifiers };
-
     // Map Social Health Authority Unique Identification Number to HIE Patient ID
     // See https://github.com/palladiumkenya/openmrs-module-kenyaemr/blob/1e1d281eaba8041c45318e60ca0730449b8e4197/api/src/main/distro/metadata/identifierTypes.xml#L33
-    updatedIdentifiers.socialHealthAuthorityIdentificationNumber = {
-      ...currentFormValues.identifiers['socialHealthAuthorityIdentificationNumber'],
+    updatedIdentifiers.socialHealthInsuranceNumber = {
+      ...currentFormValues.identifiers['socialHealthInsuranceNumber'],
       identifierValue: hiePatient.id,
     };
 
     // Map fhir.Patient.Identifier to identifiers
-    hiePatient.identifier?.forEach((identifier) => {
-      const system = identifier.system?.split('/').pop();
-      if (system && this.config.identifierMap[system]) {
-        const key = this.config.identifierMap[system];
-        updatedIdentifiers[key] = {
-          ...currentFormValues.identifiers[key],
-          identifierValue: identifier.value || '',
+    hiePatient.identifier?.forEach((identifier: fhir.Identifier) => {
+      const identifierType = identifier.type?.coding?.[0]?.code;
+      const mappedIdentifierType = this.convertToCamelCase(identifierType);
+      const identifierValue = identifier.value;
+
+      const existingIdentifier = currentFormValues.identifiers[mappedIdentifierType];
+      if (existingIdentifier) {
+        updatedIdentifiers[mappedIdentifierType] = {
+          ...existingIdentifier,
+          identifierValue,
         };
       }
     });
@@ -116,6 +118,13 @@ class PatientMapper extends Mapper<HIEPatient, FormValues> {
 
       return acc;
     }, {});
+  }
+
+  private convertToCamelCase(input: string): string {
+    return input
+      .split('-')
+      .map((word, index) => (index === 0 ? word : capitalize(word)))
+      .join('');
   }
 }
 
