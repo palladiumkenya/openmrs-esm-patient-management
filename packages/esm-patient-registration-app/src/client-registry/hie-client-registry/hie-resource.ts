@@ -1,8 +1,7 @@
-import { add, capitalize } from 'lodash-es';
+import capitalize from 'lodash-es/capitalize';
 import { type PatientIdentifierValue, type FormValues } from '../../patient-registration/patient-registration.types';
 import { type MapperConfig, type HIEPatient, type ErrorResponse } from './hie-types';
-import { getConfig } from '@openmrs/esm-framework';
-import { type RegistrationConfig } from '../../config-schema';
+import { openmrsFetch, restBaseUrl } from '@openmrs/esm-framework';
 import { v4 } from 'uuid';
 /**
  * Represents a client for interacting with a Health Information Exchange (HIE) resource.
@@ -10,16 +9,10 @@ import { v4 } from 'uuid';
  */
 class HealthInformationExchangeClient<T> {
   async fetchResource(resourceType: string, params: Record<string, string>): Promise<T> {
-    const {
-      hieClientRegistry: { baseUrl, encodedCredentials },
-    } = await getConfig<RegistrationConfig>('@kenyaemr/esm-patient-registration-app');
-    const urlParams = new URLSearchParams(params);
-    const response = await fetch(`${baseUrl}${resourceType}?${urlParams}`, {
-      headers: new Headers({
-        Authorization: `Basic ${encodedCredentials}`,
-      }),
-    });
+    const [identifierType, identifierValue] = Object.entries(params)[0];
+    const url = `${restBaseUrl}/kenyaemr/getSHAPatient/${identifierValue}/${identifierType}`;
 
+    const response = await openmrsFetch(url);
     return response.json();
   }
 }
