@@ -3,7 +3,6 @@ import { Field, type FieldProps } from 'formik';
 import { Layer, Select, SelectItem } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
-import { evaluateAsBoolean } from '@openmrs/esm-framework';
 import { PatientRegistrationContext } from '../../patient-registration-context';
 import styles from './../field.scss';
 
@@ -47,7 +46,8 @@ const CustomPersonAttributeField: React.FC<CustomPersonAttributeFieldProps> = ({
 }) => {
   const { t } = useTranslation();
   const fieldName = `attributes.${personAttributeType.uuid}`;
-  const { setFieldValue, values } = useContext(PatientRegistrationContext) as PatientRegistrationContextType;
+  const context = useContext(PatientRegistrationContext) as PatientRegistrationContextType;
+  const { setFieldValue, values } = context;
 
   // TODO: Improve this logic
   const filteredCustomConceptAnswers = customConceptAnswers.filter((answer) => {
