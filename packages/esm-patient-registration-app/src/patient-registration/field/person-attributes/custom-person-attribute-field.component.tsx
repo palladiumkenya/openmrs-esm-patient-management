@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import { PatientRegistrationContext } from '../../patient-registration-context';
 import styles from './../field.scss';
+import { ResourcesContext } from '../../../offline.resources';
+import useUpdateIdentifierRequirement from './useUpdateIdentifierRequirement';
 
 interface PersonAttributeTypeResponse {
   uuid: string;
@@ -46,9 +48,8 @@ const CustomPersonAttributeField: React.FC<CustomPersonAttributeFieldProps> = ({
 }) => {
   const { t } = useTranslation();
   const fieldName = `attributes.${personAttributeType.uuid}`;
-  const context = useContext(PatientRegistrationContext) as PatientRegistrationContextType;
-  const { setFieldValue, values } = context;
-
+  const { setFieldValue, values } = useContext(PatientRegistrationContext);
+  useUpdateIdentifierRequirement(setFieldValue, values);
   // TODO: Improve this logic
   const filteredCustomConceptAnswers = customConceptAnswers.filter((answer) => {
     const showExpression = answer.showServiceExpression;
