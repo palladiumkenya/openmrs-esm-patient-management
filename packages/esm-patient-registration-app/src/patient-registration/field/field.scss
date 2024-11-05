@@ -111,10 +111,6 @@
   svg {
     margin-left: layout.$spacing-03;
   }
-
-  .customField {
-    margin-bottom: layout.$spacing-05;
-  }
 }
 
 .attributeField {
@@ -168,4 +164,8 @@
   letter-spacing: 0.32px;
   line-height: 1.34;
   margin: layout.$spacing-02 0 0;
+}
+
+.customField {
+  margin-bottom: layout.$spacing-05;
 }
