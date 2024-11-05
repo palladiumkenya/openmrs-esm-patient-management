@@ -98,6 +98,7 @@ export function CodedPersonAttributeField({
               return (
                 <>
                   <Select
+                    style={{ marginBottom: '1rem' }}
                     id={id}
                     name={`person-attribute-${personAttributeType.uuid}`}
                     labelText={label ?? personAttributeType?.display}

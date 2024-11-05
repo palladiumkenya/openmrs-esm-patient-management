@@ -163,6 +163,7 @@ function QueueDropdownFilter() {
 
   const handleServiceChange = useCallback(({ selectedItem }) => {
     updateSelectedService(selectedItem.uuid, selectedItem?.display);
+    mutateQueueEntries.mutateQueueEntries();
   }, []);
 
   return (
