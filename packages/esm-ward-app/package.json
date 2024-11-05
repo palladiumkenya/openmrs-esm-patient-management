@@ -1,6 +1,6 @@
 {
   "name": "@kenyaemr/esm-ward-app",
-  "version": "8.1.0",
+  "version": "8.0.2",
   "description": "Ward and bed management module for O3",
   "browser": "dist/kenyaemr-esm-ward-app.js",
   "main": "src/index.ts",
