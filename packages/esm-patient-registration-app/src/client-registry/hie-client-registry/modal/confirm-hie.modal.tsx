@@ -5,8 +5,17 @@ import { age, ExtensionSlot, formatDate } from '@openmrs/esm-framework';
 import { type HIEPatient } from '../hie-types';
 import capitalize from 'lodash-es/capitalize';
 import styles from './confirm-hie.scss';
-import PatientInfo from '../patient-info/patient-info.component';
 import DependentInfo from '../dependants/dependants.component';
+import { getPatientName, maskData } from '../hie-resource';
+
+const PatientInfo: React.FC<{ label: string; value: string | (() => React.ReactNode) }> = ({ label, value }) => {
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '0.25fr 0.75fr', margin: '0.25rem' }}>
+      <span style={{ minWidth: '5rem', fontWeight: 'bold' }}>{label}</span>
+      <span>{typeof value === 'function' ? value() : value}</span>
+    </div>
+  );
+};
 
 interface HIEConfirmationModalProps {
   closeModal: () => void;
@@ -16,8 +25,7 @@ interface HIEConfirmationModalProps {
 
 const HIEConfirmationModal: React.FC<HIEConfirmationModalProps> = ({ closeModal, patient, onUseValues }) => {
   const { t } = useTranslation();
-  const firstName = patient?.name[0]?.given?.[0];
-  const lastName = patient?.name[0]?.family;
+  const { familyName, givenName, middleName } = getPatientName(patient);
 
   const handleUseValues = () => {
     onUseValues();
@@ -34,11 +42,22 @@ const HIEConfirmationModal: React.FC<HIEConfirmationModalProps> = ({ closeModal,
           <ExtensionSlot
             className={styles.patientPhotoContainer}
             name="patient-photo-slot"
-            state={{ patientName: `${firstName} ${lastName}` }}
+            state={{ patientName: `${maskData(givenName)} . ${maskData(middleName)} . ${maskData(familyName)}` }}
           />
           <div className={styles.patientInfoContainer}>
             <PatientInfo label={t('healthID', 'HealthID')} value={patient?.id} />
-            <PatientInfo label={t('patientName', 'Patient name')} value={`${firstName} ${lastName}`} />
+            <PatientInfo
+              label={t('patientName', 'Patient name')}
+              value={() => (
+                <span className={styles.patientNameValue}>
+                  <p>{maskData(givenName)}</p>
+                  <span>&bull;</span>
+                  <p>{maskData(middleName)}</p>
+                  <span>&bull;</span>
+                  <p>{maskData(familyName)}</p>
+                </span>
+              )}
+            />
             <PatientInfo label={t('age', 'Age')} value={age(patient?.birthDate)} />
             <PatientInfo label={t('dateOfBirth', 'Date of birth')} value={formatDate(new Date(patient?.birthDate))} />
             <PatientInfo label={t('gender', 'Gender')} value={capitalize(patient?.gender)} />
