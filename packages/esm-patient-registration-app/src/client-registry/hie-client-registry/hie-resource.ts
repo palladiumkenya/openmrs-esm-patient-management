@@ -35,7 +35,7 @@ class Mapper<T, U> {
  */
 class PatientMapper extends Mapper<HIEPatient, FormValues> {
   mapHIEPatientToFormValues(hiePatient: HIEPatient, currentFormValues: FormValues): FormValues {
-    const name = hiePatient.name?.[0] || {};
+    const { familyName, givenName, middleName } = getPatientName(hiePatient);
     const telecom = hiePatient.telecom || [];
 
     const telecomAttributes = this.mapTelecomToAttributes(telecom);
@@ -46,10 +46,10 @@ class PatientMapper extends Mapper<HIEPatient, FormValues> {
       isDead: hiePatient.deceasedBoolean || false,
       gender: hiePatient.gender || '',
       birthdate: hiePatient.birthDate || '',
-      givenName: name.given?.[0] || '',
-      familyName: name.family || '',
+      givenName,
+      familyName,
       telephoneNumber: telecom.find((t) => t.system === 'phone')?.value || '',
-      middleName: name.given?.[1],
+      middleName,
       address: extensionAddressEntries,
       identifiers: updatedIdentifiers,
       attributes: telecomAttributes,
@@ -159,4 +159,26 @@ export const fetchPatientFromHIE = async (
 
 export const mapHIEPatientToFormValues = (hiePatient: HIEPatient, currentFormValues: FormValues): FormValues => {
   return patientMapper.mapHIEPatientToFormValues(hiePatient, currentFormValues);
+};
+
+/**
+ * Mask sensitive data by replacing end digits starting from the 2nd to last with '*'
+ * @param data {string} - The data to mask
+ * @returns {string} - The masked data
+ */
+export const maskData = (data: string): string => {
+  const maskedData = data.slice(0, 2) + '*'.repeat(data.length - 2);
+  return maskedData;
+};
+
+/**
+ * Get patient name from FHIR Patient resource
+ * @param patient {fhir.Patient} - The FHIR Patient resource
+ * @returns {object} - The patient name
+ */
+export const getPatientName = (patient: fhir.Patient) => {
+  const familyName = patient?.name[0]?.['family'] ?? '';
+  const givenName = patient.name[0]?.['given']?.[0]?.split(' ')?.[0] ?? '';
+  const middleName = patient.name[0]?.['given']?.[0]?.replace(givenName, '')?.trim() ?? '';
+  return { familyName, givenName, middleName };
 };
