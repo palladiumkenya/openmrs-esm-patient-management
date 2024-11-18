@@ -5,6 +5,35 @@
   @include type.type-style('heading-03');
 }
 
-.body {
-  @include type.type-style('body-01');
+.patientInfo {
+  display: grid;
+  grid-template-columns: 0.25fr 0.75fr;
+  margin: 0.25rem;
+}
+
+.patientInfoLabel {
+  min-width: 5rem;
+  font-weight: bold;
+}
+
+.dependentInfo {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.patientDetails {
+  display: flex;
+  margin: 1rem;
+}
+
+.patientPhotoContainer {
+  display: flex;
+  align-items: center;
+}
+
+.patientInfoContainer {
+  width: 100%;
+  margin-left: 0.625rem;
 }
