@@ -5,57 +5,8 @@ import { age, ExtensionSlot, formatDate } from '@openmrs/esm-framework';
 import { type HIEPatient } from '../hie-types';
 import capitalize from 'lodash-es/capitalize';
 import styles from './confirm-hie.scss';
-
-const PatientInfo: React.FC<{ label: string; value: string }> = ({ label, value }) => {
-  return (
-    <div className={styles.patientInfo}>
-      <span className={styles.patientInfoLabel}>{label}</span>
-      <span>{value || '--'}</span>
-    </div>
-  );
-};
-
-const DependentInfo: React.FC<{ dependents: any[] }> = ({ dependents }) => {
-  const { t } = useTranslation();
-
-  if (dependents && dependents.length > 0) {
-    return (
-      <div>
-        <span className={styles.header}>{t('dependants', 'Dependants')}</span>
-        {dependents.map((dependent, index) => {
-          const name = dependent?.name?.text;
-          const relationship =
-            dependent?.relationship?.[0]?.coding?.[0]?.display || t('unknownRelationship', 'Unknown');
-          const nationalID = dependent?.extension?.find(
-            (ext) =>
-              ext.url === 'http://cr.tiberbu.app/fhir/StructureDefinition/dependants-id-number' &&
-              ext.valueIdentifier?.type?.coding?.[0]?.code === 'national-id',
-          )?.valueIdentifier?.value;
-          const birthCertificate = dependent?.extension?.find(
-            (ext) =>
-              ext.url === 'http://cr.tiberbu.app/fhir/StructureDefinition/dependants-id-number' &&
-              ext.valueIdentifier?.type?.coding?.[0]?.code === 'birth-certificate-number',
-          )?.valueIdentifier?.value;
-
-          const primaryIdentifier = nationalID || birthCertificate;
-          const identifierLabel = nationalID
-            ? t('nationalID', 'National ID')
-            : t('birthCertificate', 'Birth Certificate');
-
-          return (
-            <div key={index} className={styles.dependentInfo}>
-              <PatientInfo label={t('name', 'Name')} value={name} />
-              <PatientInfo label={t('relationship', 'Relationship')} value={relationship} />
-              <PatientInfo label={identifierLabel} value={primaryIdentifier} />
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
-
-  return null;
-};
+import PatientInfo from '../patient-info/patient-info.component';
+import DependentInfo from '../dependants/dependants.component';
 
 interface HIEConfirmationModalProps {
   closeModal: () => void;
