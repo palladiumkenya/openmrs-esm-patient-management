@@ -3,6 +3,8 @@ import { type PatientIdentifierValue, type FormValues } from '../../patient-regi
 import { type MapperConfig, type HIEPatient, type ErrorResponse } from './hie-types';
 import { openmrsFetch, restBaseUrl } from '@openmrs/esm-framework';
 import { v4 } from 'uuid';
+import { z } from 'zod';
+import dayjs from 'dayjs';
 /**
  * Represents a client for interacting with a Health Information Exchange (HIE) resource.
  * @template T - The type of the resource being fetched.
@@ -182,3 +184,79 @@ export const getPatientName = (patient: fhir.Patient) => {
   const middleName = patient.name[0]?.['given']?.[0]?.replace(givenName, '')?.trim() ?? '';
   return { familyName, givenName, middleName };
 };
+
+export const authorizationFormSchema = z.object({
+  otp: z.string().min(1, 'Required'),
+  receiver: z
+    .string()
+    .regex(/^(\+?254|0)((7|1)\d{8})$/)
+    .optional(),
+});
+
+export function generateOTP(length = 5) {
+  let otpNumbers = '0123456789';
+  let OTP = '';
+  const len = otpNumbers.length;
+  for (let i = 0; i < length; i++) {
+    OTP += otpNumbers[Math.floor(Math.random() * len)];
+  }
+  return OTP;
+}
+
+export function persistOTP(otp: string, patientUuid: string) {
+  sessionStorage.setItem(
+    patientUuid,
+    JSON.stringify({
+      otp,
+      timestamp: new Date().toISOString(),
+    }),
+  );
+}
+
+export async function sendOtp({ otp, receiver }: z.infer<typeof authorizationFormSchema>, patientName: string) {
+  const payload = parseMessage(
+    { otp, patient_name: patientName, expiry_time: 5 },
+    'Dear {{patient_name}}, your OTP for accessing your Shared Health Records (SHR) is {{otp}}. Please enter this code to proceed. The code is valid for {{expiry_time}} minutes.',
+  );
+
+  const url = `${restBaseUrl}/kenyaemr/send-kenyaemr-sms?message=${payload}&phone=${receiver}`;
+
+  const res = await openmrsFetch(url, {
+    method: 'POST',
+    redirect: 'follow',
+  });
+  if (res.ok) {
+    return await res.json();
+  }
+  throw new Error('Error sending otp');
+}
+
+function parseMessage(object, template) {
+  const placeholderRegex = /{{(.*?)}}/g;
+
+  const parsedMessage = template.replace(placeholderRegex, (match, fieldName) => {
+    if (object.hasOwnProperty(fieldName)) {
+      return object[fieldName];
+    } else {
+      return match;
+    }
+  });
+
+  return parsedMessage;
+}
+export function verifyOtp(otp: string, patientUuid: string) {
+  const data = sessionStorage.getItem(patientUuid);
+  if (!data) {
+    throw new Error('Invalid OTP');
+  }
+  const { otp: storedOtp, timestamp } = JSON.parse(data);
+  const isExpired = dayjs(timestamp).add(5, 'minutes').isBefore(dayjs());
+  if (storedOtp !== otp) {
+    throw new Error('Invalid OTP');
+  }
+  if (isExpired) {
+    throw new Error('OTP Expired');
+  }
+  sessionStorage.removeItem(patientUuid);
+  return 'Verification success';
+}
