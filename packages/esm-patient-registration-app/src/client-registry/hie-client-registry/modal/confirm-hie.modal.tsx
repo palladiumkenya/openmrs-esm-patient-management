@@ -1,7 +1,7 @@
 import { Button, ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { type HIEPatient } from '../hie-types';
+import { type HIEPatientResponse, type HIEPatient } from '../hie-types';
 import styles from './confirm-hie.scss';
 import { authorizationFormSchema, generateOTP, getPatientName, persistOTP, sendOtp, verifyOtp } from '../hie-resource';
 import HIEPatientDetailPreview from './hie-patient-detail-preview.component';
@@ -23,7 +23,7 @@ const PatientInfo: React.FC<{ label: string; value: string | (() => React.ReactN
 
 interface HIEConfirmationModalProps {
   closeModal: () => void;
-  patient: HIEPatient;
+  patient: HIEPatientResponse;
   onUseValues: () => void;
 }
 
@@ -31,9 +31,11 @@ const HIEConfirmationModal: React.FC<HIEConfirmationModalProps> = ({ closeModal,
   const { t } = useTranslation();
   const [mode, setMode] = useState<'authorization' | 'preview'>('preview');
   const [status, setStatus] = useState<'loadingOtp' | 'otpSendSuccessfull' | 'otpFetchError'>();
-  const phoneNumber = patient?.telecom?.find((num) => num.value)?.value;
+  const phoneNumber = patient?.entry[0]?.resource.telecom?.find((num) => num.system === 'phone')?.value;
   const getidentifier = (code: string) =>
-    patient?.identifier?.find((identifier) => identifier?.type?.coding?.some((coding) => coding?.code === code));
+    patient?.entry[0]?.resource.identifier?.find(
+      (identifier) => identifier?.type?.coding?.some((coding) => coding?.code === code),
+    );
   const patientId = patient?.id ?? getidentifier('SHA-number')?.value;
   const form = useForm<z.infer<typeof authorizationFormSchema>>({
     defaultValues: {
