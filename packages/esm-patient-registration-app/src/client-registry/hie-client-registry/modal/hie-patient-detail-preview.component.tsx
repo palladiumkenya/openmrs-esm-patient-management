@@ -7,16 +7,19 @@ import DependentInfo from '../dependants/dependants.component';
 import { getPatientName, maskData } from '../hie-resource';
 import PatientInfo from '../patient-info/patient-info.component';
 import styles from './confirm-hie.scss';
+import { type HIEPatientResponse } from '../hie-types';
 
 type HIEPatientDetailPreviewProps = {
-  patient: fhir.Patient;
+  patient: HIEPatientResponse;
 };
 
 const HIEPatientDetailPreview: React.FC<HIEPatientDetailPreviewProps> = ({ patient }) => {
   const { familyName, givenName, middleName } = getPatientName(patient);
   const { t } = useTranslation();
   const getidentifier = (code: string) =>
-    patient?.identifier?.find((identifier) => identifier?.type?.coding?.some((coding) => coding?.code === code));
+    patient?.entry[0]?.resource.identifier?.find(
+      (identifier) => identifier?.type?.coding?.some((coding) => coding?.code === code),
+    );
 
   return (
     <>
@@ -41,21 +44,22 @@ const HIEPatientDetailPreview: React.FC<HIEPatientDetailPreviewProps> = ({ patie
             }
           />
 
-          <PatientInfo label={t('age', 'Age')} value={age(patient?.birthDate)} />
-          <PatientInfo label={t('dateOfBirth', 'Date of birth')} value={formatDate(new Date(patient?.birthDate))} />
-          <PatientInfo label={t('gender', 'Gender')} value={capitalize(patient?.gender)} />
+          <PatientInfo label={t('age', 'Age')} value={age(patient?.entry[0]?.resource.birthDate)} />
+          <PatientInfo
+            label={t('dateOfBirth', 'Date of birth')}
+            value={formatDate(new Date(patient?.entry[0]?.resource?.birthDate))}
+          />
+          <PatientInfo label={t('gender', 'Gender')} value={capitalize(patient?.entry[0]?.resource.gender)} />
           <PatientInfo
             label={t('maritalStatus', 'Marital status')}
-            value={patient?.maritalStatus?.coding?.map((m) => m.code).join('')}
+            value={patient?.entry[0]?.resource.maritalStatus?.coding?.map((m) => m.code).join('')}
           />
 
-          {(!patient?.contact || patient?.contact.length === 0) && (
-            <PatientInfo label={t('dependents', 'Dependents')} value="--" />
-          )}
+          {!patient?.entry[0]?.resource.contact && <PatientInfo label={t('dependents', 'Dependents')} value="--" />}
         </div>
       </div>
 
-      <DependentInfo dependents={patient?.contact} />
+      <DependentInfo dependents={patient?.entry[0]?.resource.contact} />
 
       <div>
         <Accordion>

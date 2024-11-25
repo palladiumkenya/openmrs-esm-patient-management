@@ -11,7 +11,7 @@ import { type RegistrationConfig } from '../../config-schema';
 import { useForm, Controller, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { fetchPatientFromHIE, mapHIEPatientToFormValues } from './hie-resource';
-import { type HIEPatient } from './hie-types';
+import { type HIEPatientResponse, type HIEPatient } from './hie-types';
 
 type HIEClientRegistryProps = {
   props: FormikProps<FormValues>;
@@ -43,16 +43,18 @@ const HIEClientRegistry: React.FC<HIEClientRegistryProps> = ({ setInitialFormVal
     try {
       const hieClientRegistry = await fetchPatientFromHIE(data.identifierType, data.identifierValue);
 
-      if (hieClientRegistry && hieClientRegistry.resourceType === 'Patient') {
+      if (hieClientRegistry && hieClientRegistry.resourceType === 'Bundle') {
         const dispose = showModal('hie-confirmation-modal', {
           patient: hieClientRegistry,
           closeModal: () => dispose(),
           onUseValues: () =>
-            setInitialFormValues(mapHIEPatientToFormValues(hieClientRegistry as HIEPatient, props.values)),
+            setInitialFormValues(
+              mapHIEPatientToFormValues(hieClientRegistry as unknown as HIEPatientResponse, props.values),
+            ),
         });
       }
 
-      if (hieClientRegistry && hieClientRegistry.resourceType === 'OperationOutcome') {
+      if (hieClientRegistry && hieClientRegistry?.resourceType === 'OperationOutcome') {
         const issueMessage = hieClientRegistry?.['issue']?.map((issue) => issue.diagnostics).join(', ');
         const dispose = showModal('empty-client-registry-modal', {
           onConfirm: () => dispose(),
