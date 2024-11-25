@@ -1,94 +1,97 @@
-import React from 'react';
+import { Button, ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, ModalBody, ModalHeader, ModalFooter, Accordion, AccordionItem, CodeSnippet } from '@carbon/react';
-import { age, ExtensionSlot, formatDate } from '@openmrs/esm-framework';
-import { type HIEPatientResponse, type HIEPatient } from '../hie-types';
-import capitalize from 'lodash-es/capitalize';
+import { type HIEPatient } from '../hie-types';
 import styles from './confirm-hie.scss';
-import PatientInfo from '../patient-info/patient-info.component';
-import DependentInfo from '../dependants/dependants.component';
-import { getPatientName, maskData } from '../hie-resource';
+import { authorizationFormSchema, generateOTP, getPatientName, persistOTP, sendOtp, verifyOtp } from '../hie-resource';
+import HIEPatientDetailPreview from './hie-patient-detail-preview.component';
+import HIEOTPVerficationForm from './hie-otp-verification-form.component';
+import { Form } from '@carbon/react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { type z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { showSnackbar } from '@openmrs/esm-framework';
 
 interface HIEConfirmationModalProps {
   closeModal: () => void;
-  patient: HIEPatientResponse;
+  patient: HIEPatient;
   onUseValues: () => void;
 }
 
 const HIEConfirmationModal: React.FC<HIEConfirmationModalProps> = ({ closeModal, patient, onUseValues }) => {
   const { t } = useTranslation();
-  const { familyName, givenName, middleName } = getPatientName(patient);
+  const [mode, setMode] = useState<'authorization' | 'preview'>('preview');
+  const [status, setStatus] = useState<'loadingOtp' | 'otpSendSuccessfull' | 'otpFetchError'>();
+  const phoneNumber = patient?.telecom?.find((num) => num.value)?.value;
+  const getidentifier = (code: string) =>
+    patient?.identifier?.find((identifier) => identifier?.type?.coding?.some((coding) => coding?.code === code));
+  const patientId = patient?.id ?? getidentifier('SHA-number')?.value;
+  const form = useForm<z.infer<typeof authorizationFormSchema>>({
+    defaultValues: {
+      receiver: phoneNumber,
+    },
+    resolver: zodResolver(authorizationFormSchema),
+  });
+  const patientName = getPatientName(patient);
 
-  const handleUseValues = () => {
-    onUseValues();
-    closeModal();
+  const onSubmit = async (values: z.infer<typeof authorizationFormSchema>) => {
+    try {
+      verifyOtp(values.otp, patientId);
+      showSnackbar({ title: 'Success', kind: 'success', subtitle: 'Access granted successfully' });
+      onUseValues();
+      closeModal();
+    } catch (error) {
+      showSnackbar({ title: 'Faulure', kind: 'error', subtitle: `${error}` });
+    }
   };
 
   return (
-    <div>
-      <ModalHeader closeModal={closeModal}>
-        <span className={styles.header}>{t('hieModal', 'HIE Patient Record Found')}</span>
-      </ModalHeader>
-      <ModalBody>
-        <div className={styles.patientDetails}>
-          <ExtensionSlot
-            className={styles.patientPhotoContainer}
-            name="patient-photo-slot"
-            state={{ patientName: `${maskData(givenName)}  ${maskData(middleName)}  ${maskData(familyName)}` }}
-          />
-          <div className={styles.patientInfoContainer}>
-            <PatientInfo label={t('healthID', 'HealthID')} value={patient?.entry[0]?.resource?.id} />
-            <PatientInfo
-              label={t('patientName', 'Patient name')}
-              customValue={
-                <span className={styles.patientNameValue}>
-                  <p>{maskData(givenName)}</p>
-                  <span>&bull;</span>
-                  <p>{maskData(middleName)}</p>
-                  <span>&bull;</span>
-                  <p>{maskData(familyName)}</p>
-                </span>
-              }
+    <FormProvider {...form}>
+      <Form onSubmit={form.handleSubmit(onSubmit)}>
+        <ModalHeader closeModal={closeModal}>
+          <span className={styles.header}>
+            {mode === 'authorization'
+              ? t('hiePatientVerification', 'HIE Patient Verification')
+              : t('hieModal', 'HIE Patient Record Found')}
+          </span>
+        </ModalHeader>
+        <ModalBody>
+          {mode === 'authorization' ? (
+            <HIEOTPVerficationForm
+              name={`${patientName.givenName} ${patientName.middleName}`}
+              patientId={patientId}
+              status={status}
+              setStatus={setStatus}
             />
+          ) : (
+            <HIEPatientDetailPreview patient={patient} />
+          )}
+        </ModalBody>
+        <ModalFooter>
+          <Button kind="secondary" onClick={closeModal}>
+            {t('cancel', 'Cancel')}
+          </Button>
 
-            <PatientInfo label={t('age', 'Age')} value={age(patient?.entry[0]?.resource?.birthDate)} />
-            <PatientInfo
-              label={t('dateOfBirth', 'Date of birth')}
-              value={formatDate(new Date(patient?.entry[0]?.resource?.birthDate))}
-            />
-            <PatientInfo label={t('gender', 'Gender')} value={capitalize(patient?.entry[0]?.resource?.gender)} />
-            <PatientInfo
-              label={t('maritalStatus', 'Marital status')}
-              value={patient?.entry[0]?.resource.maritalStatus?.coding?.map((m) => m.code).join('')}
-            />
-
-            {!patient?.entry[0]?.resource.contact && <PatientInfo label={t('dependents', 'Dependents')} value="--" />}
-          </div>
-        </div>
-
-        <DependentInfo dependents={patient?.entry[0]?.resource.contact} />
-
-        <div>
-          <Accordion>
-            <AccordionItem title={t('viewFullResponse', 'View full response')}>
-              <CodeSnippet type="multi" feedback="Copied to clipboard">
-                {JSON.stringify(patient, null, 2)}
-              </CodeSnippet>
-            </AccordionItem>
-          </Accordion>
-        </div>
-      </ModalBody>
-      <ModalFooter>
-        <Button kind="secondary" onClick={closeModal}>
-          {t('cancel', 'Cancel')}
-        </Button>
-
-        <Button onClick={handleUseValues} kind="primary">
-          {t('useValues', 'Use values')}
-        </Button>
-      </ModalFooter>
-    </div>
+          {mode === 'preview' && (
+            <Button onClick={() => setMode('authorization')} kind="primary">
+              {t('useValues', 'Use values')}
+            </Button>
+          )}
+          {mode === 'authorization' && (
+            <Button
+              kind="primary"
+              type="submit"
+              disabled={form.formState.isSubmitting || status !== 'otpSendSuccessfull'}>
+              {t('verifyAndUseValues', 'Verify & Use values')}
+            </Button>
+          )}
+        </ModalFooter>
+      </Form>
+    </FormProvider>
   );
 };
 
 export default HIEConfirmationModal;
+function onVerificationSuccesfull() {
+  throw new Error('Function not implemented.');
+}

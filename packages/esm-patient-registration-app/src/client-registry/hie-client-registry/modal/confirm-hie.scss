@@ -48,3 +48,15 @@
     color: colors.$gray-40;
   }
 }
+
+.grid {
+  margin: 0 layout.$spacing-05;
+  padding: layout.$spacing-05 0rem 0rem orem;
+}
+
+.otpInputRow {
+  display: flex;
+  flex-direction: row;
+  gap: layout.$spacing-03;
+  align-items: flex-end;
+}
