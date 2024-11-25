@@ -14,15 +14,13 @@ const DependentInfo: React.FC<{ dependents: any[] }> = ({ dependents }) => {
           const name = dependent?.name?.text;
           const relationship =
             dependent?.relationship?.[0]?.coding?.[0]?.display || t('unknownRelationship', 'Unknown');
+
           const nationalID = dependent?.extension?.find(
-            (ext) =>
-              ext.url === 'http://cr.tiberbu.app/fhir/StructureDefinition/dependants-id-number' &&
-              ext.valueIdentifier?.type?.coding?.[0]?.code === 'national-id',
+            (ext) => ext?.valueIdentifier?.type?.coding?.some((coding) => coding.code === 'national-id'),
           )?.valueIdentifier?.value;
+
           const birthCertificate = dependent?.extension?.find(
-            (ext) =>
-              ext.url === 'http://cr.tiberbu.app/fhir/StructureDefinition/dependants-id-number' &&
-              ext.valueIdentifier?.type?.coding?.[0]?.code === 'birth-certificate-number',
+            (ext) => ext?.valueIdentifier?.type?.coding?.some((coding) => coding.code === 'birth-certificate'),
           )?.valueIdentifier?.value;
 
           const primaryIdentifier = nationalID || birthCertificate;
@@ -34,7 +32,7 @@ const DependentInfo: React.FC<{ dependents: any[] }> = ({ dependents }) => {
             <div key={index} className={styles.dependentInfo}>
               <PatientInfo label={t('name', 'Name')} value={name} />
               <PatientInfo label={t('relationship', 'Relationship')} value={relationship} />
-              <PatientInfo label={identifierLabel} value={primaryIdentifier} />
+              {primaryIdentifier && <PatientInfo label={identifierLabel} value={primaryIdentifier} />}
             </div>
           );
         })}

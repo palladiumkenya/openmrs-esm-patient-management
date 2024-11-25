@@ -1,6 +1,6 @@
 import capitalize from 'lodash-es/capitalize';
 import { type PatientIdentifierValue, type FormValues } from '../../patient-registration/patient-registration.types';
-import { type MapperConfig, type HIEPatient, type ErrorResponse } from './hie-types';
+import { type MapperConfig, type HIEPatient, type ErrorResponse, type HIEPatientResponse } from './hie-types';
 import { openmrsFetch, restBaseUrl } from '@openmrs/esm-framework';
 import { v4 } from 'uuid';
 /**
@@ -11,7 +11,6 @@ class HealthInformationExchangeClient<T> {
   async fetchResource(resourceType: string, params: Record<string, string>): Promise<T> {
     const [identifierType, identifierValue] = Object.entries(params)[0];
     const url = `${restBaseUrl}/kenyaemr/getSHAPatient/${identifierValue}/${identifierType}`;
-
     const response = await openmrsFetch(url);
     return response.json();
   }
@@ -33,19 +32,19 @@ class Mapper<T, U> {
 /**
  * Maps HIEPatient objects to FormValues objects.
  */
-class PatientMapper extends Mapper<HIEPatient, FormValues> {
-  mapHIEPatientToFormValues(hiePatient: HIEPatient, currentFormValues: FormValues): FormValues {
+class PatientMapper extends Mapper<HIEPatientResponse, FormValues> {
+  mapHIEPatientToFormValues(hiePatient: HIEPatientResponse, currentFormValues: FormValues): FormValues {
     const { familyName, givenName, middleName } = getPatientName(hiePatient);
-    const telecom = hiePatient.telecom || [];
+    const telecom = hiePatient?.entry[0]?.resource.telecom || [];
 
     const telecomAttributes = this.mapTelecomToAttributes(telecom);
     const updatedIdentifiers = this.mapIdentifiers(hiePatient, currentFormValues);
-    const extensionAddressEntries = this.mapExtensionsToAddress(hiePatient.extension);
+    const extensionAddressEntries = this.mapExtensionsToAddress(hiePatient?.entry[0]?.resource.extension);
 
     return {
-      isDead: hiePatient.deceasedBoolean || false,
-      gender: hiePatient.gender || '',
-      birthdate: hiePatient.birthDate || '',
+      isDead: hiePatient?.entry[0]?.resource?.active || false,
+      gender: hiePatient?.entry[0]?.resource.gender || '',
+      birthdate: hiePatient?.entry[0]?.resource?.birthDate || '',
       givenName,
       familyName,
       telephoneNumber: telecom.find((t) => t.system === 'phone')?.value || '',
@@ -71,7 +70,7 @@ class PatientMapper extends Mapper<HIEPatient, FormValues> {
   }
 
   private mapIdentifiers(
-    hiePatient: HIEPatient,
+    hiePatient: HIEPatientResponse,
     currentFormValues: FormValues,
   ): Record<string, PatientIdentifierValue> {
     const updatedIdentifiers: Record<string, PatientIdentifierValue> = { ...currentFormValues.identifiers };
@@ -79,11 +78,11 @@ class PatientMapper extends Mapper<HIEPatient, FormValues> {
     // See https://github.com/palladiumkenya/openmrs-module-kenyaemr/blob/1e1d281eaba8041c45318e60ca0730449b8e4197/api/src/main/distro/metadata/identifierTypes.xml#L33
     updatedIdentifiers.socialHealthAuthorityIdentificationNumber = {
       ...currentFormValues.identifiers['socialHealthAuthorityIdentificationNumber'],
-      identifierValue: hiePatient.id,
+      identifierValue: hiePatient?.entry[0]?.resource?.id,
     };
 
     // Map fhir.Patient.Identifier to identifiers
-    hiePatient.identifier?.forEach((identifier: fhir.Identifier) => {
+    hiePatient.entry[0]?.resource.identifier?.forEach((identifier: fhir.Identifier) => {
       const identifierType = identifier.type?.coding?.[0]?.code;
       const mappedIdentifierType = this.convertToCamelCase(identifierType);
       const identifierValue = identifier.value;
@@ -157,7 +156,10 @@ export const fetchPatientFromHIE = async (
   return hieApiClient.fetchResource('Patient', { [identifierType]: identifierValue });
 };
 
-export const mapHIEPatientToFormValues = (hiePatient: HIEPatient, currentFormValues: FormValues): FormValues => {
+export const mapHIEPatientToFormValues = (
+  hiePatient: HIEPatientResponse,
+  currentFormValues: FormValues,
+): FormValues => {
   return patientMapper.mapHIEPatientToFormValues(hiePatient, currentFormValues);
 };
 
@@ -167,7 +169,7 @@ export const mapHIEPatientToFormValues = (hiePatient: HIEPatient, currentFormVal
  * @returns {string} - The masked data
  */
 export const maskData = (data: string): string => {
-  const maskedData = data.slice(0, 2) + '*'.repeat(data.length - 2);
+  const maskedData = data.slice(0, 2) + '*'.repeat(Math.max(0, data.length - 2));
   return maskedData;
 };
 
@@ -176,9 +178,12 @@ export const maskData = (data: string): string => {
  * @param patient {fhir.Patient} - The FHIR Patient resource
  * @returns {object} - The patient name
  */
-export const getPatientName = (patient: fhir.Patient) => {
-  const familyName = patient?.name[0]?.['family'] ?? '';
-  const givenName = patient.name[0]?.['given']?.[0]?.split(' ')?.[0] ?? '';
-  const middleName = patient.name[0]?.['given']?.[0]?.replace(givenName, '')?.trim() ?? '';
+export const getPatientName = (patient: HIEPatientResponse) => {
+  const familyName = patient?.entry?.[0]?.resource?.name?.[0]?.family ?? ''; // Safely access the family name
+  const givenNames = patient?.entry?.[0]?.resource?.name?.[0]?.given ?? []; // Safely access the given names array
+
+  const givenName = givenNames?.[0] ?? ''; // The first item is the given name (first name)
+  const middleName = givenNames.slice(1).join(' ').trim(); // Combine all other given names as middle name(s)
+
   return { familyName, givenName, middleName };
 };

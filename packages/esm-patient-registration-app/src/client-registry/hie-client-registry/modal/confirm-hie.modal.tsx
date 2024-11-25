@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, ModalBody, ModalHeader, ModalFooter, Accordion, AccordionItem, CodeSnippet } from '@carbon/react';
 import { age, ExtensionSlot, formatDate } from '@openmrs/esm-framework';
-import { type HIEPatient } from '../hie-types';
+import { type HIEPatientResponse, type HIEPatient } from '../hie-types';
 import capitalize from 'lodash-es/capitalize';
 import styles from './confirm-hie.scss';
 import PatientInfo from '../patient-info/patient-info.component';
@@ -11,7 +11,7 @@ import { getPatientName, maskData } from '../hie-resource';
 
 interface HIEConfirmationModalProps {
   closeModal: () => void;
-  patient: HIEPatient;
+  patient: HIEPatientResponse;
   onUseValues: () => void;
 }
 
@@ -34,10 +34,10 @@ const HIEConfirmationModal: React.FC<HIEConfirmationModalProps> = ({ closeModal,
           <ExtensionSlot
             className={styles.patientPhotoContainer}
             name="patient-photo-slot"
-            state={{ patientName: `${maskData(givenName)} . ${maskData(middleName)} . ${maskData(familyName)}` }}
+            state={{ patientName: `${maskData(givenName)}  ${maskData(middleName)}  ${maskData(familyName)}` }}
           />
           <div className={styles.patientInfoContainer}>
-            <PatientInfo label={t('healthID', 'HealthID')} value={patient?.id} />
+            <PatientInfo label={t('healthID', 'HealthID')} value={patient?.entry[0]?.resource?.id} />
             <PatientInfo
               label={t('patientName', 'Patient name')}
               customValue={
@@ -51,21 +51,22 @@ const HIEConfirmationModal: React.FC<HIEConfirmationModalProps> = ({ closeModal,
               }
             />
 
-            <PatientInfo label={t('age', 'Age')} value={age(patient?.birthDate)} />
-            <PatientInfo label={t('dateOfBirth', 'Date of birth')} value={formatDate(new Date(patient?.birthDate))} />
-            <PatientInfo label={t('gender', 'Gender')} value={capitalize(patient?.gender)} />
+            <PatientInfo label={t('age', 'Age')} value={age(patient?.entry[0]?.resource?.birthDate)} />
+            <PatientInfo
+              label={t('dateOfBirth', 'Date of birth')}
+              value={formatDate(new Date(patient?.entry[0]?.resource?.birthDate))}
+            />
+            <PatientInfo label={t('gender', 'Gender')} value={capitalize(patient?.entry[0]?.resource?.gender)} />
             <PatientInfo
               label={t('maritalStatus', 'Marital status')}
-              value={patient?.maritalStatus?.coding?.map((m) => m.code).join('')}
+              value={patient?.entry[0]?.resource.maritalStatus?.coding?.map((m) => m.code).join('')}
             />
 
-            {(!patient?.contact || patient?.contact.length === 0) && (
-              <PatientInfo label={t('dependents', 'Dependents')} value="--" />
-            )}
+            {!patient?.entry[0]?.resource.contact && <PatientInfo label={t('dependents', 'Dependents')} value="--" />}
           </div>
         </div>
 
-        <DependentInfo dependents={patient?.contact} />
+        <DependentInfo dependents={patient?.entry[0]?.resource.contact} />
 
         <div>
           <Accordion>

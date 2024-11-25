@@ -416,7 +416,7 @@ export const esmPatientRegistrationSchema = {
         },
       },
       _default: [
-        { identifierType: 'National ID', identifierValue: 'national-id' },
+        { identifierType: 'National ID', identifierValue: 'National ID' },
         { identifierType: 'Passport Number', identifierValue: 'passport-number' },
         { identifierType: 'Birth Certificate Number', identifierValue: 'birth-certificate-number' },
         { identifierType: 'Alien ID Number', identifierValue: 'alien-id-number' },
