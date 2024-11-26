@@ -147,15 +147,15 @@ const mapperConfig: MapperConfig = {
 };
 
 // Create instances
-const hieApiClient = new HealthInformationExchangeClient<HIEPatient | ErrorResponse>();
+const hieApiClient = new HealthInformationExchangeClient<HIEPatientResponse | ErrorResponse>();
 const patientMapper = new PatientMapper(mapperConfig);
 
 // Exported functions
 export const fetchPatientFromHIE = async (
   identifierType: string,
   identifierValue: string,
-): Promise<HIEPatient | ErrorResponse> => {
-  return hieApiClient.fetchResource('Patient', { [identifierType]: identifierValue });
+): Promise<HIEPatientResponse | ErrorResponse> => {
+  return hieApiClient.fetchResource('Bundle', { [identifierType]: identifierValue });
 };
 
 export const mapHIEPatientToFormValues = (

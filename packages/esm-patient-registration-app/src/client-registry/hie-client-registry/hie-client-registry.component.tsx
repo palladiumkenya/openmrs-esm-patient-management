@@ -11,7 +11,7 @@ import { type RegistrationConfig } from '../../config-schema';
 import { useForm, Controller, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { fetchPatientFromHIE, mapHIEPatientToFormValues } from './hie-resource';
-import { type HIEPatientResponse, type HIEPatient } from './hie-types';
+import { type HIEPatientResponse, type HIEPatient, type ErrorResponse } from './hie-types';
 
 type HIEClientRegistryProps = {
   props: FormikProps<FormValues>;
@@ -39,11 +39,34 @@ const HIEClientRegistry: React.FC<HIEClientRegistryProps> = ({ setInitialFormVal
     hieClientRegistry: { identifierTypes },
   } = useConfig<RegistrationConfig>();
 
+  const isHIEPatientResponse = (
+    response: HIEPatientResponse | ErrorResponse | undefined,
+  ): response is HIEPatientResponse => {
+    return response?.resourceType === 'Bundle' && 'total' in response;
+  };
+
+  const isOperationOutcome = (response: HIEPatientResponse | ErrorResponse | undefined): response is ErrorResponse => {
+    return response?.resourceType === 'OperationOutcome' && 'issue' in response;
+  };
+
   const onSubmit: SubmitHandler<HIEFormValues> = async (data: HIEFormValues, event: React.BaseSyntheticEvent) => {
     try {
       const hieClientRegistry = await fetchPatientFromHIE(data.identifierType, data.identifierValue);
 
-      if (hieClientRegistry && hieClientRegistry.resourceType === 'Bundle') {
+      if (isHIEPatientResponse(hieClientRegistry)) {
+        if (hieClientRegistry.total === 0) {
+          const dispose = showModal('empty-client-registry-modal', {
+            onConfirm: () => dispose(),
+            close: () => dispose(),
+            title: t('clientRegistryEmpty', 'Create & Post Patient'),
+            message: t(
+              'patientNotFound',
+              `No patient found with the provided ${data?.identifierType}. Proceed to register.`,
+            ),
+          });
+          return;
+        }
+
         const dispose = showModal('hie-confirmation-modal', {
           patient: hieClientRegistry,
           closeModal: () => dispose(),
@@ -52,15 +75,20 @@ const HIEClientRegistry: React.FC<HIEClientRegistryProps> = ({ setInitialFormVal
               mapHIEPatientToFormValues(hieClientRegistry as unknown as HIEPatientResponse, props.values),
             ),
         });
-      }
-
-      if (hieClientRegistry && hieClientRegistry?.resourceType === 'OperationOutcome') {
-        const issueMessage = hieClientRegistry?.['issue']?.map((issue) => issue.diagnostics).join(', ');
+      } else if (isOperationOutcome(hieClientRegistry)) {
+        const issueMessage = hieClientRegistry?.issue?.map((issue) => issue.diagnostics).join(', ');
         const dispose = showModal('empty-client-registry-modal', {
           onConfirm: () => dispose(),
           close: () => dispose(),
           title: t('clientRegistryEmpty', 'Create & Post Patient'),
-          message: issueMessage,
+          message: issueMessage || t('errorOccurred', ' There was an error processing the request. Try again later'),
+        });
+      } else {
+        showSnackbar({
+          title: t('unexpectedResponse', 'Unexpected Response'),
+          subtitle: t('contactAdmin', 'Please contact the administrator.'),
+          kind: 'error',
+          isLowContrast: true,
         });
       }
     } catch (error) {
