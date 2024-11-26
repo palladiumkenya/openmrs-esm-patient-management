@@ -42,11 +42,11 @@ class PatientMapper extends Mapper<HIEPatientResponse, FormValues> {
     const telecomAttributes = this.mapTelecomToAttributes(telecom);
     const updatedIdentifiers = this.mapIdentifiers(hiePatient, currentFormValues);
     const extensionAddressEntries = this.mapExtensionsToAddress(hiePatient?.entry[0]?.resource.extension);
-
+    // TODO: In the event isDead is true, additional information such as caused of death, date e.tc is required
     return {
-      isDead: hiePatient?.entry[0]?.resource?.active || false,
-      gender: hiePatient?.entry[0]?.resource.gender || '',
-      birthdate: hiePatient?.entry[0]?.resource?.birthDate || '',
+      isDead: hiePatient?.entry[0]?.resource?.active ? false : true,
+      gender: hiePatient?.entry[0]?.resource.gender ?? '',
+      birthdate: hiePatient?.entry[0]?.resource?.birthDate ?? '',
       givenName,
       familyName,
       telephoneNumber: telecom.find((t) => t.system === 'phone')?.value || '',
