@@ -6,7 +6,9 @@ export type HIEPatient = fhir.Patient & {
 };
 
 export interface HIEPatientResponse {
+  resourceType: string;
   id: string;
+  total: number;
   meta: Metadata;
   link: Link[];
   entry: Entry[];
