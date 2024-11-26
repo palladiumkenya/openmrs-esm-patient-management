@@ -30,7 +30,7 @@ const HIEPatientDetailPreview: React.FC<HIEPatientDetailPreviewProps> = ({ patie
           state={{ patientName: `${maskData(givenName)} . ${maskData(middleName)} . ${maskData(familyName)}` }}
         />
         <div className={styles.patientInfoContainer}>
-          <PatientInfo label={t('healthID', 'HealthID')} value={getidentifier('SHA-number')?.value} />
+          <PatientInfo label={t('healthID', 'HealthID')} value={getidentifier('sha-number')?.value} />
           <PatientInfo
             label={t('patientName', 'Patient name')}
             customValue={
