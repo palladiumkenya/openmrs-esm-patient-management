@@ -58,10 +58,10 @@ const HIEClientRegistry: React.FC<HIEClientRegistryProps> = ({ setInitialFormVal
           const dispose = showModal('empty-client-registry-modal', {
             onConfirm: () => dispose(),
             close: () => dispose(),
-            title: t('clientRegistryEmpty', 'Create & Post Patient'),
+            title: t('clientRegistryEmptys', 'Create Patient'),
             message: t(
-              'patientNotFound',
-              `No patient found with the provided ${data?.identifierType}. Proceed to register.`,
+              'patientNotFounds',
+              `The patient records could not be found in the client registry, proceed to create patient or try again.`,
             ),
           });
           return;
