@@ -79,12 +79,9 @@
   "numberInNameDubious": "Number in name is dubious",
   "obsFieldUnknownDatatype": "Concept for obs field '{{fieldDefinitionId}}' has unknown datatype '{{datatypeName}}'",
   "optional": "اختياري",
-<<<<<<< HEAD
   "optionalIdentifierLabel": "{{identifierName}} (optional)",
-=======
   "originFacilityCode": "Origin facility code",
   "originFacilityName": "Origin facility name",
->>>>>>> 200ffbc8 (KHP3-4128 Add patient facility of origin on client registry modal (#808))
   "other": "آخر",
   "patient": "المريض",
   "patientDetailsFound": "Patient information found in the registry, do you want to use the information to continue with registration?",

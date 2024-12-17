@@ -1,4 +1,4 @@
-import { Button, ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
+import { Button, ModalBody, ModalFooter, ModalHeader , Form } from '@carbon/react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type HIEPatientResponse, type HIEPatient } from '../hie-types';
@@ -6,20 +6,10 @@ import styles from './confirm-hie.scss';
 import { authorizationFormSchema, generateOTP, getPatientName, persistOTP, sendOtp, verifyOtp } from '../hie-resource';
 import HIEPatientDetailPreview from './hie-patient-detail-preview.component';
 import HIEOTPVerficationForm from './hie-otp-verification-form.component';
-import { Form } from '@carbon/react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { type z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { showSnackbar } from '@openmrs/esm-framework';
-
-const PatientInfo: React.FC<{ label: string; value: string | (() => React.ReactNode) }> = ({ label, value }) => {
-  return (
-    <div style={{ display: 'grid', gridTemplateColumns: '0.25fr 0.75fr', margin: '0.25rem' }}>
-      <span style={{ minWidth: '5rem', fontWeight: 'bold' }}>{label}</span>
-      <span>{typeof value === 'function' ? value() : value}</span>
-    </div>
-  );
-};
 
 interface HIEConfirmationModalProps {
   closeModal: () => void;
