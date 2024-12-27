@@ -32,11 +32,13 @@ import {
 import {
   getAddressFieldValuesFromFhirPatient,
   getFormValuesFromFhirPatient,
+  getIdentifierFieldValuesFromFhirPatient,
   getPatientUuidMapFromFhirPatient,
   getPhonePersonAttributeValueFromFhirPatient,
   latestFirstEncounter,
 } from './patient-registration-utils';
 import { useInitialPatientRelationships } from './section/patient-relationships/relationships.resource';
+import { useMpiPatient } from './mpi/mpi-patient.resource';
 
 interface DeathInfoResults {
   uuid: string;
@@ -47,8 +49,8 @@ interface DeathInfoResults {
   causeOfDeathNonCoded: string | null;
 }
 
-export function useInitialFormValues(patientUuid: string): [FormValues, Dispatch<FormValues>] {
-  const { freeTextFieldConceptUuid } = useConfig<RegistrationConfig>();
+export function useInitialFormValuesLocal(patientUuid: string): [FormValues, Dispatch<FormValues>] {
+  const { freeTextFieldConceptUuid, fieldConfigurations } = useConfig<RegistrationConfig>();
   const { martialStatus, education, occupation, educationLoad } = useConcepts();
   const { isLoading: isLoadingPatientToEdit, patient: patientToEdit } = usePatient(patientUuid);
   const { data: deathInfo, isLoading: isLoadingDeathInfo } = useInitialPersonDeathInfo(patientUuid);
@@ -98,7 +100,7 @@ export function useInitialFormValues(patientUuid: string): [FormValues, Dispatch
           ...initialFormValues,
           ...getFormValuesFromFhirPatient(patientToEdit),
           address: getAddressFieldValuesFromFhirPatient(patientToEdit),
-          ...getPhonePersonAttributeValueFromFhirPatient(patientToEdit),
+          ...getPhonePersonAttributeValueFromFhirPatient(patientToEdit, fieldConfigurations.phone.personAttributeUuid),
           birthdateEstimated: !/^\d{4}-\d{2}-\d{2}$/.test(patientToEdit.birthDate),
           yearsEstimated,
           monthsEstimated,
@@ -116,7 +118,13 @@ export function useInitialFormValues(patientUuid: string): [FormValues, Dispatch
         setInitialFormValues(registration._patientRegistrationData.formValues);
       }
     })();
-  }, [initialFormValues, isLoadingPatientToEdit, patientToEdit, patientUuid]);
+  }, [
+    initialFormValues,
+    isLoadingPatientToEdit,
+    patientToEdit,
+    patientUuid,
+    fieldConfigurations.phone.personAttributeUuid,
+  ]);
 
   // Set initial patient death info
   useEffect(() => {
@@ -188,7 +196,7 @@ export function useInitialFormValues(patientUuid: string): [FormValues, Dispatch
     if (!isLoadingObs) {
       setInitialFormValues((initialFormValues) => ({ ...initialFormValues, obs: obs, observation: observations }));
     }
-  }, [isLoadingObs]);
+  }, [isLoadingObs, obs, observations]);
 
   // Set Initial encounter
 
@@ -199,9 +207,67 @@ export function useInitialFormValues(patientUuid: string): [FormValues, Dispatch
         concepts: [...occupation, ...martialStatus, ...education],
       }));
     }
-  }, [educationLoad]);
+  }, [educationLoad, martialStatus, education, occupation]);
 
   return [initialFormValues, setInitialFormValues];
+}
+
+export function useInitialFormValueMpi(patientUuid: string): [FormValues, Dispatch<FormValues>] {
+  const { fieldConfigurations } = useConfig<RegistrationConfig>();
+  const { isLoading: isLoadingMpiPatient, patient: mpiPatient } = useMpiPatient(patientUuid);
+
+  const [initialMPIFormValues, setInitialMPIFormValues] = useState<FormValues>({
+    patientUuid: v4(),
+    givenName: '',
+    middleName: '',
+    familyName: '',
+    additionalGivenName: '',
+    additionalMiddleName: '',
+    additionalFamilyName: '',
+    addNameInLocalLanguage: false,
+    gender: '',
+    birthdate: null,
+    yearsEstimated: 0,
+    monthsEstimated: 0,
+    birthdateEstimated: false,
+    telephoneNumber: '',
+    isDead: false,
+    deathDate: undefined,
+    deathTime: undefined,
+    deathTimeFormat: 'AM',
+    deathCause: '',
+    nonCodedCauseOfDeath: '',
+    relationships: [],
+    identifiers: {},
+    address: {},
+  });
+
+  useEffect(() => {
+    (async () => {
+      if (mpiPatient?.data?.identifier) {
+        const identifiers = await getIdentifierFieldValuesFromFhirPatient(
+          mpiPatient.data,
+          fieldConfigurations.identifier,
+        );
+
+        const values = {
+          ...initialMPIFormValues,
+          ...getFormValuesFromFhirPatient(mpiPatient.data),
+          address: getAddressFieldValuesFromFhirPatient(mpiPatient.data),
+          identifiers,
+          attributes: getPhonePersonAttributeValueFromFhirPatient(
+            mpiPatient.data,
+            fieldConfigurations.phone.personAttributeUuid,
+          ),
+        };
+        setInitialMPIFormValues(values);
+      }
+    })();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mpiPatient, isLoadingMpiPatient]);
+
+  return [initialMPIFormValues, setInitialMPIFormValues];
 }
 
 export function useInitialAddressFieldValues(patientUuid: string, fallback = {}): [object, Dispatch<object>] {
