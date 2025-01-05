@@ -2956,22 +2956,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@kenyaemr/esm-patient-search-app@workspace:packages/esm-patient-search-app":
-  version: 0.0.0-use.local
-  resolution: "@kenyaemr/esm-patient-search-app@workspace:packages/esm-patient-search-app"
-  dependencies:
-    "@carbon/react": "npm:^1.71.0"
-    lodash-es: "npm:^4.17.15"
-    webpack: "npm:^5.74.0"
-  peerDependencies:
-    "@openmrs/esm-framework": 5.x
-    react: ^18.1.0
-    react-i18next: 11.x
-    react-router-dom: 6.x
-    swr: 2.x
-  languageName: unknown
-  linkType: soft
-
 "@kenyaemr/esm-service-queues-app@workspace:packages/esm-service-queues-app":
   version: 0.0.0-use.local
   resolution: "@kenyaemr/esm-service-queues-app@workspace:packages/esm-service-queues-app"
@@ -3431,6 +3415,22 @@ __metadata:
     webpack-dev-server: "npm:^4.15.1"
     xlsx: "npm:^0.18.5"
     zod: "npm:^3.22.2"
+  languageName: unknown
+  linkType: soft
+
+"@openmrs/esm-patient-search-app@workspace:packages/esm-patient-search-app":
+  version: 0.0.0-use.local
+  resolution: "@openmrs/esm-patient-search-app@workspace:packages/esm-patient-search-app"
+  dependencies:
+    "@carbon/react": "npm:^1.71.0"
+    lodash-es: "npm:^4.17.15"
+    webpack: "npm:^5.74.0"
+  peerDependencies:
+    "@openmrs/esm-framework": 5.x
+    react: ^18.1.0
+    react-i18next: 11.x
+    react-router-dom: 6.x
+    swr: 2.x
   languageName: unknown
   linkType: soft
 

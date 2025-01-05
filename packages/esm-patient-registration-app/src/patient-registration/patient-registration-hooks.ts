@@ -85,129 +85,129 @@ export function useInitialFormValuesLocal(patientUuid: string): [FormValues, Dis
     address: {},
   });
 
-  useEffect(() => {
-    (async () => {
-      if (patientToEdit) {
-        const birthdateEstimated = !/^\d{4}-\d{2}-\d{2}$/.test(patientToEdit.birthDate);
-        const [years = 0, months = 0] = patientToEdit.birthDate.split('-').map((val) => parseInt(val));
-        // Please refer: https://github.com/openmrs/openmrs-esm-patient-management/pull/697#issuecomment-1562706118
-        const estimatedMonthsAvailable = patientToEdit.birthDate.split('-').length > 1;
-        const yearsEstimated = birthdateEstimated ? Math.floor(dayjs().diff(patientToEdit.birthDate, 'month') / 12) : 0;
-        const monthsEstimated =
-          birthdateEstimated && estimatedMonthsAvailable ? dayjs().diff(patientToEdit.birthDate, 'month') % 12 : 0;
+  // useEffect(() => {
+  //   (async () => {
+  //     if (patientToEdit) {
+  //       const birthdateEstimated = !/^\d{4}-\d{2}-\d{2}$/.test(patientToEdit.birthDate);
+  //       const [years = 0, months = 0] = patientToEdit.birthDate.split('-').map((val) => parseInt(val));
+  //       // Please refer: https://github.com/openmrs/openmrs-esm-patient-management/pull/697#issuecomment-1562706118
+  //       const estimatedMonthsAvailable = patientToEdit.birthDate.split('-').length > 1;
+  //       const yearsEstimated = birthdateEstimated ? Math.floor(dayjs().diff(patientToEdit.birthDate, 'month') / 12) : 0;
+  //       const monthsEstimated =
+  //         birthdateEstimated && estimatedMonthsAvailable ? dayjs().diff(patientToEdit.birthDate, 'month') % 12 : 0;
 
-        setInitialFormValues({
-          ...initialFormValues,
-          ...getFormValuesFromFhirPatient(patientToEdit),
-          address: getAddressFieldValuesFromFhirPatient(patientToEdit),
-          ...getPhonePersonAttributeValueFromFhirPatient(patientToEdit, fieldConfigurations.phone.personAttributeUuid),
-          birthdateEstimated: !/^\d{4}-\d{2}-\d{2}$/.test(patientToEdit.birthDate),
-          yearsEstimated,
-          monthsEstimated,
-        });
-      } else if (!isLoadingPatientToEdit && patientUuid) {
-        const registration = await getPatientRegistration(patientUuid);
+  //       setInitialFormValues({
+  //         ...initialFormValues,
+  //         ...getFormValuesFromFhirPatient(patientToEdit),
+  //         address: getAddressFieldValuesFromFhirPatient(patientToEdit),
+  //         ...getPhonePersonAttributeValueFromFhirPatient(patientToEdit, fieldConfigurations.phone.personAttributeUuid),
+  //         birthdateEstimated: !/^\d{4}-\d{2}-\d{2}$/.test(patientToEdit.birthDate),
+  //         yearsEstimated,
+  //         monthsEstimated,
+  //       });
+  //     } else if (!isLoadingPatientToEdit && patientUuid) {
+  //       const registration = await getPatientRegistration(patientUuid);
 
-        if (!registration._patientRegistrationData.formValues) {
-          console.error(
-            `Found a queued offline patient registration for patient ${patientUuid}, but without form values. Not using these values.`,
-          );
-          return;
-        }
+  //       if (!registration._patientRegistrationData.formValues) {
+  //         console.error(
+  //           `Found a queued offline patient registration for patient ${patientUuid}, but without form values. Not using these values.`,
+  //         );
+  //         return;
+  //       }
 
-        setInitialFormValues(registration._patientRegistrationData.formValues);
-      }
-    })();
-  }, [
-    initialFormValues,
-    isLoadingPatientToEdit,
-    patientToEdit,
-    patientUuid,
-    fieldConfigurations.phone.personAttributeUuid,
-  ]);
+  //       setInitialFormValues(registration._patientRegistrationData.formValues);
+  //     }
+  //   })();
+  // }, [
+  //   initialFormValues,
+  //   isLoadingPatientToEdit,
+  //   patientToEdit,
+  //   patientUuid,
+  //   fieldConfigurations.phone.personAttributeUuid,
+  // ]);
 
-  // Set initial patient death info
-  useEffect(() => {
-    if (!isLoadingDeathInfo && deathInfo?.dead) {
-      const deathDatetime = deathInfo.deathDate || null;
-      const deathDate = deathDatetime ? new Date(deathDatetime) : undefined;
-      const time = deathDate ? dayjs(deathDate).format('hh:mm') : undefined;
-      const timeFormat = deathDate ? (dayjs(deathDate).hour() >= 12 ? 'PM' : 'AM') : 'AM';
-      setInitialFormValues((initialFormValues) => ({
-        ...initialFormValues,
-        isDead: deathInfo.dead || false,
-        deathDate: deathDate,
-        deathTime: time,
-        deathTimeFormat: timeFormat,
-        deathCause: deathInfo.causeOfDeathNonCoded ? freeTextFieldConceptUuid : deathInfo.causeOfDeath?.uuid,
-        nonCodedCauseOfDeath: deathInfo.causeOfDeathNonCoded,
-      }));
-    }
-  }, [isLoadingDeathInfo, deathInfo, setInitialFormValues, freeTextFieldConceptUuid]);
+  // // Set initial patient death info
+  // useEffect(() => {
+  //   if (!isLoadingDeathInfo && deathInfo?.dead) {
+  //     const deathDatetime = deathInfo.deathDate || null;
+  //     const deathDate = deathDatetime ? new Date(deathDatetime) : undefined;
+  //     const time = deathDate ? dayjs(deathDate).format('hh:mm') : undefined;
+  //     const timeFormat = deathDate ? (dayjs(deathDate).hour() >= 12 ? 'PM' : 'AM') : 'AM';
+  //     setInitialFormValues((initialFormValues) => ({
+  //       ...initialFormValues,
+  //       isDead: deathInfo.dead || false,
+  //       deathDate: deathDate,
+  //       deathTime: time,
+  //       deathTimeFormat: timeFormat,
+  //       deathCause: deathInfo.causeOfDeathNonCoded ? freeTextFieldConceptUuid : deathInfo.causeOfDeath?.uuid,
+  //       nonCodedCauseOfDeath: deathInfo.causeOfDeathNonCoded,
+  //     }));
+  //   }
+  // }, [isLoadingDeathInfo, deathInfo, setInitialFormValues, freeTextFieldConceptUuid]);
 
-  // Setting authentication token
-  useEffect(() => {
-    if (!isLoadingToken && token) {
-      setInitialFormValues((initialFormValues) => ({ ...initialFormValues, token: String(token.access_token) }));
-    }
-  }, [isLoadingToken, token]);
+  // // Setting authentication token
+  // useEffect(() => {
+  //   if (!isLoadingToken && token) {
+  //     setInitialFormValues((initialFormValues) => ({ ...initialFormValues, token: String(token.access_token) }));
+  //   }
+  // }, [isLoadingToken, token]);
 
-  // Set initial patient relationships
-  useEffect(() => {
-    if (!isLoadingRelationships && relationships) {
-      setInitialFormValues((initialFormValues) => ({
-        ...initialFormValues,
-        relationships,
-      }));
-    }
-  }, [isLoadingRelationships, relationships, setInitialFormValues]);
+  // // Set initial patient relationships
+  // useEffect(() => {
+  //   if (!isLoadingRelationships && relationships) {
+  //     setInitialFormValues((initialFormValues) => ({
+  //       ...initialFormValues,
+  //       relationships,
+  //     }));
+  //   }
+  // }, [isLoadingRelationships, relationships, setInitialFormValues]);
 
-  // Set Initial patient identifiers
-  useEffect(() => {
-    if (!isLoadingIdentifiers && identifiers) {
-      setInitialFormValues((initialFormValues) => ({
-        ...initialFormValues,
-        identifiers,
-      }));
-    }
-  }, [isLoadingIdentifiers, identifiers, setInitialFormValues]);
+  // // Set Initial patient identifiers
+  // useEffect(() => {
+  //   if (!isLoadingIdentifiers && identifiers) {
+  //     setInitialFormValues((initialFormValues) => ({
+  //       ...initialFormValues,
+  //       identifiers,
+  //     }));
+  //   }
+  // }, [isLoadingIdentifiers, identifiers, setInitialFormValues]);
 
-  // Set Initial person attributes
-  useEffect(() => {
-    if (!isLoadingAttributes && attributes) {
-      let personAttributes = {};
-      attributes.forEach((attribute) => {
-        personAttributes[attribute.attributeType.uuid] =
-          attribute.attributeType.format === 'org.openmrs.Concept' && typeof attribute.value === 'object'
-            ? attribute.value?.uuid
-            : attribute.value;
-      });
+  // // Set Initial person attributes
+  // useEffect(() => {
+  //   if (!isLoadingAttributes && attributes) {
+  //     let personAttributes = {};
+  //     attributes.forEach((attribute) => {
+  //       personAttributes[attribute.attributeType.uuid] =
+  //         attribute.attributeType.format === 'org.openmrs.Concept' && typeof attribute.value === 'object'
+  //           ? attribute.value?.uuid
+  //           : attribute.value;
+  //     });
 
-      setInitialFormValues((initialFormValues) => ({
-        ...initialFormValues,
-        attributes: personAttributes,
-      }));
-    }
-  }, [attributes, setInitialFormValues, isLoadingAttributes]);
+  //     setInitialFormValues((initialFormValues) => ({
+  //       ...initialFormValues,
+  //       attributes: personAttributes,
+  //     }));
+  //   }
+  // }, [attributes, setInitialFormValues, isLoadingAttributes]);
 
-  // Set initial patient obs
+  // // Set initial patient obs
 
-  useEffect(() => {
-    if (!isLoadingObs) {
-      setInitialFormValues((initialFormValues) => ({ ...initialFormValues, obs: obs, observation: observations }));
-    }
-  }, [isLoadingObs, obs, observations]);
+  // useEffect(() => {
+  //   if (!isLoadingObs) {
+  //     setInitialFormValues((initialFormValues) => ({ ...initialFormValues, obs: obs, observation: observations }));
+  //   }
+  // }, [isLoadingObs, obs, observations]);
 
-  // Set Initial encounter
+  // // Set Initial encounter
 
-  useEffect(() => {
-    if (!educationLoad) {
-      setInitialFormValues((initialFormValues) => ({
-        ...initialFormValues,
-        concepts: [...occupation, ...martialStatus, ...education],
-      }));
-    }
-  }, [educationLoad, martialStatus, education, occupation]);
+  // useEffect(() => {
+  //   if (!educationLoad) {
+  //     setInitialFormValues((initialFormValues) => ({
+  //       ...initialFormValues,
+  //       concepts: [...occupation, ...martialStatus, ...education],
+  //     }));
+  //   }
+  // }, [educationLoad, martialStatus, education, occupation]);
 
   return [initialFormValues, setInitialFormValues];
 }
@@ -244,19 +244,18 @@ export function useInitialFormValueMpi(patientUuid: string): [FormValues, Dispat
 
   useEffect(() => {
     (async () => {
-      if (mpiPatient?.data?.identifier) {
-        const identifiers = await getIdentifierFieldValuesFromFhirPatient(
-          mpiPatient.data,
-          fieldConfigurations.identifier,
-        );
+      if (mpiPatient) {
+        // const identifiers = await getIdentifierFieldValuesFromFhirPatient(
+        //   mpiPatient.data,
+        //   fieldConfigurations.identifier,
+        // );
 
         const values = {
           ...initialMPIFormValues,
-          ...getFormValuesFromFhirPatient(mpiPatient.data),
-          address: getAddressFieldValuesFromFhirPatient(mpiPatient.data),
-          identifiers,
+          ...getFormValuesFromFhirPatient(mpiPatient),
+          address: getAddressFieldValuesFromFhirPatient(mpiPatient),
           attributes: getPhonePersonAttributeValueFromFhirPatient(
-            mpiPatient.data,
+            mpiPatient,
             fieldConfigurations.phone.personAttributeUuid,
           ),
         };

@@ -78,7 +78,7 @@ const PatientBanner: React.FC<PatientBannerProps> = ({ patient, patientUuid, hid
   const handleCreatePatientRecord = (externalId: string) => {
     //setSourceRecord(externalId);
     navigate({
-      to: `${window.getOpenmrsSpaBase()}patient-registration?sourceRecord=${externalId}`,
+      to: `${window.getOpenmrsSpaBase()}patient-registration?sourceRecord=${patient.externalId}`,
     });
   };
 

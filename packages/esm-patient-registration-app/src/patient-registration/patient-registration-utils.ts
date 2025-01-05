@@ -110,10 +110,9 @@ export function getFormValuesFromFhirPatient(patient: fhir.Patient) {
   const result = {} as FormValues;
   const patientName = patient.name[0];
   const additionalPatientName = patient.name[1];
-
   result.patientUuid = patient.id;
-  result.givenName = patientName?.given[0];
-  result.middleName = patientName?.given[1];
+  result.givenName = patientName?.given?.[0];
+  result.middleName = patientName?.given?.[1];
   result.familyName = patientName?.family;
   result.addNameInLocalLanguage = !!additionalPatientName ? true : undefined;
   result.additionalGivenName = additionalPatientName?.given?.[0] ?? undefined;
