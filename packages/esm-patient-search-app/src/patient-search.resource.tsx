@@ -91,7 +91,7 @@ export function useInfinitePatientSearch(
       if (prevPageData && !prevPageData?.data?.link.some((link) => link.relation === 'next')) {
         return null;
       }
-      let url = `${fhirBaseUrl}/Patient/$cr-search?name=${searchQuery}`;
+      let url = `https://hiedhs.intellisoftkenya.com/fhir/Patient?name=${searchQuery}`;
 
       return url;
     },
@@ -106,6 +106,12 @@ export function useInfinitePatientSearch(
     openmrsFetch,
   );
 
+  const fetcher = (url: string) => {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', `Basic ${btoa('kemr:password')}`);
+    return fetch(url, { headers }).then((res) => res.json());
+  };
   const {
     data: mpiData,
     isLoading: isLoadingMpi,
@@ -115,7 +121,7 @@ export function useInfinitePatientSearch(
     size: mpiSize,
   } = useSWRInfinite<InfinitePatientBundleResponse, Error>(
     shouldFetch ? (searchMode == 'mpi' ? getExtUrl : null) : null,
-    openmrsFetch,
+    searchMode == 'mpi' ? fetcher : openmrsFetch,
   );
 
   const { nameTemplate } = useConfig() as PatientSearchConfig;
@@ -123,7 +129,7 @@ export function useInfinitePatientSearch(
   const mappedData =
     searchMode === 'mpi'
       ? mpiData
-        ? mapToOpenMRSPatient(mpiData ? mpiData[0].data : null, nameTemplate)
+        ? mapToOpenMRSPatient(mpiData ? (mpiData[0] as any) : null, nameTemplate)
         : null
       : data?.flatMap((response) => response?.data?.results ?? []) ?? null;
 

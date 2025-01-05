@@ -196,7 +196,7 @@ export function useInitialFormValuesLocal(patientUuid: string): [FormValues, Dis
     if (!isLoadingObs) {
       setInitialFormValues((initialFormValues) => ({ ...initialFormValues, obs: obs, observation: observations }));
     }
-  }, [isLoadingObs]);
+  }, [isLoadingObs, obs, observations]);
 
   // Set Initial encounter
 
@@ -207,7 +207,7 @@ export function useInitialFormValuesLocal(patientUuid: string): [FormValues, Dis
         concepts: [...occupation, ...martialStatus, ...education],
       }));
     }
-  }, [educationLoad]);
+  }, [educationLoad, martialStatus, education, occupation]);
 
   return [initialFormValues, setInitialFormValues];
 }
@@ -244,19 +244,18 @@ export function useMpiInitialFormValues(patientUuid: string): [FormValues, Dispa
 
   useEffect(() => {
     (async () => {
-      if (mpiPatient?.data?.identifier) {
-        const identifiers = await getIdentifierFieldValuesFromFhirPatient(
-          mpiPatient.data,
-          fieldConfigurations.identifierMappings,
-        );
+      if (mpiPatient) {
+        // const identifiers = await getIdentifierFieldValuesFromFhirPatient(
+        //   mpiPatient.data,
+        //   fieldConfigurations.identifier,
+        // );
 
         const values = {
           ...initialMPIFormValues,
-          ...getFormValuesFromFhirPatient(mpiPatient.data),
-          address: getAddressFieldValuesFromFhirPatient(mpiPatient.data),
-          identifiers,
+          ...getFormValuesFromFhirPatient(mpiPatient),
+          address: getAddressFieldValuesFromFhirPatient(mpiPatient),
           attributes: getPhonePersonAttributeValueFromFhirPatient(
-            mpiPatient.data,
+            mpiPatient,
             fieldConfigurations.phone.personAttributeUuid,
           ),
         };
