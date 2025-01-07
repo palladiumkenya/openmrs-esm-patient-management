@@ -45,6 +45,7 @@ export interface PatientRegistrationProps {
 
 export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePatientForm, isOffline }) => {
   const healthInformationExchangeFlag = useFeatureFlag('healthInformationExchange');
+  const crossBorderRegistryFlag = useFeatureFlag('mpiFlag');
   const { currentSession, identifierTypes } = useContext(ResourcesContext);
   const { search } = useLocation();
   const config = useConfig() as RegistrationConfig;
@@ -71,7 +72,9 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
 
   useEffect(() => {
     if (initialMPIFormValues) {
-      setInitialFormValues(initialMPIFormValues);
+      setInitialFormValues({
+        ...initialMPIFormValues,
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialMPIFormValues, setInitialMPIFormValues]);
@@ -185,7 +188,7 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
       </ul>
     );
   };
-  const enableRegistryButton = healthInformationExchangeFlag ? false : !enableClientRegistry;
+  const enableRegistryButton = healthInformationExchangeFlag || crossBorderRegistryFlag ? false : !enableClientRegistry;
 
   const displayErrors = (errors) => {
     if (errors && typeof errors === 'object' && !!Object.keys(errors).length) {
@@ -224,20 +227,21 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
                     </Link>
                   </div>
                 ))}
-                {!healthInformationExchangeFlag && (
-                  <Button
-                    renderIcon={ShareKnowledge}
-                    disabled={!currentSession || !identifierTypes}
-                    onClick={() => {
-                      setEnableClientRegistry(true);
-                      props.isValid
-                        ? handleSavePatientToClientRegistry(props.values, props.setValues, inEditMode)
-                        : props.validateForm().then((errors) => displayErrors(errors));
-                    }}
-                    className={styles.submitButton}>
-                    {t('postToRegistry', 'Post to registry')}
-                  </Button>
-                )}
+                {!healthInformationExchangeFlag ||
+                  (crossBorderRegistryFlag && (
+                    <Button
+                      renderIcon={ShareKnowledge}
+                      disabled={!currentSession || !identifierTypes}
+                      onClick={() => {
+                        setEnableClientRegistry(true);
+                        props.isValid
+                          ? handleSavePatientToClientRegistry(props.values, props.setValues, inEditMode)
+                          : props.validateForm().then((errors) => displayErrors(errors));
+                      }}
+                      className={styles.submitButton}>
+                      {t('postToRegistry', 'Post to registry')}
+                    </Button>
+                  ))}
                 <Button
                   className={styles.submitButton}
                   type="submit"

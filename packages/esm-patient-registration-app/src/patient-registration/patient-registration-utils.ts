@@ -197,8 +197,7 @@ export async function getIdentifierFieldValuesFromFhirPatient(
 ): Promise<{ [identifierFieldName: string]: PatientIdentifierValue }> {
   const identifiers: FormValues['identifiers'] = {};
   const promises: Promise<void>[] = [];
-
-  for (const identifier of patient.identifier) {
+  for (const identifier of patient?.identifier) {
     for (const config of identifierConfig) {
       if (config.fhirIdentifierSystem !== identifier.system) {
         continue;

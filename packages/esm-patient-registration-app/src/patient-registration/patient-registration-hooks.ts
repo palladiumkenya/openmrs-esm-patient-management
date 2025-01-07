@@ -50,7 +50,7 @@ interface DeathInfoResults {
 }
 
 export function useInitialFormValuesLocal(patientUuid: string): [FormValues, Dispatch<FormValues>] {
-  const { freeTextFieldConceptUuid, fieldConfigurations } = useConfig<RegistrationConfig>()
+  const { freeTextFieldConceptUuid, fieldConfigurations } = useConfig<RegistrationConfig>();
   const { martialStatus, education, occupation, educationLoad } = useConcepts();
   const { isLoading: isLoadingPatientToEdit, patient: patientToEdit } = usePatient(patientUuid);
   const { data: deathInfo, isLoading: isLoadingDeathInfo } = useInitialPersonDeathInfo(patientUuid);
@@ -126,7 +126,7 @@ export function useInitialFormValuesLocal(patientUuid: string): [FormValues, Dis
     fieldConfigurations.phone.personAttributeUuid,
   ]);
 
-  // Set initial patient death info
+  // // Set initial patient death info
   useEffect(() => {
     if (!isLoadingDeathInfo && deathInfo?.dead) {
       const deathDatetime = deathInfo.deathDate || null;
@@ -145,14 +145,14 @@ export function useInitialFormValuesLocal(patientUuid: string): [FormValues, Dis
     }
   }, [isLoadingDeathInfo, deathInfo, setInitialFormValues, freeTextFieldConceptUuid]);
 
-  // Setting authentication token
+  // // Setting authentication token
   useEffect(() => {
     if (!isLoadingToken && token) {
       setInitialFormValues((initialFormValues) => ({ ...initialFormValues, token: String(token.access_token) }));
     }
   }, [isLoadingToken, token]);
 
-  // Set initial patient relationships
+  // // Set initial patient relationships
   useEffect(() => {
     if (!isLoadingRelationships && relationships) {
       setInitialFormValues((initialFormValues) => ({
@@ -162,7 +162,7 @@ export function useInitialFormValuesLocal(patientUuid: string): [FormValues, Dis
     }
   }, [isLoadingRelationships, relationships, setInitialFormValues]);
 
-  // Set Initial patient identifiers
+  // // Set Initial patient identifiers
   useEffect(() => {
     if (!isLoadingIdentifiers && identifiers) {
       setInitialFormValues((initialFormValues) => ({
@@ -172,7 +172,7 @@ export function useInitialFormValuesLocal(patientUuid: string): [FormValues, Dis
     }
   }, [isLoadingIdentifiers, identifiers, setInitialFormValues]);
 
-  // Set Initial person attributes
+  // // Set Initial person attributes
   useEffect(() => {
     if (!isLoadingAttributes && attributes) {
       let personAttributes = {};
@@ -191,14 +191,12 @@ export function useInitialFormValuesLocal(patientUuid: string): [FormValues, Dis
   }, [attributes, setInitialFormValues, isLoadingAttributes]);
 
   // Set initial patient obs
-
   useEffect(() => {
     if (!isLoadingObs) {
       setInitialFormValues((initialFormValues) => ({ ...initialFormValues, obs: obs, observation: observations }));
     }
-  }, [isLoadingObs, obs, observations]);
-
-  // Set Initial encounter
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoadingObs]);
 
   useEffect(() => {
     if (!educationLoad) {
@@ -207,7 +205,8 @@ export function useInitialFormValuesLocal(patientUuid: string): [FormValues, Dis
         concepts: [...occupation, ...martialStatus, ...education],
       }));
     }
-  }, [educationLoad, martialStatus, education, occupation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [educationLoad]);
 
   return [initialFormValues, setInitialFormValues];
 }
@@ -215,6 +214,7 @@ export function useInitialFormValuesLocal(patientUuid: string): [FormValues, Dis
 export function useMpiInitialFormValues(patientUuid: string): [FormValues, Dispatch<FormValues>] {
   const { fieldConfigurations } = useConfig<RegistrationConfig>();
   const { isLoading: isLoadingMpiPatient, patient: mpiPatient } = useMpiPatient(patientUuid);
+  const { data: initialIdentifiers, isLoading: isLoadingIdentifiers } = useInitialPatientIdentifiers(patientUuid);
 
   const [initialMPIFormValues, setInitialMPIFormValues] = useState<FormValues>({
     patientUuid: v4(),
@@ -244,14 +244,10 @@ export function useMpiInitialFormValues(patientUuid: string): [FormValues, Dispa
 
   useEffect(() => {
     (async () => {
-      if (mpiPatient) {
-        // const identifiers = await getIdentifierFieldValuesFromFhirPatient(
-        //   mpiPatient.data,
-        //   fieldConfigurations.identifier,
-        // );
-
+      if (mpiPatient && !isLoadingIdentifiers) {
         const values = {
           ...initialMPIFormValues,
+          identifiers: initialIdentifiers,
           ...getFormValuesFromFhirPatient(mpiPatient),
           address: getAddressFieldValuesFromFhirPatient(mpiPatient),
           attributes: getPhonePersonAttributeValueFromFhirPatient(
@@ -264,7 +260,7 @@ export function useMpiInitialFormValues(patientUuid: string): [FormValues, Dispa
     })();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mpiPatient, isLoadingMpiPatient]);
+  }, [mpiPatient, isLoadingMpiPatient, initialIdentifiers]);
 
   return [initialMPIFormValues, setInitialMPIFormValues];
 }

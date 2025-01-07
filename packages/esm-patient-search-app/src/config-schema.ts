@@ -38,11 +38,7 @@ export const configSchema = {
         postcode: {
           enabled: true,
         },
-        personAttributes: [
-          {
-            attributeTypeUuid: '14d4f066-15f5-102d-96e4-000c29c2a5d7',
-          },
-        ],
+        personAttributes: [],
       },
       gender: {
         _type: Type.Object,
