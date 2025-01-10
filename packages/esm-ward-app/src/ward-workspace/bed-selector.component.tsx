@@ -14,7 +14,7 @@ interface BedSelectorProps {
   selectedBedId: number;
   error: FieldError;
   onChange(bedId: number);
-  control: Control<{ bedId?: number }, any, { bedId?: number }>;
+  control: Control<{ bedId?: number }>;
   minBedCountToUseDropdown?: number;
 }
 
