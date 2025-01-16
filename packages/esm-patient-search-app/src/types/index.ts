@@ -22,6 +22,7 @@ export interface SearchedPatient {
     value: OpenmrsResource | string;
     attributeType: { uuid: string; display: string };
   }>;
+  contact?: Array<fhir.Patient>;
 }
 
 export interface Identifier {
