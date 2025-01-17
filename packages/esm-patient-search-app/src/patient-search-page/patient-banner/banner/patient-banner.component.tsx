@@ -14,6 +14,7 @@ import {
   usePatient,
   useVisit,
   showModal,
+  ConfigurableLink,
 } from '@openmrs/esm-framework';
 import { type PatientSearchConfig } from '../../../config-schema';
 import { type SearchedPatient } from '../../../types';
@@ -25,6 +26,7 @@ import MpiPatientBanner from '../../../mpi/mpi-patien-banner.component';
 interface ClickablePatientContainerProps {
   patientUuid: string;
   children: React.ReactNode;
+  isMPIPatient: boolean;
 }
 
 interface PatientBannerProps {
@@ -79,7 +81,7 @@ const PatientBanner: React.FC<PatientBannerProps> = ({ patient, patientUuid, hid
           [styles.activePatientContainer]: !isDeceased,
         })}
         role="banner">
-        <ClickablePatientContainer patientUuid={patientUuid}>
+        <ClickablePatientContainer patientUuid={patientUuid} isMPIPatient={isMPIPatient}>
           <div className={styles.patientAvatar} role="img">
             <PatientPhoto patientUuid={patientUuid} patientName={patientName} />
           </div>
@@ -155,7 +157,7 @@ const PatientBanner: React.FC<PatientBannerProps> = ({ patient, patientUuid, hid
   );
 };
 
-const ClickablePatientContainer = ({ patientUuid, children }: ClickablePatientContainerProps) => {
+const ClickablePatientContainer = ({ patientUuid, children, isMPIPatient }: ClickablePatientContainerProps) => {
   const { nonNavigationSelectPatientAction, patientClickSideEffect } = useContext(PatientSearchContext);
   const config = useConfig<PatientSearchConfig>();
 
@@ -175,9 +177,21 @@ const ClickablePatientContainer = ({ patientUuid, children }: ClickablePatientCo
     );
   } else {
     return (
-      <div className={styles.patientBanner} onClick={() => patientClickSideEffect?.(patientUuid)}>
-        {children}
-      </div>
+      <>
+        {isMPIPatient ? (
+          <div className={styles.patientBanner} onClick={() => patientClickSideEffect?.(patientUuid)}>
+            {children}
+          </div>
+        ) : (
+          <ConfigurableLink
+            className={styles.patientBanner}
+            onBeforeNavigate={() => patientClickSideEffect?.(patientUuid)}
+            to={config.search.patientChartUrl}
+            templateParams={{ patientUuid: patientUuid }}>
+            {children}
+          </ConfigurableLink>
+        )}
+      </>
     );
   }
 };
