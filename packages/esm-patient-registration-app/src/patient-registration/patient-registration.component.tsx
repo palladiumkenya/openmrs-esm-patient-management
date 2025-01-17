@@ -9,7 +9,6 @@ import {
   createErrorHandler,
   interpolateUrl,
   showSnackbar,
-  useAppContext,
   useConfig,
   usePatient,
   usePatientPhoto,
@@ -32,9 +31,7 @@ import { builtInSections, type RegistrationConfig, type SectionDefinition } from
 import { SectionWrapper } from './section/section-wrapper.component';
 import BeforeSavePrompt from './before-save-prompt';
 import styles from './patient-registration.scss';
-import PatientVerification from '../client-registry/patient-verification/patient-verification.component';
 import { handleSavePatientToClientRegistry } from '../client-registry/patient-verification/patient-verification-hook';
-import ClientRegistry from '../client-registry/client-registry.component';
 
 let exportedInitialFormValuesForTesting = {} as FormValues;
 
@@ -278,7 +275,6 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
                   initialFormValues: props.initialValues,
                   setInitialFormValues,
                 }}>
-                <ClientRegistry props={props} setInitialFormValues={setInitialFormValues} />
                 {sections.map((section, index) => (
                   <SectionWrapper
                     key={`registration-section-${section.id}`}
