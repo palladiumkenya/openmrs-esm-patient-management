@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
-import { Layer, Tile, Button } from '@carbon/react';
+import { Layer, Tile, Button, Select, SelectItem } from '@carbon/react';
 import EmptyDataIllustration from '../ui-components/empty-data-illustration.component';
 import PatientBanner, { PatientBannerSkeleton } from './patient-banner/banner/patient-banner.component';
 import { type SearchedPatient } from '../types';
@@ -82,6 +82,15 @@ export const SearchResultsEmptyState: React.FC<CommonProps> = ({ inTabletOrOverl
   const { t } = useTranslation();
   const isMPIEnabled = useFeatureFlag('mpiFlag');
   const isSearchPage = window.location.pathname === '/openmrs/spa/search';
+
+  const identifierTypes = [
+    { identifierType: 'Select an identifier type', identifierValue: 'select-identifier-type' },
+    { identifierType: 'National ID', identifierValue: 'National ID' },
+    { identifierType: 'Passport Number', identifierValue: 'passport-number' },
+    { identifierType: 'Birth Certificate Number', identifierValue: 'birth-certificate-number' },
+    { identifierType: 'Alien ID Number', identifierValue: 'alien-id-number' },
+    { identifierType: 'Refugee ID Number', identifierValue: 'refugee-number' },
+  ];
   return (
     <Layer>
       <Tile
@@ -103,18 +112,32 @@ export const SearchResultsEmptyState: React.FC<CommonProps> = ({ inTabletOrOverl
                   <p>
                     {t(
                       'trySearchFromClientRegistry',
-                      "Try searching using the patient's unique ID number or search the external registry",
+                      "Try searching using the patient's unique ID number or search the HIE Registry",
                     )}
                   </p>
                 </div>
-                <Button
-                  kind="ghost"
-                  renderIcon={'Search'}
-                  onClick={(e) => {
-                    doMPISearch(searchTerm);
-                  }}>
-                  {`${t('search', 'Search')} ${'External Registry'}`}
-                </Button>
+                <div className={styles.identifierTypeSelect}>
+                  <Select
+                    light
+                    id={`identifier-type`}
+                    hideLabel
+                    helperText={t(
+                      'selectIdentifierTypeHelperText',
+                      'Select an identifier type to perform HIE Registry search',
+                    )}
+                    onChange={(e) => {
+                      const identifierType = e.target.value;
+                      if (identifierType === 'select-identifier-type') {
+                        return;
+                      }
+                      doMPISearch(searchTerm, identifierType);
+                    }}
+                    defaultValue="option-3">
+                    {identifierTypes.map((identifierType) => (
+                      <SelectItem value={identifierType.identifierValue} text={identifierType.identifierType} />
+                    ))}
+                  </Select>
+                </div>
               </>
             )}
           </>
@@ -138,9 +161,9 @@ export const PatientSearchResults: React.FC<PatientSearchResultsProps> = ({ sear
   );
 };
 
-function doMPISearch(searchTerm: string) {
+function doMPISearch(searchTerm: string, identifierType?: string) {
   navigate({
-    to: '${openmrsSpaBase}/search?query=${searchTerm}&mode=mpi',
-    templateParams: { searchTerm: searchTerm },
+    to: '${openmrsSpaBase}/search?query=${searchTerm}&mode=mpi&identifierType=${identifierType}',
+    templateParams: { searchTerm: searchTerm, identifierType: identifierType },
   });
 }

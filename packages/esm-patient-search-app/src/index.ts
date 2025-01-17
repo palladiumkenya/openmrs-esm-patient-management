@@ -14,8 +14,9 @@ import rootComponent from './root.component';
 import patientSearchIconComponent from './patient-search-icon';
 import patientSearchButtonComponent from './patient-search-button/patient-search-button.component';
 import patientSearchBarComponent from './compact-patient-search-extension';
+import OtpAuthenticationModal from './mpi/otp-authentication.modal';
 
-const moduleName = '@openmrs/esm-patient-search-app';
+const moduleName = '@kenyaemr/esm-patient-search-app';
 
 const options = {
   featureName: 'patient-search',
@@ -34,6 +35,7 @@ export const patientSearchButton = getSyncLifecycle(patientSearchButtonComponent
 // This extension is not compatible with the tablet view.
 export const patientSearchBar = getSyncLifecycle(patientSearchBarComponent, options);
 
+export const otpAuthenticationModal = getSyncLifecycle(OtpAuthenticationModal, options);
 export const patientSearchWorkspace = getAsyncLifecycle(
   () => import('./patient-search-workspace/patient-search.workspace'),
   options,

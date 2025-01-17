@@ -4,25 +4,24 @@ import { useTranslation } from 'react-i18next';
 import { ButtonSkeleton, SkeletonIcon, SkeletonText, Button, Tag } from '@carbon/react';
 import {
   age,
-  ConfigurableLink,
   ExtensionSlot,
   formatDate,
   parseDate,
-  PatientBannerActionsMenu,
   PatientBannerContactDetails,
   PatientBannerToggleContactDetailsButton,
   PatientPhoto,
   useConfig,
   usePatient,
   useVisit,
-  navigate,
-  UserFollowIcon,
+  showModal,
 } from '@openmrs/esm-framework';
 import { type PatientSearchConfig } from '../../../config-schema';
 import { type SearchedPatient } from '../../../types';
 import { PatientSearchContext } from '../../../patient-search-context';
 import styles from './patient-banner.scss';
-
+import { TwoFactorAuthentication } from '@carbon/react/icons';
+import { maskName } from '../../../mpi/utils';
+import MpiPatientBanner from '../../../mpi/mpi-patien-banner.component';
 interface ClickablePatientContainerProps {
   patientUuid: string;
   children: React.ReactNode;
@@ -39,7 +38,6 @@ const PatientBanner: React.FC<PatientBannerProps> = ({ patient, patientUuid, hid
   const { t } = useTranslation();
   const { currentVisit } = useVisit(patientUuid);
   const { patient: fhirPatient, isLoading } = usePatient(patientUuid);
-  const { nonNavigationSelectPatientAction } = useContext(PatientSearchContext);
   const patientName = patient.person.personName.display;
 
   const [showContactDetails, setShowContactDetails] = useState(false);
@@ -66,9 +64,10 @@ const PatientBanner: React.FC<PatientBannerProps> = ({ patient, patientUuid, hid
 
   const isDeceased = !!patient.person.deathDate;
 
-  const handleCreatePatientRecord = (externalId: string) => {
-    navigate({
-      to: `${window.getOpenmrsSpaBase()}patient-registration?sourceRecord=${patient.externalId}`,
+  const handleOtpVerification = (patient: SearchedPatient) => {
+    const dispose = showModal('otp-authentication-modal', {
+      onClose: () => dispose(),
+      patient,
     });
   };
 
@@ -88,11 +87,11 @@ const PatientBanner: React.FC<PatientBannerProps> = ({ patient, patientUuid, hid
               changed from SearchedPatient type to fhir.Patient type */}
           <div className={classNames(styles.patientNameRow, styles.patientInfo)}>
             <div className={styles.flexRow}>
-              <span className={styles.patientName}>{patientName}</span>
+              <span className={styles.patientName}>{isMPIPatient ? maskName(patientName) : patientName}</span>
               {isMPIPatient && (
                 <div>
                   <Tag className={styles.mpiTag} type="blue">
-                    &#127760; {t('mpi', 'MPI')}
+                    &#127760; {t('hie', 'HIE')}
                   </Tag>
                 </div>
               )}
@@ -123,27 +122,16 @@ const PatientBanner: React.FC<PatientBannerProps> = ({ patient, patientUuid, hid
           />
         </ClickablePatientContainer>
         <div className={styles.buttonCol}>
-          {!hideActionsOverflow ? (
-            <PatientBannerActionsMenu
-              actionsSlotName={'patient-search-actions-slot'}
-              additionalActionsSlotState={{
-                selectPatientAction: nonNavigationSelectPatientAction,
-                launchPatientChart: true,
-              }}
-              isDeceased={patient.person.dead}
-              patient={fhirPatient}
-              patientUuid={patientUuid}
-            />
-          ) : null}
+          <div></div>
           {isMPIPatient && (
             <div>
               <Button
                 kind="ghost"
-                renderIcon={UserFollowIcon}
+                renderIcon={TwoFactorAuthentication}
                 iconDescription="Create Patient Record"
-                onClick={() => handleCreatePatientRecord(patient.externalId)}
+                onClick={() => handleOtpVerification(patient)}
                 style={{ marginTop: '-0.25rem' }}>
-                {t('createPatientRecord', 'Create Patient Record')}
+                {t('otpVerification', 'OTP Verification')}
               </Button>
             </div>
           )}
@@ -157,7 +145,12 @@ const PatientBanner: React.FC<PatientBannerProps> = ({ patient, patientUuid, hid
           )}
         </div>
       </div>
-      {showContactDetails && <PatientBannerContactDetails patientId={patient.uuid} deceased={isDeceased} />}
+      {showContactDetails &&
+        (isMPIPatient ? (
+          <MpiPatientBanner patient={patient} />
+        ) : (
+          <PatientBannerContactDetails patientId={patient.uuid} deceased={isDeceased} />
+        ))}
     </>
   );
 };
@@ -182,13 +175,9 @@ const ClickablePatientContainer = ({ patientUuid, children }: ClickablePatientCo
     );
   } else {
     return (
-      <ConfigurableLink
-        className={styles.patientBanner}
-        onBeforeNavigate={() => patientClickSideEffect?.(patientUuid)}
-        to={config.search.patientChartUrl}
-        templateParams={{ patientUuid: patientUuid }}>
+      <div className={styles.patientBanner} onClick={() => patientClickSideEffect?.(patientUuid)}>
         {children}
-      </ConfigurableLink>
+      </div>
     );
   }
 };

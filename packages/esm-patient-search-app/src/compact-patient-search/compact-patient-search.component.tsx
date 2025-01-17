@@ -105,7 +105,7 @@ const CompactPatientSearchComponent: React.FC<CompactPatientSearchProps> = ({
     [addViewedPatientAndCloseSearchResults, config.search.patientChartUrl],
   );
   const focusedResult = useArrowNavigation(
-    !recentPatients ? searchedPatients?.length ?? 0 : recentPatients?.length ?? 0,
+    !recentPatients ? (searchedPatients?.length ?? 0) : (recentPatients?.length ?? 0),
     handlePatientSelection,
     handleFocusToInput,
     -1,

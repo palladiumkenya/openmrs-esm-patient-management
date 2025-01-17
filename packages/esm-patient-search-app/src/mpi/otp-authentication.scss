@@ -1,0 +1,25 @@
+@use '@carbon/type';
+@use '@carbon/layout';
+@use '@openmrs/esm-styleguide/src/vars' as *;
+
+.bodyShort02 {
+  @include type.type-style('body-compact-02');
+  color: $ui-05;
+}
+
+.otpForm {
+  display: flex;
+  flex-direction: column;
+  gap: layout.$spacing-05;
+}
+
+.otpRequestFormGroup {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: layout.$spacing-05;
+
+  & > button {
+    justify-self: flex-end;
+  }
+}

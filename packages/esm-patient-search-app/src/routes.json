@@ -36,6 +36,12 @@
       "title": "searchPatient"
     }
   ],
+  "modals": [
+    {
+      "name": "otp-authentication-modal",
+      "component": "otpAuthenticationModal"
+    }
+  ],
   "featureFlags": [
     {
       "flagName": "mpiFlag",

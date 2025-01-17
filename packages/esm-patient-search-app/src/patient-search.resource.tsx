@@ -12,6 +12,7 @@ import {
 import type { PatientSearchResponse, SearchedPatient, User } from './types';
 import { mapToOpenMRSPatient } from './mpi/utils';
 import { type PatientSearchConfig } from './config-schema';
+import { useSearchParams } from './hooks/useSearchParams';
 
 type InfinitePatientSearchResponse = FetchResponse<{
   results: Array<SearchedPatient>;
@@ -59,6 +60,9 @@ export function useInfinitePatientSearch(
   resultsToFetch: number = 10,
   customRepresentation: string = patientSearchCustomRepresentation,
 ): PatientSearchResponse {
+  const session = useSession();
+  const params = useSearchParams();
+  const identifierType = params.get('identifierType') || '';
   const getUrl = useCallback(
     (
       page: number,
@@ -91,12 +95,12 @@ export function useInfinitePatientSearch(
       if (prevPageData && !prevPageData?.data?.link.some((link) => link.relation === 'next')) {
         return null;
       }
-      let url = `https://hiedhs.intellisoftkenya.com/fhir/Patient?name=${searchQuery}`;
+      const url = `${restBaseUrl}/kenyaemr/getSHAPatient/${searchQuery}/${identifierType}`;
 
       return url;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [searchQuery, customRepresentation, includeDead, resultsToFetch],
+    [searchQuery, customRepresentation, includeDead, resultsToFetch, identifierType],
   );
 
   const shouldFetch = isSearching && searchQuery;
@@ -106,12 +110,6 @@ export function useInfinitePatientSearch(
     openmrsFetch,
   );
 
-  const fetcher = (url: string) => {
-    const headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', `Basic ${btoa('kemr:password')}`);
-    return fetch(url, { headers }).then((res) => res.json());
-  };
   const {
     data: mpiData,
     isLoading: isLoadingMpi,
@@ -121,7 +119,7 @@ export function useInfinitePatientSearch(
     size: mpiSize,
   } = useSWRInfinite<InfinitePatientBundleResponse, Error>(
     shouldFetch ? (searchMode == 'mpi' ? getExtUrl : null) : null,
-    searchMode == 'mpi' ? fetcher : openmrsFetch,
+    searchMode == 'mpi' ? openmrsFetch : openmrsFetch,
   );
 
   const { nameTemplate } = useConfig() as PatientSearchConfig;
@@ -129,9 +127,9 @@ export function useInfinitePatientSearch(
   const mappedData =
     searchMode === 'mpi'
       ? mpiData
-        ? mapToOpenMRSPatient(mpiData ? (mpiData[0] as any) : null, nameTemplate)
-        : null
-      : data?.flatMap((response) => response?.data?.results ?? []) ?? null;
+        ? (mapToOpenMRSPatient(mpiData?.[0]?.data as any, nameTemplate, session) ?? [])
+        : []
+      : (data?.flatMap((response) => response?.data?.results ?? []) ?? []);
 
   return useMemo(() => {
     const isMpiMode = searchMode === 'mpi';
@@ -142,16 +140,16 @@ export function useInfinitePatientSearch(
     const currentError = isMpiMode ? mpiError : error;
 
     return {
-      data: mappedData,
+      data: Array.isArray(mappedData) ? mappedData : [],
       isLoading: currentIsLoading,
       fetchError: currentError,
       hasMore: isMpiMode
-        ? mpiData?.at(-1)?.data?.link?.some((link) => link.relation === 'next') ?? false
-        : data?.at(-1)?.data?.links?.some((link) => link.rel === 'next') ?? false,
+        ? (mpiData?.at(-1)?.data?.link?.some((link) => link.relation === 'next') ?? false)
+        : (data?.at(-1)?.data?.links?.some((link) => link.rel === 'next') ?? false),
       isValidating: currentIsValidating,
       setPage: currentSetSize,
       currentPage: currentSize,
-      totalResults: isMpiMode ? mpiData?.[0]?.data?.total ?? 0 : data?.[0]?.data?.totalCount ?? 0,
+      totalResults: isMpiMode ? (mpiData?.[0]?.data?.total ?? 0) : (data?.[0]?.data?.totalCount ?? 0),
     };
   }, [
     mappedData,
