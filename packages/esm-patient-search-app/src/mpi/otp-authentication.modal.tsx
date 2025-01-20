@@ -17,7 +17,6 @@ import { Controller, useForm } from 'react-hook-form';
 import {
   navigate,
   openmrsFetch,
-  PatientIdentifier,
   restBaseUrl,
   showSnackbar,
   useSession,
@@ -179,9 +178,8 @@ const OtpAuthenticationModal: React.FC<{ patient: SearchedPatient; onClose: () =
         kind: 'success',
         isLowContrast: true,
       });
-
-      onClose();
       navigate({ to: `\${openmrsSpaBase}/patient/${registeredPatient.data.uuid}/chart` });
+      onClose();
     } catch (error) {
       console.error('Patient registration error:', error);
       showSnackbar({
@@ -251,7 +249,8 @@ const OtpAuthenticationModal: React.FC<{ patient: SearchedPatient; onClose: () =
         </Button>
         <Button
           onClick={handlePatientRegistrationAndNavigateToPatientChart}
-          disabled={(!isOtpValid && otpStatus !== 'otpSendSuccessfull') || isRegistering}>
+          disabled={(!isOtpValid && otpStatus !== 'otpSendSuccessfull') || isRegistering}
+          >
           {isRegistering ? t('saving', 'Saving...') : t('continueToChart', 'Continue to Chart')}
         </Button>
       </ModalFooter>

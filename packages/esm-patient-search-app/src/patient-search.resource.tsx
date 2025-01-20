@@ -307,8 +307,8 @@ const handleHIEPatientSearchWorkflow = (
     const searchResults = patientSearchResponse;
 
     // check if any of the search results have a national id
-    const hasSHAIdentifier = searchResults.some((result) =>
-      result.identifiers.some(
+    const hasSHAIdentifier = searchResults?.some((result) =>
+      result?.identifiers?.some(
         (identifier) => identifier.identifierType?.uuid === '24aedd37-b5be-4e08-8311-3721b8d5100d',
       ),
     );
