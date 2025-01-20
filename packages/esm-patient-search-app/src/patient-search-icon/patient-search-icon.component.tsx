@@ -46,7 +46,7 @@ const PatientSearchLaunch: React.FC<PatientSearchLaunchProps> = () => {
   const closePatientSearch = useCallback(() => {
     if (isSearchPage) {
       navigate({
-        to: window.sessionStorage.getItem('searchReturnUrl') ?? '${openmrsSpaBase}/',
+        to: window.sessionStorage.getItem('searchReturnUrl') ?? `${window['getOpenmrsSpaBase']()}home`,
       });
       window.sessionStorage.removeItem('searchReturnUrl');
     }

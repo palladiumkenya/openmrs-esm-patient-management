@@ -32,7 +32,7 @@ const CompactPatientSearchComponent: React.FC<CompactPatientSearchProps> = ({
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
-  const debouncedSearchTerm = useDebounce(searchTerm);
+  const debouncedSearchTerm = useDebounce(searchTerm, 1500);
   const hasSearchTerm = Boolean(debouncedSearchTerm?.trim());
 
   const config = useConfig<PatientSearchConfig>();

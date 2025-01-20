@@ -61,7 +61,12 @@ const PatientSearchComponent: React.FC<PatientSearchComponentProps> = ({
 
     if (results?.length === 0) {
       return (
-        <SearchResultsEmptyState inTabletOrOverlay={inTabletOrOverlay} searchTerm={query} searchMode={searchMode} />
+        <SearchResultsEmptyState
+          searchResults={searchResults}
+          inTabletOrOverlay={inTabletOrOverlay}
+          searchTerm={query}
+          searchMode={searchMode}
+        />
       );
     }
 

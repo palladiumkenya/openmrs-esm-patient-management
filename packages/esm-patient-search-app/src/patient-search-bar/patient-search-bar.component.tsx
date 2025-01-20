@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Search } from '@carbon/react';
 import styles from './patient-search-bar.scss';
+import { useDebounce } from '@openmrs/esm-framework';
 
 interface PatientSearchBarProps {
   buttonProps?: Object;
@@ -16,6 +17,7 @@ const PatientSearchBar = React.forwardRef<HTMLInputElement, React.PropsWithChild
   ({ buttonProps, initialSearchTerm = '', onChange, onClear, onSubmit, isCompact }, ref) => {
     const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+    const debouncedSearchTerm = useDebounce(searchTerm, 2500);
     const responsiveSize = isCompact ? 'sm' : 'lg';
 
     const handleChange = useCallback(
@@ -29,11 +31,11 @@ const PatientSearchBar = React.forwardRef<HTMLInputElement, React.PropsWithChild
     const handleSubmit = useCallback(
       (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (searchTerm && searchTerm.trim()) {
-          onSubmit(searchTerm.trim());
+        if (debouncedSearchTerm && debouncedSearchTerm.trim()) {
+          onSubmit(debouncedSearchTerm.trim());
         }
       },
-      [onSubmit, searchTerm],
+      [onSubmit, debouncedSearchTerm],
     );
 
     return (

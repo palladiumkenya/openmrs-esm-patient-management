@@ -1,5 +1,5 @@
-import { restBaseUrl, openmrsFetch, getSessionLocation } from '@openmrs/esm-framework';
-import { type SearchedPatient } from '../types';
+import { restBaseUrl, openmrsFetch, getSessionLocation, type PatientIdentifier, type Patient } from '@openmrs/esm-framework';
+import { type Identifier, type SearchedPatient } from '../types';
 
 interface OtpPayload {
   otp: string;
@@ -88,7 +88,7 @@ export function generateOTP(length = 5) {
   return OTP;
 }
 
-export async function createPatient(patient: SearchedPatient) {
+export async function createPatientPayload(patient: SearchedPatient) {
   const person = patient.person;
   const payload = {
     person: {
@@ -133,6 +133,69 @@ export async function createPatient(patient: SearchedPatient) {
 
   return payload;
 }
+// create a payload to update the patient, given the local patient and the patient to be created
+// if the patient name and gender are the same, do not update the patient
+// if the patient name and gender are not the same, update the patient
+// also add the SHA Identifier
+export async function createPatientUpdatePayload(localPatient: any, patient: SearchedPatient) {
+  const updatedPayload: any = {};
+
+  // Check if name or gender needs to be updated
+  const localPersonName = localPatient.person.preferredName;
+  const searchedPersonName = patient.person.personName;
+  const isNameDifferent =
+    localPersonName.givenName !== searchedPersonName.givenName ||
+    localPersonName.middleName !== searchedPersonName.middleName ||
+    localPersonName.familyName !== searchedPersonName.familyName;
+
+  const isGenderDifferent = localPatient.person.gender !== patient.person.gender;
+
+  // Only create update payload if name or gender is different
+  if (isNameDifferent || isGenderDifferent) {
+    updatedPayload.uuid = localPatient.uuid;
+    updatedPayload.person = {
+      uuid: localPatient.person.uuid,
+      names: [
+        {
+          preferred: true,
+          givenName: patient.person.personName.givenName,
+          middleName: patient.person.personName.middleName,
+          familyName: patient.person.personName.familyName,
+        },
+      ],
+      gender: patient.person.gender.charAt(0).toUpperCase(),
+    };
+  }
+
+  // Add SHA identifier if it doesn't exist
+  const hasShaIdentifier = localPatient.identifiers.some(
+    (identifier: Identifier) => identifier.identifierType.uuid === '24aedd37-b5be-4e08-8311-3721b8d5100d',
+  );
+
+  if (!hasShaIdentifier) {
+    const shaIdentifier = patient.identifiers.filter(
+      (identifier: Identifier) => identifier.identifierType.uuid === '24aedd37-b5be-4e08-8311-3721b8d5100d',
+    );
+    updatedPayload.identifiers = shaIdentifier.map((identifier: Identifier) => ({
+      identifier: identifier.identifier,
+      location: identifier.location.uuid,
+      identifierType: identifier.identifierType.uuid,
+      preferred: false,
+    }));
+  }
+
+  return updatedPayload;
+}
+
+export const searchPatientByNationalId = async (nationalId: string) => {
+  const response = await openmrsFetch(`${restBaseUrl}/patient?q=${nationalId}&v=full`);
+  const filteredResponse = response.data.results.find((patient: Patient) => {
+    return patient.identifiers.some((identifier: PatientIdentifier) => {
+      return identifier.identifier === nationalId;
+    });
+  });
+  return filteredResponse;
+};
 
 export function generateIdentifier(source: string) {
   const abortController = new AbortController();
@@ -144,5 +207,17 @@ export function generateIdentifier(source: string) {
     method: 'POST',
     body: {},
     signal: abortController.signal,
+  });
+}
+
+export async function addPatientIdentifier(patientUuid: string, patientIdentifier) {
+  const abortController = new AbortController();
+  return openmrsFetch(`${restBaseUrl}/patient/${patientUuid}/identifier/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    signal: abortController.signal,
+    body: patientIdentifier,
   });
 }

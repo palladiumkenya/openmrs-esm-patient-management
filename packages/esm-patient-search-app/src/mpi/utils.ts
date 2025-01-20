@@ -19,7 +19,7 @@ export function mapToOpenMRSPatient(
   }
   //Consider patient // https://github.com/openmrs/openmrs-esm-core/blob/main/packages/framework/esm-api/src/types/patient-resource.ts
 
-  const pts: Array<SearchedPatient> = fhirPatients.entry.map((pt, index) => {
+  const pts: Array<SearchedPatient> = fhirPatients?.entry?.map((pt, index) => {
     let fhirPatient = pt.resource as fhir.Patient;
 
     return {
