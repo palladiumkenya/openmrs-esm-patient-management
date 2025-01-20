@@ -251,8 +251,7 @@ const OtpAuthenticationModal: React.FC<{ patient: SearchedPatient; onClose: () =
         </Button>
         <Button
           onClick={handlePatientRegistrationAndNavigateToPatientChart}
-          // disabled={(!isOtpValid && otpStatus !== 'otpSendSuccessfull') || isRegistering}
-        >
+          disabled={(!isOtpValid && otpStatus !== 'otpSendSuccessfull') || isRegistering}>
           {isRegistering ? t('saving', 'Saving...') : t('continueToChart', 'Continue to Chart')}
         </Button>
       </ModalFooter>
