@@ -3,11 +3,25 @@ import { Button, TextInput, ModalHeader, ModalBody, ModalFooter } from '@carbon/
 import { type SearchedPatient } from '../types';
 import { useTranslation } from 'react-i18next';
 import styles from './otp-authentication.scss';
-import { createPatient, generateOTP, sendOtp } from './otp-authentication.resource';
+import {
+  createPatientPayload,
+  generateOTP,
+  searchPatientByNationalId,
+  sendOtp,
+  createPatientUpdatePayload,
+  addPatientIdentifier,
+} from './otp-authentication.resource';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
-import { navigate, openmrsFetch, restBaseUrl, showSnackbar } from '@openmrs/esm-framework';
+import {
+  navigate,
+  openmrsFetch,
+  PatientIdentifier,
+  restBaseUrl,
+  showSnackbar,
+  useSession,
+} from '@openmrs/esm-framework';
 import { Password } from '@carbon/react/icons';
 
 const authFormSchema = z.object({
@@ -32,6 +46,7 @@ const normalizePhoneInput = (value: string): string => {
 
 const OtpAuthenticationModal: React.FC<{ patient: SearchedPatient; onClose: () => void }> = ({ patient, onClose }) => {
   const { t } = useTranslation();
+  const session = useSession();
   const patientPhoneNumber =
     (patient.attributes.find((attribute) => attribute.attributeType.display === 'phone')?.value as string) ?? '';
   const [serverOtp, setServerOtp] = useState<string>('');
@@ -39,6 +54,7 @@ const OtpAuthenticationModal: React.FC<{ patient: SearchedPatient; onClose: () =
   const [isOtpValid, setIsOtpValid] = useState(false);
   const [otpError, setOtpError] = useState<string>('');
   const [showResendButton, setShowResendButton] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const {
     control,
@@ -125,30 +141,57 @@ const OtpAuthenticationModal: React.FC<{ patient: SearchedPatient; onClose: () =
   };
 
   const handlePatientRegistrationAndNavigateToPatientChart = async () => {
+    setIsRegistering(true);
     try {
-      const patientPayload = await createPatient(patient);
-      const registeredPatient = await openmrsFetch(`${restBaseUrl}/patient`, {
+      const localPatient = await searchPatientByNationalId(patient.identifiers[0].identifier);
+      const isUpdate = Boolean(localPatient?.uuid);
+
+      let patientPayload = isUpdate
+        ? await createPatientUpdatePayload(localPatient, patient)
+        : await createPatientPayload(patient);
+      const patientRegistrationUrl = isUpdate
+        ? `${restBaseUrl}/patient/${localPatient.uuid}`
+        : `${restBaseUrl}/patient`;
+
+      const patientToCreateOrUpdate = isUpdate ? { person: patientPayload.person } : patientPayload;
+      const registeredPatient = await openmrsFetch(patientRegistrationUrl, {
         method: 'POST',
-        body: patientPayload,
+        body: patientToCreateOrUpdate,
         headers: {
           'Content-Type': 'application/json',
         },
       });
+
+      if (isUpdate) {
+        await addPatientIdentifier(localPatient.uuid, JSON.stringify(patientPayload?.identifiers[0]));
+      }
+
+      if (!registeredPatient?.data?.uuid) {
+        throw new Error('Patient registration failed - no UUID returned');
+      }
+
       showSnackbar({
-        title: t('patientCreated', 'Patient Created'),
-        subtitle: t('patientCreatedSubtitle', 'Patient has been successfully created'),
+        title: t(isUpdate ? 'patientUpdated' : 'patientCreated', isUpdate ? 'Patient Updated' : 'Patient Created'),
+        subtitle: t(
+          isUpdate ? 'patientUpdatedSubtitle' : 'patientCreatedSubtitle',
+          isUpdate ? 'Patient has been successfully updated' : 'Patient has been successfully created',
+        ),
         kind: 'success',
         isLowContrast: true,
       });
+
       onClose();
       navigate({ to: `\${openmrsSpaBase}/patient/${registeredPatient.data.uuid}/chart` });
     } catch (error) {
+      console.error('Patient registration error:', error);
       showSnackbar({
-        title: t('patientCreationFailed', 'Failed to create patient'),
-        subtitle: t('patientCreationFailedSubtitle', 'Please try again'),
+        title: t('patientSaveFailed', 'Failed to save patient'),
+        subtitle: t('patientSaveFailedSubtitle', error?.message || 'An unexpected error occurred. Please try again'),
         kind: 'error',
         isLowContrast: true,
       });
+    } finally {
+      setIsRegistering(false);
     }
   };
 
@@ -208,8 +251,9 @@ const OtpAuthenticationModal: React.FC<{ patient: SearchedPatient; onClose: () =
         </Button>
         <Button
           onClick={handlePatientRegistrationAndNavigateToPatientChart}
-          disabled={!isOtpValid || otpStatus !== 'otpSendSuccessfull'}>
-          {t('registerAndContinue', 'Register & Continue to Chart')}
+          // disabled={(!isOtpValid && otpStatus !== 'otpSendSuccessfull') || isRegistering}
+        >
+          {isRegistering ? t('saving', 'Saving...') : t('continueToChart', 'Continue to Chart')}
         </Button>
       </ModalFooter>
     </div>

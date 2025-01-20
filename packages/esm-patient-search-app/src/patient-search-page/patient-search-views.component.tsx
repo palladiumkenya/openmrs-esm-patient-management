@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { Layer, Tile, Button, Select, SelectItem } from '@carbon/react';
@@ -78,10 +78,20 @@ export const ErrorState: React.FC<CommonProps> = ({ inTabletOrOverlay }) => {
   );
 };
 
-export const SearchResultsEmptyState: React.FC<CommonProps> = ({ inTabletOrOverlay, searchMode, searchTerm }) => {
+export const SearchResultsEmptyState: React.FC<CommonProps & { searchResults: Array<SearchedPatient> }> = ({
+  inTabletOrOverlay,
+  searchMode,
+  searchTerm,
+  searchResults,
+}) => {
   const { t } = useTranslation();
+  const [showLocalSearch, setShowLocalSearch] = useState(false);
   const isMPIEnabled = useFeatureFlag('mpiFlag');
   const isSearchPage = window.location.pathname === '/openmrs/spa/search';
+
+  const handleShowLocalSearch = () => {
+    navigate({ to: `\${openmrsSpaBase}/search?query=${searchTerm}` });
+  };
 
   const identifierTypes = [
     { identifierType: 'Select an identifier type', identifierValue: 'select-identifier-type' },
@@ -99,8 +109,44 @@ export const SearchResultsEmptyState: React.FC<CommonProps> = ({ inTabletOrOverl
         })}>
         <EmptyDataIllustration />
         <p className={styles.emptyResultText}>
-          {t('noPatientChartsFoundMessage', 'Sorry, no patient charts were found')}
+          {t('noPatientChartsFoundMessage', 'Sorry, no patient charts were found')}{' '}
         </p>
+        <>
+          <div className={styles.emptyResultsMarginRules}>
+            <p>
+              {t(
+                'trySearchFromClientRegistry',
+                "Try searching using the patient's unique ID number or search the HIE Registry",
+              )}
+            </p>
+          </div>
+          <div className={styles.identifierTypeSelect}>
+            <Select
+              light
+              id={`identifier-type`}
+              hideLabel
+              helperText={t(
+                'selectIdentifierTypeHelperText',
+                'Select an identifier type to perform HIE Registry search',
+              )}
+              onChange={(e) => {
+                const identifierType = e.target.value;
+                if (identifierType === 'select-identifier-type') {
+                  return;
+                }
+                doMPISearch(searchTerm, identifierType);
+              }}
+              defaultValue="option-3">
+              {identifierTypes.map((identifierType) => (
+                <SelectItem value={identifierType.identifierValue} text={identifierType.identifierType} />
+              ))}
+            </Select>
+          </div>
+
+          <Button kind="ghost" onClick={() => handleShowLocalSearch()}>
+            {showLocalSearch ? 'Hide' : 'Show'} {t('localSearch', 'Local Search')}
+          </Button>
+        </>
         {isMPIEnabled && isSearchPage ? (
           <>
             <div className={styles.dividerWrapper}>

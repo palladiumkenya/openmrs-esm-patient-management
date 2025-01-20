@@ -18,7 +18,7 @@ const PatientSearchPageComponent: React.FC<PatientSearchPageComponentProps> = ()
   // P.S. The user will never be directed to the patient search page (above URL) in a tablet view otherwise.
   const handleCloseOverlay = useCallback(() => {
     navigate({
-      to: window['getOpenmrsSpaBase'](),
+      to: window['getOpenmrsSpaBase']() + '/home',
     });
   }, []);
 
