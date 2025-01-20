@@ -46,6 +46,7 @@ const PatientSearchComponent: React.FC<PatientSearchComponentProps> = ({
     goTo(1);
   }, [query, goTo]);
 
+
   const searchResultsView = useMemo(() => {
     if (!query) {
       return <EmptyState inTabletOrOverlay={inTabletOrOverlay} searchTerm={query} />;

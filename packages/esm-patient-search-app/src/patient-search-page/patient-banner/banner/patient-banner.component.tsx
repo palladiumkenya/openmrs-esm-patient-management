@@ -41,6 +41,7 @@ const PatientBanner: React.FC<PatientBannerProps> = ({ patient, patientUuid, hid
   const { currentVisit } = useVisit(patientUuid);
   const { patient: fhirPatient, isLoading } = usePatient(patientUuid);
   const patientName = patient.person.personName.display;
+  const { patientClickSideEffect } = useContext(PatientSearchContext);
 
   const [showContactDetails, setShowContactDetails] = useState(false);
   const toggleContactDetails = useCallback((e: MouseEvent) => {
@@ -68,7 +69,10 @@ const PatientBanner: React.FC<PatientBannerProps> = ({ patient, patientUuid, hid
 
   const handleOtpVerification = (patient: SearchedPatient) => {
     const dispose = showModal('otp-authentication-modal', {
-      onClose: () => dispose(),
+      onClose: () => {
+        patientClickSideEffect?.(patientUuid);
+        dispose();
+      },
       patient,
     });
   };
