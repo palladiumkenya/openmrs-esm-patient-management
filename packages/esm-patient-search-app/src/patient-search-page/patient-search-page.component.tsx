@@ -6,6 +6,7 @@ import PatientSearchOverlay from '../patient-search-overlay/patient-search-overl
 import AdvancedPatientSearchComponent from './advanced-patient-search.component';
 import styles from './patient-search-page.scss';
 import { inferModeFromSearchParams } from '../mpi/utils';
+import { navigateToHie } from '../mpi/otp-authentication.resource';
 
 interface PatientSearchPageComponentProps {}
 
@@ -25,7 +26,12 @@ const PatientSearchPageComponent: React.FC<PatientSearchPageComponentProps> = ()
   return isDesktop(layout) ? (
     <div className={styles.patientSearchPage}>
       <div className={styles.patientSearchComponent}>
-        <PatientSearchContext.Provider value={{}}>
+        <PatientSearchContext.Provider
+          value={{
+            nonNavigationSelectPatientAction: (patientUuid) => {
+              navigateToHie(patientUuid);
+            },
+          }}>
           <AdvancedPatientSearchComponent
             query={searchParams?.get('query') ?? ''}
             inTabletOrOverlay={!isDesktop(layout)}

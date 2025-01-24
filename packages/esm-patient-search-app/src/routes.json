@@ -40,6 +40,10 @@
     {
       "name": "otp-authentication-modal",
       "component": "otpAuthenticationModal"
+    },
+    {
+      "name": "hie-syc-modal",
+      "component": "hieSycModal"
     }
   ],
   "featureFlags": [
@@ -47,6 +51,6 @@
       "flagName": "mpiFlag",
       "label": "MPI Service",
       "description": "Enables the Master Patient Index workflows."
-    }    
+    }
   ]
 }

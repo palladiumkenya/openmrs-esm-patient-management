@@ -132,10 +132,6 @@ export function useInfinitePatientSearch(
         : []
       : (data?.flatMap((response) => response?.data?.results ?? []) ?? []);
 
-  if (!isLoading && identifierType) {
-    handleHIEPatientSearchWorkflow(mappedData, searchQuery, identifierType);
-  }
-
   return useMemo(() => {
     const isMpiMode = searchMode === 'mpi';
     const currentIsLoading = isMpiMode ? isLoadingMpi : isLoading;
@@ -297,32 +293,3 @@ export function useRestPatients(
     [mappedData, isLoading, error, patientUuids, size, isValidating, setSize],
   );
 }
-
-const handleHIEPatientSearchWorkflow = (
-  patientSearchResponse: Array<SearchedPatient>,
-  debouncedSearchTerm: string,
-  identifierType: string = 'National ID',
-) => {
-  if (debouncedSearchTerm && debouncedSearchTerm.trim() && patientSearchResponse?.length > 0) {
-    const searchResults = patientSearchResponse;
-
-    // check if any of the search results have a national id
-    const hasSHAIdentifier = searchResults?.some((result) =>
-      result?.identifiers?.some(
-        (identifier) => identifier.identifierType?.uuid === '24aedd37-b5be-4e08-8311-3721b8d5100d',
-      ),
-    );
-
-    if (!hasSHAIdentifier) {
-      navigate({
-        to: `\${openmrsSpaBase}/search?query=${encodeURIComponent(debouncedSearchTerm)}&mode=mpi&identifierType=${identifierType}`,
-      });
-    }
-  }
-
-  if (debouncedSearchTerm && debouncedSearchTerm.trim() && patientSearchResponse?.length === 0) {
-    navigate({
-      to: `\${openmrsSpaBase}/search?query=${encodeURIComponent(debouncedSearchTerm)}&mode=mpi&identifierType=${identifierType}`,
-    });
-  }
-};

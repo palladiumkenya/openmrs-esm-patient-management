@@ -17,6 +17,7 @@ import CompactPatientSearchComponent from '../compact-patient-search/compact-pat
 import PatientSearchOverlay from '../patient-search-overlay/patient-search-overlay.component';
 import styles from './patient-search-icon.scss';
 import { PatientSearchContext } from '../patient-search-context';
+import { navigateToHie } from '../mpi/otp-authentication.resource';
 
 interface PatientSearchLaunchProps {}
 
@@ -96,6 +97,7 @@ const PatientSearchLaunch: React.FC<PatientSearchLaunchProps> = () => {
               onClose={closePatientSearch}
               query={initialSearchTerm}
               patientClickSideEffect={closePatientSearch}
+              nonNavigationSelectPatientAction={navigateToHie}
             />
           )}
           <div className={styles.closeButton}>
