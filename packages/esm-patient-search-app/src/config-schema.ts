@@ -149,7 +149,7 @@ export const configSchema = {
       'A list of identifier types to be displayed in the patient search results as banner tags. Defaults to the OpenMRS ID identifier type.',
     _default: [
       // OpenMRS ID identifier type UUID
-      '05a29f94-c0ed-11e2-94be-8c13b969e334',
+      '24aedd37-b5be-4e08-8311-3721b8d5100d',
     ],
   },
   nameTemplate: {

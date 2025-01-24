@@ -2775,10 +2775,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@kenyaemr/esm-patient-search-app@workspace:packages/esm-patient-search-app"
   dependencies:
-    "@carbon/react": "npm:^1.71.0"
     lodash-es: "npm:^4.17.15"
     webpack: "npm:^5.74.0"
   peerDependencies:
+    "@carbon/react": 1.x
     "@openmrs/esm-framework": 6.x
     react: ^18.1.0
     react-i18next: 11.x

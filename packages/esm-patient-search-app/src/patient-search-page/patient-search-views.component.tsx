@@ -85,7 +85,6 @@ export const SearchResultsEmptyState: React.FC<CommonProps & { searchResults: Ar
   searchResults,
 }) => {
   const { t } = useTranslation();
-  const [showLocalSearch, setShowLocalSearch] = useState(false);
   const isMPIEnabled = useFeatureFlag('mpiFlag');
   const isSearchPage = window.location.pathname === '/openmrs/spa/search';
 
@@ -111,42 +110,6 @@ export const SearchResultsEmptyState: React.FC<CommonProps & { searchResults: Ar
         <p className={styles.emptyResultText}>
           {t('noPatientChartsFoundMessage', 'Sorry, no patient charts were found')}{' '}
         </p>
-        <>
-          <div className={styles.emptyResultsMarginRules}>
-            <p>
-              {t(
-                'trySearchFromClientRegistry',
-                "Try searching using the patient's unique ID number or search the HIE Registry",
-              )}
-            </p>
-          </div>
-          <div className={styles.identifierTypeSelect}>
-            <Select
-              light
-              id={`identifier-type`}
-              hideLabel
-              helperText={t(
-                'selectIdentifierTypeHelperText',
-                'Select an identifier type to perform HIE Registry search',
-              )}
-              onChange={(e) => {
-                const identifierType = e.target.value;
-                if (identifierType === 'select-identifier-type') {
-                  return;
-                }
-                doMPISearch(searchTerm, identifierType);
-              }}
-              defaultValue="option-3">
-              {identifierTypes.map((identifierType) => (
-                <SelectItem value={identifierType.identifierValue} text={identifierType.identifierType} />
-              ))}
-            </Select>
-          </div>
-
-          <Button kind="ghost" onClick={() => handleShowLocalSearch()}>
-            {showLocalSearch ? 'Hide' : 'Show'} {t('localSearch', 'Local Search')}
-          </Button>
-        </>
         {isMPIEnabled && isSearchPage ? (
           <>
             <div className={styles.dividerWrapper}>

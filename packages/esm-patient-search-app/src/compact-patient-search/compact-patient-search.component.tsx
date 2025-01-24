@@ -12,6 +12,7 @@ import RecentlySearchedPatients from './recently-searched-patients.component';
 import styles from './compact-patient-search.scss';
 import { useSearchParams } from 'react-router-dom';
 import { inferModeFromSearchParams } from '../mpi/utils';
+import { navigateToHie } from '../mpi/otp-authentication.resource';
 
 interface CompactPatientSearchProps {
   isSearchPage: boolean;
@@ -166,6 +167,9 @@ const CompactPatientSearchComponent: React.FC<CompactPatientSearchProps> = ({
     <PatientSearchContext.Provider
       value={{
         patientClickSideEffect: addViewedPatientAndCloseSearchResults,
+        nonNavigationSelectPatientAction: (patientUuid) => {
+          navigateToHie(patientUuid);
+        },
       }}>
       <div className={styles.patientSearchBar}>
         <PatientSearchBar

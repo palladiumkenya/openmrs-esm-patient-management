@@ -15,7 +15,7 @@ import patientSearchIconComponent from './patient-search-icon';
 import patientSearchButtonComponent from './patient-search-button/patient-search-button.component';
 import patientSearchBarComponent from './compact-patient-search-extension';
 import OtpAuthenticationModal from './mpi/otp-authentication.modal';
-
+import HieSycModal from './mpi/hie-syc.modal';
 const moduleName = '@kenyaemr/esm-patient-search-app';
 
 const options = {
@@ -36,6 +36,7 @@ export const patientSearchButton = getSyncLifecycle(patientSearchButtonComponent
 export const patientSearchBar = getSyncLifecycle(patientSearchBarComponent, options);
 
 export const otpAuthenticationModal = getSyncLifecycle(OtpAuthenticationModal, options);
+export const hieSycModal = getSyncLifecycle(HieSycModal, options);
 export const patientSearchWorkspace = getAsyncLifecycle(
   () => import('./patient-search-workspace/patient-search.workspace'),
   options,
