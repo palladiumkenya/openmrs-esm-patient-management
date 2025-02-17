@@ -14,13 +14,7 @@ import {
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
-import {
-  navigate,
-  openmrsFetch,
-  restBaseUrl,
-  showSnackbar,
-  useSession,
-} from '@openmrs/esm-framework';
+import { navigate, openmrsFetch, restBaseUrl, showSnackbar, useSession } from '@openmrs/esm-framework';
 import { Password } from '@carbon/react/icons';
 
 const authFormSchema = z.object({
@@ -47,7 +41,7 @@ const OtpAuthenticationModal: React.FC<{ patient: SearchedPatient; onClose: () =
   const { t } = useTranslation();
   const session = useSession();
   const patientPhoneNumber =
-    (patient.attributes.find((attribute) => attribute.attributeType.display === 'phone')?.value as string) ?? '';
+    (patient.attributes?.find((attribute) => attribute.attributeType.display === 'phone')?.value as string) ?? '';
   const [serverOtp, setServerOtp] = useState<string>('');
   const [otpStatus, setOtpStatus] = useState<'idle' | 'loadingOtp' | 'otpSendSuccessfull' | 'otpFetchError'>('idle');
   const [isOtpValid, setIsOtpValid] = useState(false);
@@ -197,51 +191,60 @@ const OtpAuthenticationModal: React.FC<{ patient: SearchedPatient; onClose: () =
     <div>
       <ModalHeader closeModal={onClose} title={t('otpVerification', 'OTP Verification')} />
       <ModalBody>
-        <div className={styles.otpForm}>
-          <Controller
-            control={control}
-            name="phoneNumber"
-            render={({ field }) => (
-              <TextInput
-                labelText={t('phoneNumber', 'Phone Number')}
-                placeholder="Enter Phone Number e.g. 0717417867"
-                invalidText={
-                  errors.phoneNumber?.message || t('phoneNumberInvalid', 'Please enter a valid phone number')
-                }
-                invalid={!!errors.phoneNumber}
-                {...field}
-                onChange={(e) => handlePhoneInput(e, field.onChange)}
-              />
+        {patientPhoneNumber ? (
+          <div className={styles.otpForm}>
+            <Controller
+              control={control}
+              name="phoneNumber"
+              render={({ field }) => (
+                <TextInput
+                  labelText={t('phoneNumber', 'Phone Number')}
+                  placeholder="Enter Phone Number e.g. 0717417867"
+                  invalidText={
+                    errors.phoneNumber?.message || t('phoneNumberInvalid', 'Please enter a valid phone number')
+                  }
+                  invalid={!!errors.phoneNumber}
+                  {...field}
+                  onChange={(e) => handlePhoneInput(e, field.onChange)}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="otp"
+              render={({ field }) => (
+                <TextInput
+                  labelText={t('otp', 'OTP')}
+                  placeholder="Enter 5-digit OTP"
+                  disabled={otpStatus !== 'otpSendSuccessfull'}
+                  invalid={!!otpError}
+                  invalidText={otpError}
+                  {...field}
+                  onChange={(e) => handleOtpInput(e, field.onChange)}
+                />
+              )}
+            />
+            <Button
+              size="sm"
+              kind="tertiary"
+              renderIcon={Password}
+              onClick={handleRequestOtp}
+              disabled={otpStatus === 'loadingOtp'}>
+              {otpStatus === 'loadingOtp'
+                ? t('sending', 'Sending...')
+                : showResendButton
+                  ? t('resendOtp', 'Resend OTP')
+                  : t('requestOtp', 'Request OTP')}
+            </Button>
+          </div>
+        ) : (
+          <p>
+            {t(
+              'faulureVerifyingPatient',
+              'Verification failed. Patient missing phone number.Kindly advice patient to Update their details on Afya Yangu and try again',
             )}
-          />
-          <Controller
-            control={control}
-            name="otp"
-            render={({ field }) => (
-              <TextInput
-                labelText={t('otp', 'OTP')}
-                placeholder="Enter 5-digit OTP"
-                disabled={otpStatus !== 'otpSendSuccessfull'}
-                invalid={!!otpError}
-                invalidText={otpError}
-                {...field}
-                onChange={(e) => handleOtpInput(e, field.onChange)}
-              />
-            )}
-          />
-          <Button
-            size="sm"
-            kind="tertiary"
-            renderIcon={Password}
-            onClick={handleRequestOtp}
-            disabled={otpStatus === 'loadingOtp'}>
-            {otpStatus === 'loadingOtp'
-              ? t('sending', 'Sending...')
-              : showResendButton
-                ? t('resendOtp', 'Resend OTP')
-                : t('requestOtp', 'Request OTP')}
-          </Button>
-        </div>
+          </p>
+        )}
       </ModalBody>
       <ModalFooter>
         <Button kind="secondary" onClick={handleClose}>
@@ -249,8 +252,7 @@ const OtpAuthenticationModal: React.FC<{ patient: SearchedPatient; onClose: () =
         </Button>
         <Button
           onClick={handlePatientRegistrationAndNavigateToPatientChart}
-          disabled={(!isOtpValid && otpStatus !== 'otpSendSuccessfull') || isRegistering}
-          >
+          disabled={(!isOtpValid && otpStatus !== 'otpSendSuccessfull') || isRegistering}>
           {isRegistering ? t('saving', 'Saving...') : t('continueToChart', 'Continue to Chart')}
         </Button>
       </ModalFooter>
