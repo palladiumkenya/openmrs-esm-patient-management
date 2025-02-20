@@ -35,6 +35,11 @@ const HieSycModal: React.FC<HieSycModalProps> = ({ onClose, localPatient, identi
 
   const handleSyncAndContinueToChart = async () => {
     onClose();
+
+    if (!hiePatient) {
+      navigate({ to: `${window['getOpenmrsSpaBase']()}patient/${localPatient.id}/chart` });
+    }
+
     const payload = createPatientUpdatePayloadFromFhir(localPatient, hiePatient, session?.sessionLocation?.uuid);
     const patientRegistrationUrl = `${restBaseUrl}/patient/${localPatient.id}`;
     const registeredPatient = await openmrsFetch(patientRegistrationUrl, {
@@ -54,6 +59,10 @@ const HieSycModal: React.FC<HieSycModalProps> = ({ onClose, localPatient, identi
       navigate({ to: `${window['getOpenmrsSpaBase']()}patient/${localPatient.id}/chart` });
     }
   };
+
+  const syncButtonText = hiePatient
+    ? t('syncAndContinueToChart', 'Sync and Continue to Chart')
+    : t('continueToChart', 'Continue to Chart');
 
   return (
     <div>
@@ -89,7 +98,7 @@ const HieSycModal: React.FC<HieSycModalProps> = ({ onClose, localPatient, identi
           {t('cancel', 'Cancel')}
         </Button>
         <Button disabled={isLoading} kind="primary" onClick={handleSyncAndContinueToChart}>
-          {t('syncAndContinueToChart', 'Sync and Continue to Chart')}
+          {syncButtonText}
         </Button>
       </ModalFooter>
     </div>
@@ -118,6 +127,23 @@ const HiePatientInfo: React.FC<{ isLoading: boolean; error: Error | null; hiePat
         statusIconDescription="notification"
         subtitle={t('hieErrorSubtitle', 'Error while fetching patient information from HIE')}
         title={t('hieErrorTitle', 'HIE Patient Information Error')}
+      />
+    );
+  }
+
+  if (!hiePatient) {
+    return (
+      <InlineNotification
+        className={styles.hiePatientNotFound}
+        aria-label="closes notification"
+        kind="warning-alt"
+        lowContrast
+        statusIconDescription="notification"
+        subtitle={t(
+          'hiePatientNotFoundSubtitle',
+          'Please check the identifier and try again, in the event that the patient is not found, please advice the patient to register with Social Health Authority (SHA)',
+        )}
+        title={t('hiePatientNotFoundTitle', 'HIE Patient Information Not Found')}
       />
     );
   }
