@@ -253,7 +253,7 @@ export async function navigateToHie(patientUuid: string) {
 
   if (!requiredIdentifier) {
     // navigate to patient registration page to update the patient with the required identifiers
-    navigate({ to: `${window['getOpenmrsSpaBase']()}patient/${patientUuid}/edit`});
+    navigate({ to: `${window['getOpenmrsSpaBase']()}patient/${patientUuid}/edit` });
     return;
   }
 
@@ -277,7 +277,7 @@ export function useHIEPatient(searchQuery: string, identifierType: string) {
   const url = `${restBaseUrl}/kenyaemr/getSHAPatient/${searchQuery}/${identifierType}`;
   const { data, isLoading, error } = useSWR<{ data: fhir.Bundle }>(url, openmrsFetch);
 
-  const fhirPatient = data?.data?.entry.map((entry: fhir.BundleEntry) => entry.resource as fhir.Patient)?.[0];
+  const fhirPatient = data?.data?.entry?.map((entry: fhir.BundleEntry) => entry?.resource as fhir.Patient)?.[0];
 
   return { data: fhirPatient, isLoading, error };
 }

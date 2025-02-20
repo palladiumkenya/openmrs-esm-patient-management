@@ -1,4 +1,5 @@
 @use '@carbon/type';
+@use '@carbon/layout';
 @use '@openmrs/esm-styleguide/src/vars' as *;
 
 .header {
@@ -19,4 +20,8 @@
   display: grid;
   grid-template-columns: 0.25fr 0.75fr;
   align-items: center;
+}
+
+.notFoundNotitication {
+  padding-top: layout.$spacing-05;
 }

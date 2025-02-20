@@ -7,7 +7,7 @@
     "packages/*"
   ],
   "scripts": {
-    "start": "openmrs develop --sources packages/esm-patient-registration-app packages/esm-patient-search-app --port 8500 --backend https://hie.kenyahmis.org --config-url https://hie.kenyahmis.org/openmrs/spa/kenyaemr.config.json https://hie.kenyahmis.org/openmrs/spa/openmrs.config.json",
+    "start": "openmrs develop --sources packages/esm-patient-registration-app packages/esm-patient-search-app --port 8075 --config-url https://dev.kenyahmis.org/openmrs/spa/openmrs.config.json https://dev.kenyahmis.org/openmrs/spa/kenyaemr.config.json --backend https://dev.kenyahmis.org",
     "ci:publish": "yarn workspaces foreach --all --topological --exclude @openmrs/esm-patient-management npm publish --access public --tag latest",
     "ci:prepublish": "yarn workspaces foreach --all --topological --exclude @openmrs/esm-patient-management npm publish --access public --tag next",
     "release": "yarn workspaces foreach --all --topological version",
