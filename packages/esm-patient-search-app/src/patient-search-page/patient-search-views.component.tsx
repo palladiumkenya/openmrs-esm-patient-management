@@ -7,6 +7,7 @@ import PatientBanner, { PatientBannerSkeleton } from './patient-banner/banner/pa
 import { type SearchedPatient } from '../types';
 import styles from './patient-search-lg.scss';
 import { navigate, useFeatureFlag } from '@openmrs/esm-framework';
+import { useCrossBorder } from '../cross-border/useCrossBorder';
 
 interface CommonProps {
   inTabletOrOverlay: boolean;
@@ -88,9 +89,7 @@ export const SearchResultsEmptyState: React.FC<CommonProps & { searchResults: Ar
   const isMPIEnabled = useFeatureFlag('mpiFlag');
   const isSearchPage = window.location.pathname === '/openmrs/spa/search';
 
-  const handleShowLocalSearch = () => {
-    navigate({ to: `\${openmrsSpaBase}/search?query=${searchTerm}` });
-  };
+  useCrossBorder(searchTerm);
 
   const identifierTypes = [
     { identifierType: 'Select an identifier type', identifierValue: 'select-identifier-type' },

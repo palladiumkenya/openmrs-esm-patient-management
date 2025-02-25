@@ -16,6 +16,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { navigate, openmrsFetch, restBaseUrl, showSnackbar, useSession } from '@openmrs/esm-framework';
 import { Password } from '@carbon/react/icons';
+import { useCrossBorder } from '../cross-border/useCrossBorder';
 
 const authFormSchema = z.object({
   phoneNumber: z
