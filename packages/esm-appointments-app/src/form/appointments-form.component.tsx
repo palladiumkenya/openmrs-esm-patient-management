@@ -101,7 +101,6 @@ const AppointmentsForm: React.FC<AppointmentsFormProps & DefaultWorkspaceProps> 
   const defaultRecurringPatternDaysOfWeek = recurringPattern?.daysOfWeek || [];
   const [isSuccessful, setIsSuccessful] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   // TODO can we clean this all up to be more consistent between using Date and dayjs?
   const defaultStartDate = appointment?.startDateTime
     ? new Date(appointment?.startDateTime)
@@ -125,7 +124,7 @@ const AppointmentsForm: React.FC<AppointmentsFormProps & DefaultWorkspaceProps> 
   const defaultDuration =
     appointment?.startDateTime && appointment?.endDateTime
       ? dayjs(appointment.endDateTime).diff(dayjs(appointment.startDateTime), 'minutes')
-      : undefined;
+      : null;
 
   // t('durationErrorMessage', 'Duration should be greater than zero')
   const appointmentsFormSchema = z
@@ -524,8 +523,9 @@ const AppointmentsForm: React.FC<AppointmentsFormProps & DefaultWorkspaceProps> 
                       const previousServiceDuration = services?.find(
                         (service) => service.name === getValues('selectedService'),
                       )?.durationMins;
-                      const selectedServiceDuration = services?.find((service) => service.name === event.target.value)
-                        ?.durationMins;
+                      const selectedServiceDuration = services?.find(
+                        (service) => service.name === event.target.value,
+                      )?.durationMins;
                       if (selectedServiceDuration && previousServiceDuration === getValues('duration')) {
                         setValue('duration', selectedServiceDuration);
                       }
