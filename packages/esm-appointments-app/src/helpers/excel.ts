@@ -1,5 +1,5 @@
 import * as XLSX from 'xlsx';
-import { fetchCurrentPatient, formatDate, getConfig } from '@openmrs/esm-framework';
+import { fetchCurrentPatient, formatDate, getConfig, openmrsFetch, type Patient, restBaseUrl } from '@openmrs/esm-framework';
 import { type Appointment } from '../types';
 import { type ConfigObject } from '../config-schema';
 import { moduleName } from '../constants';
@@ -16,16 +16,18 @@ export async function exportAppointmentsToSpreadsheet(appointments: Array<Appoin
   const appointmentsJSON = await Promise.all(
     appointments.map(async (appointment: Appointment) => {
       const patientInfo = await fetchCurrentPatient(appointment.patient.uuid);
+
+      const phoneNumberFromPatientAttributes = await getPhoneNumber(appointment.patient.uuid);
       const phoneNumber =
         includePhoneNumbers && patientInfo?.telecom
           ? patientInfo.telecom.map((telecomObj) => telecomObj?.value).join(', ')
-          : '';
+          : phoneNumberFromPatientAttributes;
 
       return {
         'Patient name': appointment.patient.name,
         Gender: appointment.patient.gender === 'F' ? 'Female' : 'Male',
         Age: appointment.patient.age,
-        Identifier: appointment.patient.identifier ?? '--',
+        Identifier: extractIdentifier(patientInfo) ?? appointment.patient.identifier ?? '--',
         'Appointment type': appointment.service?.name,
         Date: formatDate(new Date(appointment.startDateTime), { mode: 'wide' }),
         ...(includePhoneNumbers ? { 'Telephone number': phoneNumber } : {}),
@@ -52,7 +54,7 @@ export function exportUnscheduledAppointmentsToSpreadsheet(
     Gender: appointment.gender === 'F' ? 'Female' : 'Male',
     Age: appointment.age,
     'Phone Number': appointment.phoneNumber ?? '--',
-    Identifier: appointment.identifier ?? '--',
+    Identifier: extractIdentifier(appointment) ?? appointment.identifier,
   }));
 
   const worksheet = createWorksheet(appointmentsJSON);
@@ -75,3 +77,26 @@ function createWorkbook(worksheet: XLSX.WorkSheet, sheetName: string) {
   XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
   return workbook;
 }
+
+const customRepresentation =
+  'custom:(uuid,display,identifiers:(identifier,uuid,preferred,location:(uuid,name),identifierType:(uuid,name,format,formatDescription,validator)),person:(uuid,display,gender,birthdate,dead,age,deathDate,birthdateEstimated,causeOfDeath,preferredName:(uuid,preferred,givenName,middleName,familyName),attributes,preferredAddress:(uuid,preferred,address1,address2,cityVillage,longitude,stateProvince,latitude,country,postalCode,countyDistrict,address3,address4,address5,address6,address7)))';
+
+// This is a temporary fix to get the phone number from the patient attributes.
+export const getPhoneNumber = async (patientUuid: string) => {
+  const response = await openmrsFetch<Patient>(`${restBaseUrl}/patient/${patientUuid}?v=${customRepresentation}`);
+  const phoneNumberPersonAttributeTypeUuid = 'b2c38640-2603-4629-aebd-3b54f33f1e3a';
+  return (
+    response?.data?.person?.attributes?.find(
+      (attribute) => attribute.attributeType.uuid === phoneNumberPersonAttributeTypeUuid,
+    )?.value ?? '--'
+  );
+};
+
+export const extractIdentifier = (patientInfo: fhir.Patient) => {
+  const patientClinicNumberIdentifierTypeUuid = 'b4d66522-11fc-45c7-83e3-39a1af21ae0d';
+  const identifiers = patientInfo?.identifier;
+  const clinicNumberIdentifier = identifiers?.find((identifier) =>
+    identifier?.type?.coding.find((coding) => coding?.code === patientClinicNumberIdentifierTypeUuid),
+  );
+  return clinicNumberIdentifier?.value ?? '';
+};
