@@ -29,6 +29,7 @@ export function PersonAttributeField({ fieldDefinition }: PersonAttributeFieldPr
               <CustomPersonAttributeField
                 personAttributeType={personAttributeType}
                 answerConceptSetUuid={fieldDefinition.answerConceptSetUuid}
+                customAnswers={fieldDefinition?.customAnswers}
                 label={fieldDefinition.label}
                 id={fieldDefinition?.id}
                 customConceptAnswers={fieldDefinition.customConceptAnswers ?? []}
