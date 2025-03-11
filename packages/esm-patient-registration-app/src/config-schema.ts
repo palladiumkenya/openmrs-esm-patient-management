@@ -28,13 +28,17 @@ export interface FieldDefinition {
     value: string;
   };
   renderType?: string;
+  customAnswers?: Array<CustomAnswer>;
 }
 
 export interface CustomConceptAnswer {
   uuid: string;
   label?: string;
 }
-
+export interface CustomAnswer {
+  label?: string;
+  value: string;
+}
 export interface Gender {
   label?: string;
   value: string;
