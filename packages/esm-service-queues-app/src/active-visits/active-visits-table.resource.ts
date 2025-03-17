@@ -81,7 +81,7 @@ export const mapVisitQueueEntryProperties = (
   visitQueueNumberAttributeUuid: string,
 ): MappedVisitQueueEntry => ({
   id: queueEntry.uuid,
-  encounters: queueEntry.visit?.encounters?.map(mapEncounterProperties),
+  encounters: queueEntry.visit?.encounters?.map((encounter: any) => mapEncounterProperties(encounter)),
   name: queueEntry.display,
   patientUuid: queueEntry.patient.uuid,
   patientAge: queueEntry.patient.person?.age + '',
