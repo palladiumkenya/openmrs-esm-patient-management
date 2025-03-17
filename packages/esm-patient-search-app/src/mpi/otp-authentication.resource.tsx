@@ -238,7 +238,7 @@ export async function addPatientIdentifier(patientUuid: string, patientIdentifie
 // If the patient has either of the above, check if the patient has a SHA identifier
 // If the patient has a SHA identifier, That mean the patient has already been registered in the HIE, navigate to patient search
 // If the patient does not have a SHA identifier, navigate to the HIE advanced search page
-export async function navigateToHie(patientUuid: string) {
+export async function navigateToHie(patientUuid: string, disableHieSync: boolean = false) {
   const fetchedPatient: fhir.Patient = await fetchCurrentPatient(patientUuid);
 
   const identifierTypes = [
@@ -252,6 +252,10 @@ export async function navigateToHie(patientUuid: string) {
   );
 
   if (!requiredIdentifier) {
+    if (disableHieSync) {
+      navigate({ to: `${window['getOpenmrsSpaBase']()}patient/${patientUuid}/chart` });
+      return;
+    }
     // navigate to patient registration page to update the patient with the required identifiers
     navigate({ to: `${window['getOpenmrsSpaBase']()}patient/${patientUuid}/edit` });
     return;

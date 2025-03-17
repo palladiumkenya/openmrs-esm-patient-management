@@ -68,7 +68,7 @@ export function useActiveVisits() {
   const mapVisitProperties = (visit: Visit): ActiveVisit => {
     // create base object
     const activeVisits: ActiveVisit = {
-      age: visit?.patient?.person?.age,
+      age: visit?.patient?.person?.age.toString(),
       id: visit.uuid,
       idNumber: null,
       gender: visit?.patient?.person?.gender,

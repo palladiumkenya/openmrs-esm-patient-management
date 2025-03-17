@@ -7,7 +7,7 @@
     "packages/*"
   ],
   "scripts": {
-    "start": "openmrs develop --sources packages/esm-appointments-app --port 8090 --backend https://qa.kenyahmis.org --config-url https://qa.kenyahmis.org/openmrs/spa/kenyaemr.config.json https://qa.kenyahmis.org/openmrs/spa/openmrs.config.json ",
+    "start": "openmrs develop --sources packages/esm-patient-search-app --port 8090 --backend https://hie.kenyahmis.org --config-url https://hie.kenyahmis.org/openmrs/spa/kenyaemr.config.json https://hie.kenyahmis.org/openmrs/spa/openmrs.config.json https://hie.kenyahmis.org/openmrs/spa/registration.config.json ",
     "ci:publish": "yarn workspaces foreach --all --topological --exclude @openmrs/esm-patient-management npm publish --access public --tag latest",
     "ci:prepublish": "yarn workspaces foreach --all --topological --exclude @openmrs/esm-patient-management npm publish --access public --tag next",
     "release": "yarn workspaces foreach --all --topological version",
@@ -27,7 +27,7 @@
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@carbon/react": "^1.71.0",
-    "@openmrs/esm-framework": "next",
+    "@openmrs/esm-framework": "^6.2.1-pre.2794",
     "@openmrs/esm-patient-common-lib": "next",
     "@playwright/test": "1.49.0",
     "@swc/core": "^1.2.165",
