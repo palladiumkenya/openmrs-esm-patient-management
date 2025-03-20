@@ -140,6 +140,16 @@ export async function createPatientPayload(patient: SearchedPatient) {
 
   payload.identifiers.push(openmrsIdentifier);
 
+  if (patient?.externalId) {
+    const crNumberIdentifier = {
+      identifier: patient?.externalId,
+      identifierType: '52c3c0c3-05b8-4b26-930e-2a6a54e14c90',
+      location: location.uuid,
+      preferred: false,
+    };
+    payload.identifiers.push(crNumberIdentifier);
+  }
+
   return payload;
 }
 // create a payload to update the patient, given the local patient and the patient to be created
@@ -191,6 +201,21 @@ export async function createPatientUpdatePayload(localPatient: any, patient: Sea
       identifierType: identifier.identifierType.uuid,
       preferred: false,
     }));
+  }
+  const hasCRNumber = localPatient.identifiers?.some(
+    (identifier: Identifier) => identifier.identifierType?.uuid === '52c3c0c3-05b8-4b26-930e-2a6a54e14c90',
+  );
+
+  if (!hasCRNumber && patient?.externalId) {
+    const location = await getSessionLocation();
+    const crNumberIdentifier = {
+      identifier: patient.externalId,
+      identifierType: '52c3c0c3-05b8-4b26-930e-2a6a54e14c90',
+      location: location?.uuid,
+      preferred: false,
+    };
+    updatedPayload.identifiers = updatedPayload.identifiers || [];
+    updatedPayload.identifiers.push(crNumberIdentifier);
   }
 
   return updatedPayload;
