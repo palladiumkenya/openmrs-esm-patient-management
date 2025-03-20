@@ -33,5 +33,6 @@
   "totalVisits": "Total Visits Today",
   "visitStartTime": "Visit Time",
   "visitSummary": "Visit Summary",
-  "visitType": "Visit Type"
+  "visitType": "Visit Type",
+  "sex": "Sex"
 }

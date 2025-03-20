@@ -297,7 +297,7 @@ export function useTableHeaders(obsConcepts: OpenmrsResource[]) {
       },
       {
         id: headersIndex++,
-        header: t('gender', 'Gender'),
+        header: t('sex', 'Sex'),
         key: 'gender',
       },
       {
