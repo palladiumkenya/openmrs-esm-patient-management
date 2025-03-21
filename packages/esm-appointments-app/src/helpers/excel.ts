@@ -1,5 +1,12 @@
 import * as XLSX from 'xlsx';
-import { fetchCurrentPatient, formatDate, getConfig, openmrsFetch, type Patient, restBaseUrl } from '@openmrs/esm-framework';
+import {
+  fetchCurrentPatient,
+  formatDate,
+  getConfig,
+  openmrsFetch,
+  type Patient,
+  restBaseUrl,
+} from '@openmrs/esm-framework';
 import { type Appointment } from '../types';
 import { type ConfigObject } from '../config-schema';
 import { moduleName } from '../constants';
@@ -25,7 +32,7 @@ export async function exportAppointmentsToSpreadsheet(appointments: Array<Appoin
 
       return {
         'Patient name': appointment.patient.name,
-        Gender: appointment.patient.gender === 'F' ? 'Female' : 'Male',
+        Sex: appointment.patient.gender === 'F' ? 'Female' : 'Male',
         Age: appointment.patient.age,
         Identifier: extractIdentifier(patientInfo) ?? appointment.patient.identifier ?? '--',
         'Appointment type': appointment.service?.name,
@@ -51,7 +58,7 @@ export function exportUnscheduledAppointmentsToSpreadsheet(
 ) {
   const appointmentsJSON = unscheduledAppointments?.map((appointment) => ({
     'Patient name': appointment.name,
-    Gender: appointment.gender === 'F' ? 'Female' : 'Male',
+    Sex: appointment.gender === 'F' ? 'Female' : 'Male',
     Age: appointment.age,
     'Phone Number': appointment.phoneNumber ?? '--',
     Identifier: extractIdentifier(appointment) ?? appointment.identifier,
@@ -95,8 +102,8 @@ export const getPhoneNumber = async (patientUuid: string) => {
 export const extractIdentifier = (patientInfo: fhir.Patient) => {
   const patientClinicNumberIdentifierTypeUuid = 'b4d66522-11fc-45c7-83e3-39a1af21ae0d';
   const identifiers = patientInfo?.identifier;
-  const clinicNumberIdentifier = identifiers?.find((identifier) =>
-    identifier?.type?.coding.find((coding) => coding?.code === patientClinicNumberIdentifierTypeUuid),
+  const clinicNumberIdentifier = identifiers?.find(
+    (identifier) => identifier?.type?.coding.find((coding) => coding?.code === patientClinicNumberIdentifierTypeUuid),
   );
   return clinicNumberIdentifier?.value ?? '';
 };

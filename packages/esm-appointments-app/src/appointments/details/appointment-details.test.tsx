@@ -83,7 +83,7 @@ test('renders appointment details correctly', async () => {
   expect(screen.getByText(/John Wilson/i)).toBeInTheDocument();
   expect(screen.getByText(/Age/i)).toBeInTheDocument();
   expect(screen.getByText(/34/i)).toBeInTheDocument();
-  expect(screen.getByText(/Gender/i)).toBeInTheDocument();
+  expect(screen.getByText(/Sex/i)).toBeInTheDocument();
   expect(screen.getByText(/Male/i)).toBeInTheDocument();
   expect(screen.getByText(/Date of birth/i)).toBeInTheDocument();
   expect(screen.getByText(/Date of birth/i)).toBeInTheDocument();
