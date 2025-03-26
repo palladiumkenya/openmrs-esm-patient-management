@@ -43,7 +43,7 @@ const UnscheduledAppointments: React.FC = () => {
       key: 'identifier',
     },
     {
-      header: 'Gender',
+      header: 'Sex',
       key: 'gender',
     },
     {
