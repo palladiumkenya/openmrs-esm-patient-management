@@ -50,7 +50,7 @@ interface DeathInfoResults {
 }
 
 export function useInitialFormValuesLocal(patientUuid: string): [FormValues, Dispatch<FormValues>] {
-  const { freeTextFieldConceptUuid, fieldConfigurations } = useConfig<RegistrationConfig>()
+  const { freeTextFieldConceptUuid, fieldConfigurations } = useConfig<RegistrationConfig>();
   const { martialStatus, education, occupation, educationLoad } = useConcepts();
   const { isLoading: isLoadingPatientToEdit, patient: patientToEdit } = usePatient(patientUuid);
   const { data: deathInfo, isLoading: isLoadingDeathInfo } = useInitialPersonDeathInfo(patientUuid);
@@ -196,7 +196,8 @@ export function useInitialFormValuesLocal(patientUuid: string): [FormValues, Dis
     if (!isLoadingObs) {
       setInitialFormValues((initialFormValues) => ({ ...initialFormValues, obs: obs, observation: observations }));
     }
-  }, [isLoadingObs, obs, observations]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoadingObs]);
 
   // Set Initial encounter
 
@@ -207,7 +208,8 @@ export function useInitialFormValuesLocal(patientUuid: string): [FormValues, Dis
         concepts: [...occupation, ...martialStatus, ...education],
       }));
     }
-  }, [educationLoad, martialStatus, education, occupation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [educationLoad]);
 
   return [initialFormValues, setInitialFormValues];
 }
