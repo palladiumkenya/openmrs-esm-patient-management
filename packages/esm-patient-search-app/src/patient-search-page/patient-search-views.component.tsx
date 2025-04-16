@@ -110,12 +110,12 @@ export const SearchResultsEmptyState: React.FC<CommonProps & { searchResults: Ar
         <p className={styles.emptyResultText}>
           {t('noPatientChartsFoundMessage', 'Sorry, no patient charts were found')}{' '}
         </p>
-        {isMPIEnabled && isSearchPage ? (
+        {(isMPIEnabled && isSearchPage) || inTabletOrOverlay ? (
           <>
             <div className={styles.dividerWrapper}>
               <div className={styles.divider}></div>
             </div>
-            {(searchMode === undefined || searchMode === null || searchMode !== 'mpi') && (
+            {(searchMode === undefined || searchMode === null || searchMode !== 'mpi' || inTabletOrOverlay) && (
               <>
                 <div className={styles.emptyResultsMarginRules}>
                   <p>
