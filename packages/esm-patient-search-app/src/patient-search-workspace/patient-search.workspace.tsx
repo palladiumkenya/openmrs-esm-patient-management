@@ -21,6 +21,7 @@ const PatientSearchWorkspace: React.FC<PatientSearchWorkspaceProps> = ({
   nonNavigationSelectPatientAction,
   patientClickSideEffect,
 }) => {
+  const [searchParams] = useSearchParams();
   const {
     search: { disableTabletSearchOnKeyUp },
   } = useConfig<PatientSearchConfig>();
@@ -46,7 +47,13 @@ const PatientSearchWorkspace: React.FC<PatientSearchWorkspaceProps> = ({
         onClear={handleClearSearchTerm}
         onSubmit={onSearchTermChange}
       />
-      {showSearchResults && <AdvancedPatientSearchComponent query={debouncedSearchTerm} inTabletOrOverlay />}
+      {showSearchResults && (
+        <AdvancedPatientSearchComponent
+          query={debouncedSearchTerm}
+          inTabletOrOverlay
+          searchMode={inferModeFromSearchParams(searchParams)}
+        />
+      )}
     </PatientSearchContext.Provider>
   );
 };
