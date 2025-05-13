@@ -10,7 +10,7 @@ import PatientSearch from './patient-search.component';
 import PatientSearchBar from '../patient-search-bar/patient-search-bar.component';
 import RecentlySearchedPatients from './recently-searched-patients.component';
 import styles from './compact-patient-search.scss';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from '../hooks/useSearchParams';
 import { inferModeFromSearchParams } from '../mpi/utils';
 import { navigateToHie } from '../mpi/otp-authentication.resource';
 
@@ -43,7 +43,7 @@ const CompactPatientSearchComponent: React.FC<CompactPatientSearchProps> = ({
     sessionLocation: { uuid: currentLocation },
   } = useSession();
 
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
   const patientSearchResponse = useInfinitePatientSearch(
     debouncedSearchTerm,
     inferModeFromSearchParams(searchParams),
