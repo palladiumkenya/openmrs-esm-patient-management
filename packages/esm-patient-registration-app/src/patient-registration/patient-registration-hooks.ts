@@ -435,9 +435,11 @@ export function usePatientObs(patientUuid: string) {
   const url = `/ws/rest/v1/encounter?patient=${patientUuid}&encounterType=${encounterTypeUuid}&v=custom:(obs:(uuid,display,concept:(uuid,display),value:(uuid,display)))`;
   const { data, isLoading, error } = useSWR<{ data: ObsResponse }>(patientUuid ? url : null, openmrsFetch);
   let obsObject = {};
-  const patientObs = last(data?.data?.results)?.obs?.forEach((ob) => {
-    Object.assign(obsObject, { [ob.concept.uuid]: ob.value.uuid });
+
+  last(data?.data?.results)?.obs?.forEach((ob) => {
+    Object.assign(obsObject, { [ob?.concept?.uuid]: ob?.value?.uuid });
   });
+
   return { data: obsObject, isLoading, error, obs: data?.data };
 }
 
