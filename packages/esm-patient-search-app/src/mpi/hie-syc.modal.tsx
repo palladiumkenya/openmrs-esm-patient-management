@@ -33,6 +33,11 @@ const HieSycModal: React.FC<HieSycModalProps> = ({ onClose, localPatient, identi
     onClose();
   };
 
+  const handleProceedToPatientChart = () => {
+    onClose();
+    navigate({ to: `${window['getOpenmrsSpaBase']()}patient/${localPatient.id}/chart` });
+  };
+
   const handleSyncAndContinueToChart = async () => {
     onClose();
 
@@ -88,15 +93,20 @@ const HieSycModal: React.FC<HieSycModalProps> = ({ onClose, localPatient, identi
             title={t('differencesFound', 'Differences found')}
             subtitle={t(
               'differencesFoundSubtitle',
-              `The patient information in our system differs from the HIE record. Please review these differences before proceeding with the sync operation.`,
+              `The patient information in our system differs from the HIE record. Please review these differences before proceeding, if you proceed with the sync operation, the patient information in our system will be updated to match the HIE record. If you choose to Proceed to patient chart, you will be redirected to the patient chart. We will not proceed with the sync operation.`,
             )}
           />
         )}
       </ModalBody>
       <ModalFooter>
-        <Button kind="secondary" onClick={handleClose}>
+        <Button kind="danger" onClick={handleClose}>
           {t('cancel', 'Cancel')}
         </Button>
+        {hiePatient && (
+          <Button onClick={handleProceedToPatientChart} kind="secondary">
+            {t('proceedToPatientChart', 'Proceed to patient chart')}
+          </Button>
+        )}
         <Button disabled={isLoading} kind="primary" onClick={handleSyncAndContinueToChart}>
           {syncButtonText}
         </Button>

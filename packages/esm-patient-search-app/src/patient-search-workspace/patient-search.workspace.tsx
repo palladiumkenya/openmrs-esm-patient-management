@@ -5,7 +5,7 @@ import { PatientSearchContext, type PatientSearchContextProps } from '../patient
 import PatientSearchBar from '../patient-search-bar/patient-search-bar.component';
 import AdvancedPatientSearchComponent from '../patient-search-page/advanced-patient-search.component';
 import { inferModeFromSearchParams } from '../mpi/utils';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from '../hooks/useSearchParams';
 
 export interface PatientSearchWorkspaceProps extends PatientSearchContextProps {
   initialQuery?: string;
@@ -21,7 +21,7 @@ const PatientSearchWorkspace: React.FC<PatientSearchWorkspaceProps> = ({
   nonNavigationSelectPatientAction,
   patientClickSideEffect,
 }) => {
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
   const {
     search: { disableTabletSearchOnKeyUp },
   } = useConfig<PatientSearchConfig>();
