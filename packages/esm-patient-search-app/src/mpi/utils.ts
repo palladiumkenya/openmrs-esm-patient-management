@@ -185,6 +185,5 @@ async function getPersonAttributeTypes() {
       [attributeType.display]: attributeType.uuid,
     };
   });
-  console.log(personAttributeTypes);
   return personAttributeTypes;
 }
