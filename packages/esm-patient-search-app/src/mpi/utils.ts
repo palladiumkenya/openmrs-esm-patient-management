@@ -1,5 +1,5 @@
 import { type Identifier, type SearchedPatient } from '../types';
-import { getCoreTranslation, type Session } from '@openmrs/esm-framework';
+import { getCoreTranslation, openmrsFetch, restBaseUrl, type Session } from '@openmrs/esm-framework';
 import dayjs from 'dayjs';
 export function inferModeFromSearchParams(searchParams: URLSearchParams): 'mpi' | null {
   return searchParams.get('mode')?.toLowerCase() === 'mpi' ? 'mpi' : null;
@@ -62,15 +62,22 @@ export function mapToOpenMRSPatient(
   return pts;
 }
 
-const fhirTelecomToOpenmrsPersonAttributeTypeMap = {
-  phone: 'b2c38640-2603-4629-aebd-3b54f33f1e3a',
-  email: 'b995b277-c3cc-11ed-904a-70b5e843dbc9',
-};
+const personAttributeTypes = await getPersonAttributeTypes();
 
 const mapFhirTelecomToOpenmrsPersonAttributeType = (telecom: fhir.ContactPoint) => {
-  return fhirTelecomToOpenmrsPersonAttributeTypeMap[
-    telecom.system as keyof typeof fhirTelecomToOpenmrsPersonAttributeTypeMap
-  ];
+  const attributeType = personAttributeTypes.find((type) => {
+    if (telecom.system === 'phone') {
+      return 'phone' in type;
+    } else if (telecom.system === 'email') {
+      return 'email' in type;
+    }
+    return false;
+  });
+
+  if (attributeType) {
+    return telecom.system === 'phone' ? attributeType.phone : attributeType.email;
+  }
+  return null;
 };
 
 const fhirToOpenmrsIdentifierCodeMap = {
@@ -159,4 +166,25 @@ export function maskName(fullName) {
   });
 
   return maskedParts.join(' ');
+}
+
+async function getPersonAttributeTypes() {
+  const FetchResponse = await openmrsFetch(`${restBaseUrl}/personattributetype?v=custom:(uuid,display)`);
+  const personAttributeTypes = FetchResponse.data?.results.map((attributeType) => {
+    if (attributeType.display === 'Telephone contact') {
+      return {
+        phone: attributeType.uuid,
+      };
+    }
+    if (attributeType.display === 'Email address') {
+      return {
+        email: attributeType.uuid,
+      };
+    }
+    return {
+      [attributeType.display]: attributeType.uuid,
+    };
+  });
+  console.log(personAttributeTypes);
+  return personAttributeTypes;
 }
