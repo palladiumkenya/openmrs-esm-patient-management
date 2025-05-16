@@ -10,7 +10,15 @@ import {
   showSnackbar,
   useSession,
 } from '@openmrs/esm-framework';
-import { ModalHeader, ModalBody, ModalFooter, Button, InlineLoading, InlineNotification, Modal } from '@carbon/react';
+import {
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  InlineLoading,
+  InlineNotification,
+  CodeSnippet,
+} from '@carbon/react';
 import styles from './hie.sync.scss';
 import { addPatientIdentifier, createPatientUpdatePayloadFromFhir, useHIEPatient } from './otp-authentication.resource';
 
@@ -86,7 +94,7 @@ const HieSycModal: React.FC<HieSycModalProps> = ({ onClose, localPatient, identi
             <HiePatientInfo isLoading={isLoading} error={error} hiePatient={hiePatient} />
           </div>
         </div>
-        {differences && (
+        {Object.keys(differences ?? {}).length > 0 && (
           <InlineNotification
             kind="warning-alt"
             lowContrast
@@ -97,12 +105,17 @@ const HieSycModal: React.FC<HieSycModalProps> = ({ onClose, localPatient, identi
             )}
           />
         )}
+        {Object.keys(differences ?? {}).length > 0 && (
+          <CodeSnippet type="multi" feedback="Copied to clipboard">
+            {JSON.stringify(differences, null, 2)}
+          </CodeSnippet>
+        )}
       </ModalBody>
       <ModalFooter>
         <Button kind="danger" onClick={handleClose}>
           {t('cancel', 'Cancel')}
         </Button>
-        {hiePatient && (
+        {hiePatient && Object.keys(differences ?? {}).length > 0 && (
           <Button onClick={handleProceedToPatientChart} kind="secondary">
             {t('proceedToPatientChart', 'Proceed to patient chart')}
           </Button>
@@ -180,11 +193,49 @@ const PatientInfo: React.FC<{ patient: fhir.Patient }> = ({ patient }) => {
 function comparePatients(localPatient, hiePatient) {
   const differences: Record<string, unknown> = {};
 
-  // Compare name
-  const localName = localPatient.name?.[0]?.text;
-  const hieName = hiePatient.name?.[0]?.text;
-  if (localName !== hieName) {
-    differences.name = { local: localName, hie: hieName };
+  // Compare name components
+  const localName = localPatient.name?.[0] as fhir.HumanName | undefined;
+  const hieName = hiePatient.name?.[0] as fhir.HumanName | undefined;
+
+  if (localName || hieName) {
+    interface NameDiffs {
+      family?: { local: string | undefined; hie: string | undefined };
+      given?: { local: string[]; hie: string[] };
+      prefix?: { local: string[]; hie: string[] };
+      suffix?: { local: string[]; hie: string[] };
+    }
+
+    const nameDiffs: NameDiffs = {};
+
+    // Compare family name
+    if (localName?.family !== hieName?.family) {
+      nameDiffs.family = { local: localName?.family, hie: hieName?.family };
+    }
+
+    // Compare given names (array of strings)
+    const localGiven = localName?.given || [];
+    const hieGiven = hieName?.given || [];
+    if (JSON.stringify(localGiven) !== JSON.stringify(hieGiven)) {
+      nameDiffs.given = { local: localGiven, hie: hieGiven };
+    }
+
+    // Compare prefix
+    const localPrefix = localName?.prefix || [];
+    const hiePrefix = hieName?.prefix || [];
+    if (JSON.stringify(localPrefix) !== JSON.stringify(hiePrefix)) {
+      nameDiffs.prefix = { local: localPrefix, hie: hiePrefix };
+    }
+
+    // Compare suffix
+    const localSuffix = localName?.suffix || [];
+    const hieSuffix = hieName?.suffix || [];
+    if (JSON.stringify(localSuffix) !== JSON.stringify(hieSuffix)) {
+      nameDiffs.suffix = { local: localSuffix, hie: hieSuffix };
+    }
+
+    if (Object.keys(nameDiffs).length > 0) {
+      differences.name = nameDiffs;
+    }
   }
 
   // Compare gender
