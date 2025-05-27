@@ -26,7 +26,7 @@ export const validateOtp = async (otp: Consent) => {
   return response.json();
 };
 
-export function useShaFacilityInfo(shouldSynchronize: boolean = false) {
+export function useShaFacilityInfo(shouldSynchronize: boolean = true) {
   const { authenticated } = useSession();
   const url = `${restBaseUrl}/kenyaemr/sha-facility-status?synchronize=${shouldSynchronize}`;
 

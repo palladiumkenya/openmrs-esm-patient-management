@@ -29,7 +29,7 @@ const authFormSchema = z.object({
 const formatPhoneNumber = (phone: string): string => {
   // Remove any existing '+' or country code
   let cleanNumber = phone.replace(/^\+?254/, '').replace(/^0/, '');
-  return `+254${cleanNumber}`;
+  return `254${cleanNumber}`;
 };
 
 const normalizePhoneInput = (value: string): string => {
@@ -71,6 +71,10 @@ const OtpAuthenticationModal: React.FC<{ patient: SearchedPatient; onClose: () =
     mutate: mutateShafacility,
   } = useShaFacilityInfo(true);
 
+  const getParsedResponse = (response) => {
+    return typeof response === 'string' ? JSON.parse(response) : response;
+  };
+
   // Watch the OTP input to validate it in real-time
   const watchOtp = watch('otp');
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -91,7 +95,8 @@ const OtpAuthenticationModal: React.FC<{ patient: SearchedPatient; onClose: () =
           otp: watchOtp,
         };
         const result = await validateOtp(payload);
-        const isValid = result.response?.status === 'success';
+        const parsedResponse = getParsedResponse(result.response);
+        const isValid = parsedResponse?.status === 'success';
         setIsOtpValid(isValid);
         setOtpError(isValid ? '' : t('invalidOtp', 'Invalid OTP. Please check and try again.'));
         setShowResendButton(!isValid);
@@ -123,13 +128,16 @@ const OtpAuthenticationModal: React.FC<{ patient: SearchedPatient; onClose: () =
     };
     try {
       const response = await sendOtp(payload);
+      const parsedResponse = getParsedResponse(response.response);
+      const status = parsedResponse?.status;
+      const requestId = parsedResponse?.id;
 
-      if (response.response?.status == 'success') {
+      if (status == 'success') {
         setOtpStatus('loadingOtp');
         setValue('otp', '');
         setOtpError('');
         setShowResendButton(false);
-        setOtpId(response?.id);
+        setOtpId(requestId);
         setOtpStatus('otpSendSuccessfull');
         showSnackbar({
           title: t('otpSent', 'OTP Sent'),
