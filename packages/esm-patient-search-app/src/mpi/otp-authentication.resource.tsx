@@ -7,9 +7,11 @@ import {
   navigate,
   showModal,
   fetchCurrentPatient,
+  type OpenmrsResource,
 } from '@openmrs/esm-framework';
 import { type Identifier, type SearchedPatient } from '../types';
 import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 interface OtpPayload {
   otp: string;
   receiver: string;
@@ -26,7 +28,7 @@ interface OtpResponse {
   message: string;
 }
 
-export async function sendOtp({ otp, receiver }: OtpPayload, patientName: string): Promise<OtpResponse> {
+export async function sendOtpKhmis({ otp, receiver }: OtpPayload, patientName: string): Promise<OtpResponse> {
   validateOtpInputs(otp, receiver, patientName);
 
   const context: OtpContext = {
@@ -362,4 +364,23 @@ export function createPatientUpdatePayloadFromFhir(
   }
 
   return updatedPayload;
+}
+
+export function useHieOtpConfig(key: string) {
+  const { data, error, isLoading, mutate } = useSWRImmutable<{ data: { results: Array<OpenmrsResource> } }, Error>(
+    `/ws/rest/v1/systemsetting?q=${key}&v=full`,
+    openmrsFetch,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+
+  const hieOtpResource = data?.data?.results?.find(
+    (resource) => resource.property === 'kenyaemr.hie.registry.otp.source',
+  );
+
+  const otpResource = hieOtpResource?.value ?? '';
+
+  return { otpResource, isLoading, mutate, error };
 }
