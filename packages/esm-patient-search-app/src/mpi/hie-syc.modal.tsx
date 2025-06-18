@@ -53,22 +53,44 @@ const HieSycModal: React.FC<HieSycModalProps> = ({ onClose, localPatient, identi
       navigate({ to: `${window['getOpenmrsSpaBase']()}patient/${localPatient.id}/chart` });
     }
 
-    const payload = createPatientUpdatePayloadFromFhir(localPatient, hiePatient, session?.sessionLocation?.uuid);
-    const patientRegistrationUrl = `${restBaseUrl}/patient/${localPatient.id}`;
-    const registeredPatient = await openmrsFetch(patientRegistrationUrl, {
-      method: 'POST',
-      body: payload,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (registeredPatient?.data?.uuid) {
-      await addPatientIdentifier(localPatient.id, JSON.stringify(payload?.identifiers[0]));
+    try {
+      const payload = createPatientUpdatePayloadFromFhir(localPatient, hiePatient, session?.sessionLocation?.uuid);
+
+      // Update patient information (excluding identifiers)
+      const patientUpdatePayload = { ...payload };
+      delete patientUpdatePayload.identifiers;
+
+      if (Object.keys(patientUpdatePayload).length > 0) {
+        const patientRegistrationUrl = `${restBaseUrl}/patient/${localPatient.id}`;
+        await openmrsFetch(patientRegistrationUrl, {
+          method: 'POST',
+          body: patientUpdatePayload,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+      }
+
+      // Add identifiers separately if they exist
+      if (payload?.identifiers && payload.identifiers.length > 0) {
+        for (const identifier of payload.identifiers) {
+          await addPatientIdentifier(localPatient.id, identifier);
+        }
+      }
+
       showSnackbar({
         title: t('patientUpdated', 'Patient Updated'),
         subtitle: t('patientUpdatedSubtitle', 'Patient has been successfully updated'),
         kind: 'success',
       });
+      navigate({ to: `${window['getOpenmrsSpaBase']()}patient/${localPatient.id}/chart` });
+    } catch (error) {
+      showSnackbar({
+        title: t('syncError', 'Sync Error'),
+        subtitle: t('syncErrorSubtitle', 'An error occurred while syncing the patient'),
+        kind: 'error',
+      });
+      // Continue to patient chart to ensure medical services are not interrupted
       navigate({ to: `${window['getOpenmrsSpaBase']()}patient/${localPatient.id}/chart` });
     }
   };
