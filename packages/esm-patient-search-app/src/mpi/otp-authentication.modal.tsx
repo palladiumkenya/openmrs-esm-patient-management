@@ -146,33 +146,58 @@ const OtpAuthenticationModal: React.FC<{ patient: SearchedPatient; onClose: () =
         ? `${restBaseUrl}/patient/${localPatient.uuid}`
         : `${restBaseUrl}/patient`;
 
-      const patientToCreateOrUpdate = isUpdate ? { person: patientPayload.person } : patientPayload;
-      const registeredPatient = await openmrsFetch(patientRegistrationUrl, {
-        method: 'POST',
-        body: patientToCreateOrUpdate,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
       if (isUpdate) {
-        await addPatientIdentifier(localPatient.uuid, JSON.stringify(patientPayload?.identifiers[0]));
+        // Update patient information (excluding identifiers)
+        const patientUpdatePayload = { ...patientPayload };
+        delete patientUpdatePayload.identifiers;
+
+        if (Object.keys(patientUpdatePayload).length > 0) {
+          await openmrsFetch(patientRegistrationUrl, {
+            method: 'POST',
+            body: patientUpdatePayload,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+        }
+
+        // Add identifiers separately if they exist
+        if (patientPayload?.identifiers && patientPayload.identifiers.length > 0) {
+          for (const identifier of patientPayload.identifiers) {
+            await addPatientIdentifier(localPatient.uuid, identifier);
+          }
+        }
+
+        showSnackbar({
+          title: t('patientUpdated', 'Patient Updated'),
+          subtitle: t('patientUpdatedSubtitle', 'Patient has been successfully updated'),
+          kind: 'success',
+          isLowContrast: true,
+        });
+        navigate({ to: `${window['getOpenmrsSpaBase']()}patient/${localPatient.uuid}/chart` });
+      } else {
+        // Create new patient
+        const registeredPatient = await openmrsFetch(patientRegistrationUrl, {
+          method: 'POST',
+          body: patientPayload,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!registeredPatient?.data?.uuid) {
+          throw new Error('Patient registration failed - no UUID returned');
+        }
+
+        showSnackbar({
+          title: t('patientCreated', 'Patient Created'),
+          subtitle: t('patientCreatedSubtitle', 'Patient has been successfully created'),
+          kind: 'success',
+          isLowContrast: true,
+        });
+        navigate({ to: `${window['getOpenmrsSpaBase']()}patient/${registeredPatient.data.uuid}/chart` });
       }
 
-      if (!registeredPatient?.data?.uuid) {
-        throw new Error('Patient registration failed - no UUID returned');
-      }
-
-      showSnackbar({
-        title: t(isUpdate ? 'patientUpdated' : 'patientCreated', isUpdate ? 'Patient Updated' : 'Patient Created'),
-        subtitle: t(
-          isUpdate ? 'patientUpdatedSubtitle' : 'patientCreatedSubtitle',
-          isUpdate ? 'Patient has been successfully updated' : 'Patient has been successfully created',
-        ),
-        kind: 'success',
-        isLowContrast: true,
-      });
-      navigate({ to: `\${openmrsSpaBase}/patient/${registeredPatient.data.uuid}/chart` });
       onClose();
     } catch (error) {
       console.error('Patient registration error:', error);
