@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import { PatientRegistrationContext } from '../../patient-registration-context';
 import styles from './../field.scss';
-import { ResourcesContext } from '../../../offline.resources';
 import useUpdateIdentifierRequirement from './useUpdateIdentifierRequirement';
 
 interface PersonAttributeTypeResponse {
@@ -23,20 +22,19 @@ interface ConceptAnswer {
   };
 }
 
+interface CustomAnswer {
+  label?: string;
+  value: string;
+}
+
 interface CustomPersonAttributeFieldProps {
   id: string;
   personAttributeType: PersonAttributeTypeResponse;
   answerConceptSetUuid: string;
   label?: string;
   customConceptAnswers: ConceptAnswer[];
+  customAnswers?: CustomAnswer[];
   required: boolean;
-}
-
-interface PatientRegistrationContextType {
-  setFieldValue: (field: string, value: any) => void;
-  values: {
-    attributes?: Record<string, string>;
-  };
 }
 
 const CustomPersonAttributeField: React.FC<CustomPersonAttributeFieldProps> = ({
@@ -45,12 +43,13 @@ const CustomPersonAttributeField: React.FC<CustomPersonAttributeFieldProps> = ({
   id,
   label,
   customConceptAnswers,
+  customAnswers,
 }) => {
   const { t } = useTranslation();
   const fieldName = `attributes.${personAttributeType.uuid}`;
   const { setFieldValue, values } = useContext(PatientRegistrationContext);
   useUpdateIdentifierRequirement(setFieldValue, values);
-  // TODO: Improve this logic
+
   const filteredCustomConceptAnswers = customConceptAnswers.filter((answer) => {
     const showExpression = answer.showServiceExpression;
     if (!showExpression) return true;
@@ -73,20 +72,23 @@ const CustomPersonAttributeField: React.FC<CustomPersonAttributeFieldProps> = ({
     const hasError = errors[fieldName] && touched[fieldName];
     const displayLabel = label ?? personAttributeType?.display ?? '';
 
+    const options = label === 'Relationship' && customAnswers?.length ? customAnswers : filteredCustomConceptAnswers;
+
     return (
       <Select
         id={id}
         name={`person-attribute-${personAttributeType.uuid}`}
         labelText={displayLabel}
         invalid={Boolean(hasError)}
+        invalidText={hasError ? String(errors[fieldName]) : undefined}
         required={required}
         {...field}>
         <SelectItem value="" text={t('selectAnOption', 'Select an option')} />
-        {filteredCustomConceptAnswers.map((answer) => (
+        {options.map((answer) => (
           <SelectItem
-            key={answer.uuid ?? answer.name}
-            value={answer.uuid ?? answer.name ?? ''}
-            text={answer.label ?? answer.uuid ?? answer.name ?? ''}
+            key={answer.value || answer.uuid || answer.name}
+            value={answer.value || answer.uuid || answer.name || ''}
+            text={answer.label || answer.value || answer.uuid || answer.name || ''}
           />
         ))}
       </Select>
