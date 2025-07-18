@@ -8,7 +8,6 @@
   "encounterType": "Encounter Type",
   "endDate": "End date",
   "filterTable": "Filter table",
-  "gender": "Gender",
   "idNumber": "ID Number",
   "indication": "Indication",
   "medications": "Medications",
@@ -27,12 +26,12 @@
   "provider": "Provider",
   "quantity": "Quantity",
   "refills": "Refills",
+  "sex": "Sex",
   "tests": "Tests",
   "thereIsNoInformationToDisplayHere": "There is no information to display here",
   "time": "Time",
   "totalVisits": "Total Visits Today",
   "visitStartTime": "Visit Time",
   "visitSummary": "Visit Summary",
-  "visitType": "Visit Type",
-  "sex": "Sex"
+  "visitType": "Visit Type"
 }

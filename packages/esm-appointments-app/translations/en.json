@@ -90,7 +90,6 @@
   "errorCreatingAppointmentService": "Error creating appointment service",
   "expected": "Expected",
   "filterTable": "Filter table",
-  "gender": "Gender",
   "highestServiceVolume": "Highest volume service: {{time}}",
   "identifier": "Identifier",
   "invalidNumber": "Number is not valid",
@@ -148,6 +147,7 @@
   "serviceName": "Service name",
   "serviceType": "Service Type",
   "serviceUnavailable": "Appointment time is outside of service hours",
+  "sex": "Sex",
   "startDate": "Start date",
   "startTime": "Start Time",
   "status": "Status",
@@ -164,6 +164,5 @@
   "view": "View",
   "vitals": "Vitals",
   "week": "Week",
-  "yes": "Yes",
-  "sex": "Sex"
+  "yes": "Yes"
 }
