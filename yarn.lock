@@ -2882,7 +2882,7 @@ __metadata:
     lodash-es: "npm:^4.17.15"
     webpack: "npm:^5.74.0"
   peerDependencies:
-    "@openmrs/esm-framework": 6.x
+    "@openmrs/esm-framework": 7.x
     dayjs: 1.x
     react: ^18.1.0
     react-dom: ^18.1.0
@@ -2901,8 +2901,8 @@ __metadata:
     webpack: "npm:^5.74.0"
     yup: "npm:^0.32.11"
   peerDependencies:
-    "@openmrs/esm-framework": 6.x
-    "@openmrs/esm-patient-common-lib": 9.x
+    "@openmrs/esm-framework": 7.x
+    "@openmrs/esm-patient-common-lib": 10.x
     react: 18.x
     react-i18next: 11.x
     react-router-dom: 6.x
@@ -2918,7 +2918,7 @@ __metadata:
     lodash-es: "npm:^4.17.15"
     webpack: "npm:^5.74.0"
   peerDependencies:
-    "@openmrs/esm-framework": 6.x
+    "@openmrs/esm-framework": 7.x
     dayjs: 1.x
     react: 18.x
     react-i18next: 11.x
@@ -2937,7 +2937,7 @@ __metadata:
     lodash-es: "npm:^4.17.15"
     webpack: "npm:^5.74.0"
   peerDependencies:
-    "@openmrs/esm-framework": 6.x
+    "@openmrs/esm-framework": 7.x
     react: 18.x
     react-i18next: 11.x
     react-router-dom: 6.x
@@ -2956,7 +2956,7 @@ __metadata:
     webpack: "npm:^5.74.0"
     yup: "npm:^0.29.1"
   peerDependencies:
-    "@openmrs/esm-framework": 6.x
+    "@openmrs/esm-framework": 7.x
     dayjs: 1.x
     react: 18.x
     react-i18next: 11.x
@@ -2973,7 +2973,7 @@ __metadata:
     webpack: "npm:^5.74.0"
   peerDependencies:
     "@carbon/react": 1.x
-    "@openmrs/esm-framework": 6.x
+    "@openmrs/esm-framework": 7.x
     react: ^18.1.0
     react-i18next: 11.x
     react-router-dom: 6.x
@@ -2992,7 +2992,7 @@ __metadata:
     webpack: "npm:^5.74.0"
     zod: "npm:^3.24.1"
   peerDependencies:
-    "@openmrs/esm-framework": 6.x
+    "@openmrs/esm-framework": 7.x
     react: ^18.1.0
     react-i18next: 11.x
     react-router-dom: 6.x
@@ -3008,7 +3008,7 @@ __metadata:
     lodash-es: "npm:^4.17.15"
     webpack: "npm:^5.74.0"
   peerDependencies:
-    "@openmrs/esm-framework": 6.x
+    "@openmrs/esm-framework": 7.x
     react: ^18.1.0
     react-i18next: 11.x
     react-router-dom: 6.x
