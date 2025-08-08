@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button, TextInput, ModalHeader, ModalBody, ModalFooter } from '@carbon/react';
-import { type SearchedPatient } from '../types';
+import { type Consent, type SearchedPatient } from '../types';
 import { useTranslation } from 'react-i18next';
 import styles from './otp-authentication.scss';
 import {
   createPatientPayload,
-  generateOTP,
   searchPatientByNationalId,
-  sendOtp,
   createPatientUpdatePayload,
   addPatientIdentifier,
 } from './otp-authentication.resource';
@@ -16,6 +14,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { navigate, openmrsFetch, restBaseUrl, showSnackbar, useSession } from '@openmrs/esm-framework';
 import { Password } from '@carbon/react/icons';
+import { sendOtp, useShaFacilityInfo, validateOtp } from '../hie.resources';
+import { HIE_CONSENT } from '../constants';
 
 const authFormSchema = z.object({
   phoneNumber: z
@@ -29,7 +29,7 @@ const authFormSchema = z.object({
 const formatPhoneNumber = (phone: string): string => {
   // Remove any existing '+' or country code
   let cleanNumber = phone.replace(/^\+?254/, '').replace(/^0/, '');
-  return `+254${cleanNumber}`;
+  return `254${cleanNumber}`;
 };
 
 const normalizePhoneInput = (value: string): string => {
@@ -42,12 +42,14 @@ const OtpAuthenticationModal: React.FC<{ patient: SearchedPatient; onClose: () =
   const session = useSession();
   const patientPhoneNumber =
     (patient.attributes?.find((attribute) => attribute.attributeType.display === 'phone')?.value as string) ?? '';
-  const [serverOtp, setServerOtp] = useState<string>('');
   const [otpStatus, setOtpStatus] = useState<'idle' | 'loadingOtp' | 'otpSendSuccessfull' | 'otpFetchError'>('idle');
   const [isOtpValid, setIsOtpValid] = useState(false);
   const [otpError, setOtpError] = useState<string>('');
   const [showResendButton, setShowResendButton] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
+  const patientIdNumber =
+    (patient?.identifiers?.find((id) => id.identifierType.display === 'National ID')?.identifier as string) ?? '';
+  const [otpId, setOtpId] = useState<string>('');
 
   const {
     control,
@@ -62,56 +64,88 @@ const OtpAuthenticationModal: React.FC<{ patient: SearchedPatient; onClose: () =
     resolver: zodResolver(authFormSchema),
   });
 
+  const {
+    shaFacility,
+    isLoading: isShaFacilityLoading,
+    error: shaFacilityError,
+    mutate: mutateShafacility,
+  } = useShaFacilityInfo(true);
+
+  const getParsedResponse = (response) => {
+    return typeof response === 'string' ? JSON.parse(response) : response;
+  };
+
   // Watch the OTP input to validate it in real-time
   const watchOtp = watch('otp');
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   React.useEffect(() => {
-    if (serverOtp && watchOtp) {
-      const isValid = serverOtp === watchOtp;
-      setIsOtpValid(isValid);
-
-      if (watchOtp.length === 5) {
-        if (!isValid) {
-          setOtpError(t('invalidOtp', 'Invalid OTP. Please check and try again.'));
-          setShowResendButton(true);
-        } else {
-          setOtpError('');
-          setShowResendButton(false);
-        }
-      } else {
-        setOtpError('');
-        setShowResendButton(false);
-      }
-    } else {
+    if (!watchOtp || watchOtp.length < 5) {
       setIsOtpValid(false);
       setOtpError('');
       setShowResendButton(false);
+      return;
     }
-  }, [watchOtp, serverOtp, t]);
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
+    }
+    debounceTimeoutRef.current = setTimeout(async () => {
+      try {
+        const payload: Partial<Consent> = {
+          id: otpId,
+          otp: watchOtp,
+        };
+        const result = await validateOtp(payload);
+        const parsedResponse = getParsedResponse(result.response);
+        const isValid = parsedResponse?.status === 'success';
+        setIsOtpValid(isValid);
+        setOtpError(isValid ? '' : t('invalidOtp', 'Invalid OTP. Please check and try again.'));
+        setShowResendButton(!isValid);
+      } catch {
+        setIsOtpValid(false);
+        setOtpError(t('invalidOtp', 'Invalid OTP. Please check and try again.'));
+        setShowResendButton(true);
+      }
+    }, 400);
+
+    return () => {
+      if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
+    };
+  }, [watchOtp, otpId, t]);
 
   const handleClose = () => {
     onClose();
   };
 
   const handleRequestOtp = async () => {
+    const formData = getValues();
+    const formattedPhoneNumber = formatPhoneNumber(formData.phoneNumber);
+    const payload: Partial<Consent> = {
+      identifierType: HIE_CONSENT.NATIONAL_ID,
+      identifierNumber: patientIdNumber,
+      phoneNumber: formattedPhoneNumber,
+      facility: shaFacility.facilityRegistryCode,
+      scope: [HIE_CONSENT.CLIENT_REGISTRY, HIE_CONSENT.SHARED_HEALTH_RECORD],
+    };
     try {
-      const otp = generateOTP(5);
-      setServerOtp(otp);
-      setOtpStatus('loadingOtp');
-      setValue('otp', '');
-      setOtpError('');
-      setShowResendButton(false);
+      const response = await sendOtp(payload);
+      const parsedResponse = getParsedResponse(response.response);
+      const status = parsedResponse?.status;
+      const requestId = parsedResponse?.id;
 
-      const formData = getValues();
-      const formattedPhoneNumber = formatPhoneNumber(formData.phoneNumber);
-      await sendOtp({ receiver: formattedPhoneNumber, otp }, patient.person.personName.display);
-
-      setOtpStatus('otpSendSuccessfull');
-      showSnackbar({
-        title: t('otpSent', 'OTP Sent'),
-        subtitle: t('otpSentSubtitle', 'Please check your phone for the OTP'),
-        kind: 'success',
-        isLowContrast: true,
-      });
+      if (status == 'success') {
+        setOtpStatus('loadingOtp');
+        setValue('otp', '');
+        setOtpError('');
+        setShowResendButton(false);
+        setOtpId(requestId);
+        setOtpStatus('otpSendSuccessfull');
+        showSnackbar({
+          title: t('otpSent', 'OTP Sent'),
+          subtitle: t('otpSentSubtitle', 'Please check your phone for the OTP'),
+          kind: 'success',
+          isLowContrast: true,
+        });
+      }
     } catch (error) {
       setOtpStatus('otpFetchError');
       showSnackbar({
