@@ -11,6 +11,7 @@
   "birthFieldLabelText": "Birth",
   "cancel": "Cancel",
   "causeOfDeathInputLabel": "Cause of death",
+  "checkInPatientWorkspaceTitle": "Check in patient",
   "clientRegistryEmpty": "Create & Post Patient",
   "clientRegistryEmptys": "Create Patient",
   "clientRegistryError": "Error occurred while reaching the client registry",

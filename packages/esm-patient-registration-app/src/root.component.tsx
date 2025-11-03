@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import classNames from 'classnames';
 import useSWRImmutable from 'swr/immutable';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { Grid, Row } from '@carbon/react';
-import { ExtensionSlot, useConnectivity, useSession } from '@openmrs/esm-framework';
+import { ExtensionSlot, useConnectivity, useSession, WorkspaceContainer } from '@openmrs/esm-framework';
 import {
   ResourcesContext,
   fetchAddressTemplate,
@@ -13,6 +13,7 @@ import {
 import { FormManager } from './patient-registration/form-manager';
 import { PatientRegistration } from './patient-registration/patient-registration.component';
 import styles from './root.scss';
+import { WorkspaceWrapper } from './util';
 
 export default function Root() {
   const isOnline = useConnectivity();
@@ -55,6 +56,7 @@ export default function Root() {
                 element={<PatientRegistration savePatientForm={savePatientForm} isOffline={!isOnline} />}
               />
             </Routes>
+            <WorkspaceWrapper />
           </BrowserRouter>
         </ResourcesContext.Provider>
       </Grid>
