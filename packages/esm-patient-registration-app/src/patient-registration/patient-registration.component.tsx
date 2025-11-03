@@ -13,6 +13,9 @@ import {
   usePatient,
   usePatientPhoto,
   useFeatureFlag,
+  launchWorkspace,
+  closeWorkspace,
+  navigate,
 } from '@openmrs/esm-framework';
 import { getValidationSchema } from './validation/patient-registration-validation';
 import { type CapturePhotoProps, type FormValues } from './patient-registration.types';
@@ -121,8 +124,26 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
         isLowContrast: true,
       });
 
+      const patientUuid = values.patientUuid;
       const afterUrl = new URLSearchParams(search).get('afterUrl');
-      const redirectUrl = interpolateUrl(afterUrl || config.links.submitButton, { patientUuid: values.patientUuid });
+      const redirectUrl = interpolateUrl(afterUrl || config.links.submitButton, { patientUuid });
+
+      if (inEditMode) {
+        navigate({ to: `$\{openmrsSpaBase}/patient/${patientUuid}/chart` });
+      } else {
+        launchWorkspace('start-visit-workspace-form', {
+          patientUuid: patientUuid,
+          workspaceTitle: t('checkInPatientWorkspaceTitle', 'Check in patient'),
+          closeWorkspace: () => {
+            closeWorkspace('start-visit-workspace-form', {
+              onWorkspaceClose: () => {
+                navigate({ to: `$\{openmrsSpaBase}/patient/${patientUuid}/chart` });
+              },
+              ignoreChanges: true,
+            });
+          },
+        });
+      }
 
       setTarget(redirectUrl);
     } catch (error) {
@@ -140,8 +161,27 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
             timeoutInMs: 8000,
           });
         });
+
+        const patientUuid = values.patientUuid;
         const afterUrl = new URLSearchParams(search).get('afterUrl');
-        const redirectUrl = interpolateUrl(afterUrl || config.links.submitButton, { patientUuid: values.patientUuid });
+        const redirectUrl = interpolateUrl(afterUrl || config.links.submitButton, { patientUuid });
+
+        if (inEditMode) {
+          navigate({ to: `\${openmrsSpaBase}/patient/${patientUuid}/chart` });
+        } else {
+          launchWorkspace('start-visit-workspace-form', {
+            patientUuid: patientUuid,
+            workspaceTitle: t('checkInPatientWorkspaceTitle', 'Check in patient'),
+            closeWorkspace: () => {
+              closeWorkspace('start-visit-workspace-form', {
+                onWorkspaceClose: () => {
+                  navigate({ to: `\${openmrsSpaBase}/patient/${patientUuid}/chart` });
+                },
+                ignoreChanges: true,
+              });
+            },
+          });
+        }
 
         setTarget(redirectUrl);
       }
