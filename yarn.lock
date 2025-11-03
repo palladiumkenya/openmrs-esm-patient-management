@@ -3826,7 +3826,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openmrs/esm-framework@npm:8.0.1-pre.3473, @openmrs/esm-framework@npm:^8.0.1-pre.3473":
+"@openmrs/esm-framework@npm:8.0.1-pre.3473, @openmrs/esm-framework@npm:next":
   version: 8.0.1-pre.3473
   resolution: "@openmrs/esm-framework@npm:8.0.1-pre.3473"
   dependencies:
@@ -3923,7 +3923,7 @@ __metadata:
     "@carbon/react": "npm:^1.71.0"
     "@hookform/resolvers": "npm:^3.3.1"
     "@internationalized/date": "npm:^3.5.4"
-    "@openmrs/esm-framework": "npm:^8.0.1-pre.3473"
+    "@openmrs/esm-framework": "npm:next"
     "@openmrs/esm-patient-common-lib": "npm:next"
     "@playwright/test": "npm:1.49.0"
     "@swc/core": "npm:^1.2.165"
@@ -3963,7 +3963,7 @@ __metadata:
     jest-cli: "npm:^29.7.0"
     jest-environment-jsdom: "npm:^29.7.0"
     lint-staged: "npm:^15.2.1"
-    openmrs: "npm:^8.0.1-pre.3473"
+    openmrs: "npm:next"
     prettier: "npm:^3.1.1"
     react: "npm:^18.1.0"
     react-dom: "npm:^18.1.0"
@@ -17035,7 +17035,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openmrs@npm:^8.0.1-pre.3473":
+"openmrs@npm:next":
   version: 8.0.1-pre.3473
   resolution: "openmrs@npm:8.0.1-pre.3473"
   dependencies:
