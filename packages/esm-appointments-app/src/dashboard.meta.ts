@@ -16,8 +16,8 @@ export const appointmentCalendarDashboardMeta = {
 export const patientChartDashboardMeta = {
   slot: 'patient-chart-appointments-dashboard-slot',
   columns: 1,
-  icon: 'Calendar',
+  renderIcon: Calendar,
   path: 'Appointments',
   title: 'Appointments',
-  moduleName: 'appointments'
+  moduleName: 'appointments',
 };
