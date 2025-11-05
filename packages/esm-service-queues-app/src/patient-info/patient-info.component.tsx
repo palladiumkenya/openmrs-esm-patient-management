@@ -40,7 +40,7 @@ const PatientInfo: React.FC<PatientInfoProps> = ({ patient, handlePatientInfoCli
           [styles.activePatientInfoContainer]: showContactDetails,
           [styles.patientInfoContainer]: !showContactDetails,
         })}>
-        <PatientPhoto patientUuid={patient.id} patientName={patientName} size="small" />
+        <PatientPhoto patientUuid={patient.id} patientName={patientName} />
         <div className={styles.patientInfoContent}>
           <div className={styles.patientInfoRow}>
             <span className={styles.patientName}>{patientName}</span>

@@ -47,7 +47,6 @@
   "patientCreatedSubtitle": "Patient has been successfully created",
   "patientInformationSync": "Patient Information Sync",
   "patientSaveFailed": "Failed to save patient",
-  "patientSaveFailedSubtitle": "",
   "patientUpdated": "Patient Updated",
   "patientUpdatedSubtitle": "Patient has been successfully updated",
   "phoneNumber": "Phone Number",

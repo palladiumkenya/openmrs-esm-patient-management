@@ -9,16 +9,16 @@
   "homepage": "https://github.com/openmrs/openmrs-esm-patient-management#readme",
   "scripts": {
     "start": "openmrs develop",
-    "serve": "webpack serve --mode=development",
     "debug": "npm run serve",
-    "build": "webpack --mode production",
-    "analyze": "webpack --mode=production --env.analyze=true",
-    "lint": "eslint src --ext tsx",
+    "build": "rspack --mode=production",
+    "analyze": "rspack --mode=production --env analyze=true",
+    "lint": "eslint src --ext ts,tsx",
+    "serve": "rspack serve --mode=development",
     "test": "cross-env TZ=UTC jest --config jest.config.js --verbose false --passWithNoTests --color",
-    "test-watch": "cross-env TZ=UTC jest --watch --config jest.config.js",
+    "test:watch": "cross-env TZ=UTC jest --watch --config jest.config.js --color",
     "coverage": "yarn test --coverage",
     "typescript": "tsc",
-    "extract-translations": "i18next 'src/**/*.component.tsx' 'src/**/*.extension.tsx' 'src/**/*modal.tsx' 'src/**/*.workspace.tsx' 'src/index.ts' --config ../../tools/i18next-parser.config.js"
+    "extract-translations": "i18next 'src/**/*.component.tsx' 'src/**/*.resource.tsx' 'src/**/*.extension.tsx' 'src/**/*modal.tsx' 'src/**/*.workspace.tsx' 'src/index.ts' --config ../../tools/i18next-parser.config.js"
   },
   "browserslist": [
     "extends browserslist-config-openmrs"
@@ -49,8 +49,5 @@
     "react-i18next": "11.x",
     "react-router-dom": "6.x",
     "swr": "2.x"
-  },
-  "devDependencies": {
-    "webpack": "^5.74.0"
   }
 }
