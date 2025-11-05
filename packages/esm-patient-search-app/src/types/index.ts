@@ -181,3 +181,28 @@ export interface SearchFieldConfig {
   min?: number;
   max?: number;
 }
+
+export interface Consent {
+  id?: string;
+  otp?: string;
+  identifierType?: string;
+  identifierNumber?: string;
+  phoneNumber?: string;
+  facility?: string;
+  scope?: Array<string>;
+  message?: string;
+  status?: string;
+}
+
+export interface SHAFacility {
+  operationalStatus: string;
+  approved: string;
+  kephLevel: string;
+  shaFacilityId: string;
+  shaFacilityExpiryDate: string;
+  registrationNumber: string;
+  mflCode: string;
+  shaFacilityLicenseNumber: string;
+  facilityRegistryCode: string;
+  source: string;
+}
