@@ -6,6 +6,18 @@
   position: relative;
 }
 
+:global(.omrs-breakpoint-lt-desktop) {
+  .patientSearchBar {
+    width: 70vw;
+  }
+}
+
+:global(.omrs-breakpoint-lt-tablet) {
+  .patientSearchBar {
+    width: 90vw;
+  }
+}
+
 .floatingSearchResultsContainer {
   position: absolute;
   overflow-y: auto;
@@ -14,4 +26,23 @@
   border: 0 1px 1px 1px solid $ui-03;
   width: 100%;
   background-color: $ui-02;
+  max-height: 60vh;
+}
+
+:global(.omrs-breakpoint-lt-desktop) {
+  .floatingSearchResultsContainer {
+    max-height: 50vh;
+    box-shadow: 0 layout.$spacing-02 layout.$spacing-04 $ui-03;
+  }
+}
+
+:global(.omrs-breakpoint-lt-tablet) {
+  .floatingSearchResultsContainer {
+    max-height: 70vh;
+    position: fixed;
+    left: layout.$spacing-03;
+    right: layout.$spacing-03;
+    width: calc(100% - #{layout.$spacing-06});
+    box-shadow: 0 layout.$spacing-02 layout.$spacing-03 $ui-03;
+  }
 }

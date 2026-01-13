@@ -10,15 +10,7 @@ import {
   showSnackbar,
   useSession,
 } from '@openmrs/esm-framework';
-import {
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-  InlineLoading,
-  InlineNotification,
-  CodeSnippet,
-} from '@carbon/react';
+import { ModalHeader, ModalBody, Button, InlineLoading, InlineNotification, CodeSnippet } from '@carbon/react';
 import styles from './hie.sync.scss';
 import { addPatientIdentifier, createPatientUpdatePayloadFromFhir, useHIEPatient } from './otp-authentication.resource';
 
@@ -100,7 +92,7 @@ const HieSycModal: React.FC<HieSycModalProps> = ({ onClose, localPatient, identi
     : t('continueToChart', 'Continue to Chart');
 
   return (
-    <div>
+    <div className={styles.modalWrapper}>
       <ModalHeader closeModal={handleClose}>
         <span className={styles.header}>{t('patientInformationSync', 'Patient Information Sync')}</span>
       </ModalHeader>
@@ -127,25 +119,26 @@ const HieSycModal: React.FC<HieSycModalProps> = ({ onClose, localPatient, identi
             )}
           />
         )}
-        {Object.keys(differences ?? {}).length > 0 && (
+        {/* {Object.keys(differences ?? {}).length > 0 && (
           <CodeSnippet type="multi" feedback="Copied to clipboard">
             {JSON.stringify(differences, null, 2)}
           </CodeSnippet>
-        )}
-      </ModalBody>
-      <ModalFooter>
-        <Button kind="danger" onClick={handleClose}>
-          {t('cancel', 'Cancel')}
-        </Button>
-        {hiePatient && Object.keys(differences ?? {}).length > 0 && (
-          <Button onClick={handleProceedToPatientChart} kind="secondary">
-            {t('proceedToPatientChart', 'Proceed to patient chart')}
+        )} */}
+
+        <div className={styles.actionButtons}>
+          <Button kind="danger" onClick={handleClose}>
+            {t('cancel', 'Cancel')}
           </Button>
-        )}
-        <Button disabled={isLoading} kind="primary" onClick={handleSyncAndContinueToChart}>
-          {syncButtonText}
-        </Button>
-      </ModalFooter>
+          {hiePatient && Object.keys(differences ?? {}).length > 0 && (
+            <Button onClick={handleProceedToPatientChart} kind="secondary">
+              {t('proceedToPatientChart', 'Proceed to patient chart')}
+            </Button>
+          )}
+          <Button disabled={isLoading} kind="primary" onClick={handleSyncAndContinueToChart}>
+            {syncButtonText}
+          </Button>
+        </div>
+      </ModalBody>
     </div>
   );
 };
