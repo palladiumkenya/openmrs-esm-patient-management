@@ -21,6 +21,13 @@
   }
 }
 
+:global(.omrs-breakpoint-lt-desktop) {
+  .patientSearchResult,
+  .deceased.patientSearchResult {
+    padding: 0 layout.$spacing-03;
+  }
+}
+
 .patientSearchResultButton {
   background: none;
   cursor: pointer;
@@ -37,6 +44,13 @@
   margin-right: layout.$spacing-02;
 }
 
+:global(.omrs-breakpoint-lt-desktop) {
+  .patientName {
+    @include type.type-style('heading-compact-01');
+    margin-bottom: layout.$spacing-02;
+  }
+}
+
 .patientAvatar {
   width: layout.$spacing-09;
   height: layout.$spacing-09;
@@ -44,6 +58,15 @@
   border-radius: 1px;
   font-weight: unset;
   line-height: unset;
+  flex-shrink: 0;
+}
+
+:global(.omrs-breakpoint-lt-desktop) {
+  .patientAvatar {
+    width: layout.$spacing-07;
+    height: layout.$spacing-07;
+    margin: layout.$spacing-03 layout.$spacing-03 layout.$spacing-03 0;
+  }
 }
 
 .patientInfo {
@@ -54,16 +77,38 @@
   cursor: pointer;
 }
 
+:global(.omrs-breakpoint-lt-desktop) {
+  .patientInfo {
+    margin: layout.$spacing-03;
+  }
+}
+
 .demographics {
   display: flex;
   align-items: center;
   margin-top: layout.$spacing-02;
   @include type.type-style('body-compact-01');
   color: $text-02;
+  flex-wrap: wrap;
+}
+
+:global(.omrs-breakpoint-lt-tablet) {
+  .demographics {
+    @include type.type-style('label-01');
+    flex-direction: column;
+    align-items: flex-start;
+    gap: layout.$spacing-02;
+  }
 }
 
 .identifier {
   margin: 0 layout.$spacing-03;
+}
+
+:global(.omrs-breakpoint-lt-tablet) {
+  .identifier {
+    margin: 0 layout.$spacing-02;
+  }
 }
 
 .identifiers {
@@ -80,13 +125,31 @@
   margin: 0 layout.$spacing-02;
 }
 
+:global(.omrs-breakpoint-lt-tablet) {
+  .middot {
+    display: none;
+  }
+}
+
 .configuredTag {
   margin: layout.$spacing-01 layout.$spacing-03;
+}
+
+:global(.omrs-breakpoint-lt-desktop) {
+  .configuredTag {
+    margin: layout.$spacing-01 layout.$spacing-02;
+  }
 }
 
 .configuredLabel {
   @include type.type-style('label-01');
   color: $ui-05;
+}
+
+:global(.omrs-breakpoint-lt-tablet) {
+  .configuredLabel {
+    @include type.type-style('helper-text-01');
+  }
 }
 
 .flexRow {
@@ -95,7 +158,21 @@
   align-items: center;
 }
 
+:global(.omrs-breakpoint-lt-tablet) {
+  .flexRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 .skeletonIcon {
   height: layout.$spacing-09;
   width: layout.$spacing-09;
+}
+
+:global(.omrs-breakpoint-lt-desktop) {
+  .skeletonIcon {
+    height: layout.$spacing-07;
+    width: layout.$spacing-07;
+  }
 }

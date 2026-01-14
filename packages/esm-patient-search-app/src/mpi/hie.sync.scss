@@ -2,26 +2,183 @@
 @use '@carbon/layout';
 @use '@openmrs/esm-styleguide/src/vars' as *;
 
-.header {
-  @include type.type-style('heading-03');
+.modalWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-.body {
-  @include type.type-style('body-01');
+.header {
+  @include type.type-style('heading-03');
+  word-break: break-word;
+}
+
+:global(.omrs-breakpoint-lt-desktop) {
+  .header {
+    @include type.type-style('heading-compact-02');
+  }
+}
+
+:global(.omrs-breakpoint-lt-tablet) {
+  .header {
+    @include type.type-style('heading-compact-01');
+    font-size: 1.125rem !important;
+    display: block !important;
+    padding-right: layout.$spacing-09 !important;
+  }
 }
 
 .modalBody {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: layout.$spacing-05;
+  margin-bottom: layout.$spacing-05;
+}
+
+:global(.omrs-breakpoint-lt-desktop) {
+  .modalBody {
+    gap: layout.$spacing-04;
+    margin-bottom: layout.$spacing-04;
+  }
+}
+
+:global(.omrs-breakpoint-lt-tablet) {
+  .modalBody {
+    grid-template-columns: 1fr;
+    gap: layout.$spacing-05;
+    margin-bottom: layout.$spacing-03;
+  }
+}
+
+.modalBody > div {
+  h5 {
+    @include type.type-style('heading-compact-01');
+    margin-bottom: layout.$spacing-03;
+    color: $text-02;
+  }
+}
+
+:global(.omrs-breakpoint-lt-tablet) {
+  .modalBody > div {
+    h5 {
+      @include type.type-style('productive-heading-01');
+      margin-bottom: layout.$spacing-03;
+      font-weight: 600;
+    }
+  }
 }
 
 .patientInfo {
   display: grid;
-  grid-template-columns: 0.25fr 0.75fr;
-  align-items: center;
+  grid-template-columns: auto 1fr;
+  gap: layout.$spacing-03;
+  align-items: start;
 }
 
-.notFoundNotitication {
+.hiePatientNotFound {
+  margin-top: layout.$spacing-03;
+}
+
+.actionButtons {
+  display: flex;
+  gap: layout.$spacing-03;
+  justify-content: flex-end;
+  margin-top: layout.$spacing-06;
   padding-top: layout.$spacing-05;
+  border-top: 1px solid $ui-03;
+}
+
+:global(.omrs-breakpoint-lt-desktop) {
+  .actionButtons {
+    margin-top: layout.$spacing-05;
+    padding-top: layout.$spacing-04;
+  }
+}
+
+:global(.omrs-breakpoint-lt-tablet) {
+  .actionButtons {
+    flex-direction: column-reverse;
+    gap: layout.$spacing-03;
+    margin-top: layout.$spacing-05;
+    padding-top: layout.$spacing-04;
+    
+    button {
+      width: 100%;
+    }
+  }
+}
+
+:global(.omrs-breakpoint-lt-tablet) {
+  :global(.cds--modal-container) {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    height: auto !important;
+    max-height: 95vh !important;
+  }
+}
+
+:global(.omrs-breakpoint-lt-tablet) {
+  :global(.cds--modal-header) {
+    padding: layout.$spacing-07 layout.$spacing-05 layout.$spacing-04 layout.$spacing-05 !important;
+    min-height: 3.5rem !important;
+    
+    :global(.cds--modal-close) {
+      top: layout.$spacing-04 !important;
+      right: layout.$spacing-04 !important;
+      width: 3rem !important;
+      height: 3rem !important;
+    }
+    
+    :global(.cds--modal-header__heading) {
+      padding-right: layout.$spacing-09 !important;
+      font-size: 1.125rem !important;
+      line-height: 1.5 !important;
+      display: block !important;
+    }
+  }
+}
+
+:global(.omrs-breakpoint-lt-tablet) {
+  :global(.cds--modal-content) {
+    padding: layout.$spacing-05 !important;
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+  }
+}
+
+:global(.omrs-breakpoint-lt-tablet) {
+  :global(.cds--inline-notification) {
+    min-width: auto;
+    max-width: 100%;
+    margin-bottom: layout.$spacing-03;
+    
+    :global(.cds--inline-notification__title) {
+      font-size: 0.875rem;
+    }
+    
+    :global(.cds--inline-notification__subtitle) {
+      font-size: 0.813rem;
+    }
+  }
+}
+
+:global(.omrs-breakpoint-lt-tablet) {
+  :global(.cds--snippet--multi) {
+    max-height: 10rem;
+    font-size: 0.688rem;
+    margin-top: layout.$spacing-03;
+    
+    pre {
+      padding: layout.$spacing-03;
+      font-size: 0.688rem;
+    }
+  }
+}
+
+:global(.omrs-breakpoint-lt-tablet) {
+  .patientInfo :global([class*="patient-photo"]),
+  .patientInfo :global([class*="PatientPhoto"]) {
+    width: layout.$spacing-09;
+    height: layout.$spacing-09;
+  }
 }
