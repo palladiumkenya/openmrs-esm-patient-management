@@ -14,8 +14,31 @@ export function CustomField({ name }: CustomFieldProps) {
   const config = useConfig() as RegistrationConfig;
   const fieldDefinition = config.fieldDefinitions.filter((def) => def.id == name)[0];
 
-  const [{ value }] = useField(`attributes.${fieldDefinition.showWhenExpression?.field}`);
-  if (fieldDefinition.showWhenExpression && value !== fieldDefinition.showWhenExpression.value) {
+  let watchFieldPath: string | null = null;
+
+  if (fieldDefinition.showWhenExpression) {
+    const { field: watchedFieldUuid } = fieldDefinition.showWhenExpression;
+    const watchedFieldDefinition = config.fieldDefinitions.find((def) => def.uuid === watchedFieldUuid);
+
+    if (watchedFieldDefinition?.type === 'obs') {
+      watchFieldPath = `obs.${watchedFieldUuid}`;
+    } else if (watchedFieldDefinition?.type === 'person attribute') {
+      watchFieldPath = `attributes.${watchedFieldUuid}`;
+    } else {
+      watchFieldPath = `attributes.${watchedFieldUuid}`;
+    }
+  }
+
+  const [{ value: currentValue }] = useField(watchFieldPath || 'dummy');
+
+  let shouldShow = true;
+
+  if (fieldDefinition.showWhenExpression && watchFieldPath) {
+    const { value: expectedValue } = fieldDefinition.showWhenExpression;
+    shouldShow = currentValue === expectedValue;
+  }
+
+  if (!shouldShow) {
     return null;
   }
 
